@@ -16,15 +16,15 @@ public class User {
     
     private String Email;
     
-    private int IdRole;
+    private Role Role;
 
     public User() {
     }
 
-    public User(String Name, String Email, int IdRole) {
+    public User(String Name, String Email, Role Role) {
         this.Name = Name;
         this.Email = Email;
-        this.IdRole = IdRole;
+        this.Role = Role;
     }
 
     public int getId() {
@@ -51,13 +51,15 @@ public class User {
         this.Email = Email;
     }
 
-    public int getIdRole() {
-        return IdRole;
+    public Role getRole() {
+        return Role;
     }
 
-    public void setIdRole(int IdRole) {
-        this.IdRole = IdRole;
+    public void setRole(Role Role) {
+        this.Role = Role;
     }
+
+   
     
     
     

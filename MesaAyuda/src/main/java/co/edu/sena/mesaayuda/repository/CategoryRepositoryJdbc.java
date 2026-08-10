@@ -4,10 +4,37 @@
  */
 package co.edu.sena.mesaayuda.repository;
 
+import co.edu.sena.mesaayuda.model.Category;
+import co.edu.sena.mesaayuda.util.ConexionDB;
+import java.util.List;
+import java.sql.*;
+import java.util.ArrayList;
+
 /**
  *
  * @author julil
  */
-public class CategoryRepositoryJdbc {
-    
+public class CategoryRepositoryJdbc implements CategoryRepository {
+
+    @Override
+    public List<Category> MtListCategories() throws SQLException {
+
+        String sql = "Select \"Id\", \"Name\" From \"Category\"";
+
+        List<Category> list = new ArrayList<Category>();
+
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Category oCategory = new Category();
+                    oCategory.setId(rs.getInt("Id"));
+                    oCategory.setName(rs.getString("Name"));
+
+                    list.add(oCategory);
+                }
+            }
+            return list;
+        }
+    }
 }
