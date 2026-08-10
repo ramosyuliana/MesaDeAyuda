@@ -2,25 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package co.edu.sena.mesaayuda.model;
+package co.edu.sena.mesaayuda.dto;
 
 /**
  *
- * @author Admin
+ * @author julil
  */
-public class Category {
+public class RoleDTO {
 
     private int Id;
     private String Name;
-    private Priority priority;
 
-    public Category() {
-    }
-
-    public Category(int Id, String Name, Priority priority) {
+    public RoleDTO(int Id, String Name) {
         this.Id = Id;
         this.Name = Name;
-        this.priority = priority;
     }
 
     public int getId() {
@@ -37,14 +32,6 @@ public class Category {
 
     public void setName(String Name) {
         this.Name = Name;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
     }
 
 }
