@@ -4,10 +4,41 @@
  */
 package co.edu.sena.mesaayuda.repository;
 
+import co.edu.sena.mesaayuda.model.Role;
+import co.edu.sena.mesaayuda.util.ConexionDB;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author julil
  */
-public class RoleRepositoryJdbc {
-    
+public class RoleRepositoryJdbc implements RoleRepository {
+
+    @Override
+    public List<Role> MtListRoles() throws SQLException {
+
+        String sql = "Select \"Id\", \"Name\" From \"Role\"";
+
+        List<Role> list = new ArrayList<Role>();
+
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Role oRole = new Role();
+                    oRole.setId(rs.getInt("Id"));
+                    oRole.setName(rs.getString("Name"));
+
+                    list.add(oRole);
+                }
+            }
+            return list;
+        }
+    }
+
 }
