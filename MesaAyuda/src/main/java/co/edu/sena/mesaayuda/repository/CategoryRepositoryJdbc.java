@@ -5,6 +5,7 @@
 package co.edu.sena.mesaayuda.repository;
 
 import co.edu.sena.mesaayuda.model.Category;
+import co.edu.sena.mesaayuda.model.Priority;
 import co.edu.sena.mesaayuda.util.ConexionDB;
 import java.util.List;
 import java.sql.*;
@@ -19,7 +20,10 @@ public class CategoryRepositoryJdbc implements CategoryRepository {
     @Override
     public List<Category> MtListCategories() throws SQLException {
 
-        String sql = "Select \"Id\", \"Name\" From \"Category\"";
+        String sql = "Select c.\"Id\", c.\"Name\", p.\"Name\" as \"PriorityName\" From \"Category\" c "
+                + "Inner Join \"Priority\" p "
+                + "ON "
+                + "c.\"IdPriority\" = p.\"Id\"";
 
         List<Category> list = new ArrayList<Category>();
 
@@ -30,7 +34,9 @@ public class CategoryRepositoryJdbc implements CategoryRepository {
                     Category oCategory = new Category();
                     oCategory.setId(rs.getInt("Id"));
                     oCategory.setName(rs.getString("Name"));
-
+                    Priority oPriority = new Priority();
+                    oPriority.setName(rs.getString("PriorityName"));
+                    oCategory.setPriority(oPriority);
                     list.add(oCategory);
                 }
             }

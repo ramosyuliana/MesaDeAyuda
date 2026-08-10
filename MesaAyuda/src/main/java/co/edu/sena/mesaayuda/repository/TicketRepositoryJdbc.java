@@ -4,7 +4,6 @@
  */
 package co.edu.sena.mesaayuda.repository;
 
-
 import co.edu.sena.mesaayuda.model.Ticket;
 import co.edu.sena.mesaayuda.util.*;
 import java.sql.Connection;
@@ -26,56 +25,56 @@ public class TicketRepositoryJdbc implements TicketRepository {
     public void MtCreate(Ticket oticket) throws SQLException {
         String consulta = "Insert into \"Ticket\"(\"Title\",\"Description\",\"IdCategoty\",\"IdApplicant\",\"IdAgent\",\"State\",\"CreateDate\") Values (?,?,?,?,?,?,?)";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
-           ps.setString(1,oticket.getTitle());
-           ps.setString(2, oticket.getDescription());
-           ps.setInt(3, oticket.getIdCategory());
-           ps.setInt(4, oticket.getIdApplicant());
-           ps.setInt(5, oticket.getIdAgent());
-           ps.setString(6, oticket.getState());
-           ps.setDate(7,Date.valueOf(oticket.getCreateDate()));
-           ps.executeUpdate();
+            ps.setString(1, oticket.getTitle());
+            ps.setString(2, oticket.getDescription());
+            ps.setInt(3, oticket.getIdCategory());
+            ps.setInt(4, oticket.getIdApplicant());
+            ps.setInt(5, oticket.getIdAgent());
+            ps.setString(6, oticket.getState());
+            ps.setDate(7, Date.valueOf(oticket.getCreateDate()));
+            ps.executeUpdate();
 
         }
     }
 
     @Override
     public void MtEdit(Ticket oticket) throws SQLException {
-         String consulta = "Update \"Ticket\" set \"Title\" = ?,\"Description\" = ?,\"IdCategoty\" = ? Where \"Id\" = ?";
+        String consulta = "Update \"Ticket\" set \"Title\" = ?,\"Description\" = ?,\"IdCategoty\" = ? Where \"Id\" = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
-           ps.setString(1,oticket.getTitle());
-           ps.setString(2, oticket.getDescription());
-           ps.setInt(3, oticket.getIdCategory());
-           ps.setInt(4, oticket.getId());
-           ps.executeUpdate();
+            ps.setString(1, oticket.getTitle());
+            ps.setString(2, oticket.getDescription());
+            ps.setInt(3, oticket.getIdCategory());
+            ps.setInt(4, oticket.getId());
+            ps.executeUpdate();
 
         }
     }
-    
+
     @Override
-    public void MtEditState(String estado,Ticket oticket) throws SQLException {
-         String consulta = "Update \"Ticket\" set \"State\" = ? Where \"Id\" = ?";
+    public void MtEditState(String estado, Ticket oticket) throws SQLException {
+        String consulta = "Update \"Ticket\" set \"State\" = ? Where \"Id\" = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
-           ps.setString(1,"estado");
-           ps.setInt(2, oticket.getId());
-           ps.executeUpdate();
+            ps.setString(1, "estado");
+            ps.setInt(2, oticket.getId());
+            ps.executeUpdate();
 
         }
     }
-    
+
     @Override
-    public void MtEditAgent(int IdAgent,Ticket oticket) throws SQLException {
-         String consulta = "Update \"Ticket\" set \"IdAgent\" = ?  Where \"Id\" = ?";
+    public void MtEditAgent(int IdAgent, Ticket oticket) throws SQLException {
+        String consulta = "Update \"Ticket\" set \"IdAgent\" = ?  Where \"Id\" = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
-           ps.setInt(1,IdAgent);
-           ps.setInt(2, oticket.getId());
-           ps.executeUpdate();
+            ps.setInt(1, IdAgent);
+            ps.setInt(2, oticket.getId());
+            ps.executeUpdate();
 
         }
     }
 
     @Override
     public List<Ticket> MtListByAgent(int IdAgent) throws SQLException {
-       String consulta = "Select * from \"Ticket\"  where \"IdAgent\"= ?";
+        String consulta = "Select * from \"Ticket\"  where \"IdAgent\"= ?";
         List<Ticket> list = new ArrayList<Ticket>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
             ps.setInt(1, IdAgent);
@@ -90,12 +89,11 @@ public class TicketRepositoryJdbc implements TicketRepository {
                     oticket.setIdCategory(rs.getInt("IdAgent"));
                     oticket.setState(rs.getString("State"));
                     oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
-                    
 
                     list.add(oticket);
                 }
             }
-            
+
             return list;
         }
 
@@ -103,7 +101,7 @@ public class TicketRepositoryJdbc implements TicketRepository {
 
     @Override
     public List<Ticket> MtListByApplicant(int IdApplicant) throws SQLException {
-               String consulta = "Select * from \"Ticket\"  where \"IdApplicant\"= ?";
+        String consulta = "Select * from \"Ticket\"  where \"IdApplicant\"= ?";
         List<Ticket> list = new ArrayList<Ticket>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
             ps.setInt(1, IdApplicant);
@@ -118,22 +116,21 @@ public class TicketRepositoryJdbc implements TicketRepository {
                     oticket.setIdCategory(rs.getInt("IdAgent"));
                     oticket.setState(rs.getString("State"));
                     oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
-                    
 
                     list.add(oticket);
                 }
             }
-            
+
             return list;
         }
     }
 
     @Override
     public List<Ticket> MtListAll() throws SQLException {
-               String consulta = "Select * from \"Ticket\" ";
+        String consulta = "Select * from \"Ticket\" ";
         List<Ticket> list = new ArrayList<Ticket>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
-           
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Ticket oticket = new Ticket();
@@ -145,12 +142,11 @@ public class TicketRepositoryJdbc implements TicketRepository {
                     oticket.setIdCategory(rs.getInt("IdAgent"));
                     oticket.setState(rs.getString("State"));
                     oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
-                    
 
                     list.add(oticket);
                 }
             }
-            
+
             return list;
         }
     }
