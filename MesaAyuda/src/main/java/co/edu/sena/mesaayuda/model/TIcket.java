@@ -10,7 +10,7 @@ import java.time.LocalDate;
  *
  * @author Admin
  */
-public class TIcket {
+public class Ticket {
     
     private int Id;
     
@@ -28,12 +28,12 @@ public class TIcket {
     
     private LocalDate CreateDate;
     
-    private int IdComment;
+    
 
-    public TIcket() {
+    public Ticket() {
     }
 
-    public TIcket(String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State, LocalDate CreateDate, int IdComment) {
+    public Ticket(String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State, LocalDate CreateDate, int IdComment) {
         this.Title = Title;
         this.Description = Description;
         this.IdCategory = IdCategory;
@@ -41,7 +41,7 @@ public class TIcket {
         this.IdAgent = IdAgent;
         this.State = State;
         this.CreateDate = CreateDate;
-        this.IdComment = IdComment;
+      
     }
 
     public int getId() {
@@ -108,13 +108,6 @@ public class TIcket {
         this.CreateDate = CreateDate;
     }
 
-    public int getIdComment() {
-        return IdComment;
-    }
-
-    public void setIdComment(int IdComment) {
-        this.IdComment = IdComment;
-    }
     
     
     
