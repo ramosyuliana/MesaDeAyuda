@@ -4,10 +4,15 @@
  */
 package co.edu.sena.mesaayuda.repository;
 
+import co.edu.sena.mesaayuda.model.Category;
+import java.sql.SQLException;
+import java.util.List;
+
 /**
  *
  * @author julil
  */
 public interface CategoryRepository {
     
+    List<Category> MtListCategories() throws SQLException;
 }
