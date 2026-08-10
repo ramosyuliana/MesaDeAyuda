@@ -19,17 +19,30 @@ public class Comment {
     private String Text;
     
     private LocalDate Date;
+    
+    private int IdTicket;
 
     public Comment() {
     }
 
     
-    public Comment(int IdAuthor, String Text, LocalDate Date) {
+    public Comment(int IdAuthor, String Text, LocalDate Date,int IdTicket) {
         this.IdAuthor = IdAuthor;
         this.Text = Text;
         this.Date = Date;
+        this.IdTicket = IdTicket;
+        
     }
 
+    public int getIdTicket() {
+        return IdTicket;
+    }
+
+    public void setIdTicket(int IdTicket) {
+        this.IdTicket = IdTicket;
+    }
+
+    
     public int getId() {
         return Id;
     }
