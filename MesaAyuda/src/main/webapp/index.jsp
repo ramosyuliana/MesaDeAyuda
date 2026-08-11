@@ -1,39 +1,107 @@
-<%-- 
-    Document   : index.jsp
-    Created on : 7/08/2026, 9:35:22 p. m.
-    Author     : Admin
---%>
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
-<html lang="es">
+<html class="h-full" lang="es">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login - Mesa de Ayuda</title>
-        <!-- Google Material Symbols -->
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Login - Mesa de Ayuda CIMM</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
         <style>
+            :root {
+                /* ---- Fondo y superficies (claro, azul-grisáceo) ---- */
+                --bg-page: #eef2f7;
+                --surface-container-lowest: #f6f8fb;
+                --surface-container-low: #e9eef5;
+                --surface-container: #e2e8f2;
+                --surface-container-high: #dbe2ee;
+
+                /* ---- Texto ---- */
+                --on-surface: #1e293b;
+                --on-surface-labels: #334155;
+                --on-surface-variant: #51607a;
+                --on-surface-muted: #6b7a97;
+                --on-surface-faint: #94a3b8;
+
+                /* ---- Bordes ---- */
+                --border-soft: #d7dfec;
+                --outline: #c2cddd;
+                --outline-variant: #d7dfec;
+
+                /* ---- Acentos azules ---- */
+                --link: #3b82f6;
+                --link-hover: #2563eb;
+                --primary: #2563eb;
+                --primary-container: #3b82f6;
+                --primary-hover: #1d4ed8;
+
+                --error: #dc2626;
+
+                /* ---- Degradados ---- */
+                --gradient-overlay: linear-gradient(135deg, rgba(224,231,242,.92), rgba(219,230,250,.8), rgba(214,238,242,.85));
+                --gradient-accent: linear-gradient(90deg, #38bdf8, #6366f1);
+                --gradient-button: linear-gradient(135deg, #3b82f6, #2563eb);
+                --gradient-button-hover: linear-gradient(135deg, #2563eb, #1d4ed8);
+
+                /* ---- Transparencias / superficies tipo "glass" ---- */
+                --card-bg: rgba(255,255,255,.65);
+                --input-bg: rgba(255,255,255,.55);
+                --input-focus-bg: rgba(255,255,255,.9);
+                --footer-bg: rgba(246,248,251,.85);
+                --icon-circle-bg: rgba(37,99,235,.1);
+                --icon-circle-border: rgba(59,130,246,.25);
+                --card-border: rgba(148,163,184,.28);
+                --hairline: rgba(148,163,184,.22);
+
+                /* ---- Sombras ---- */
+                --shadow-soft-bloom: 0px 4px 20px rgba(30,41,59,0.06);
+                --shadow-card: 0 25px 50px -12px rgba(30,41,59,0.15);
+
+                --radius-lg: 0.625rem;
+                --radius-xl: 1rem;
+                --radius-full: 9999px;
+            }
+
             * {
                 box-sizing: border-box;
-                margin: 0;
-                padding: 0;
+            }
+
+            html, body {
+                height: 100%;
             }
 
             body {
+                margin: 0;
+                background: var(--gradient-overlay), var(--bg-page);
+                background-attachment: fixed;
+                color: var(--on-surface);
                 font-family: 'Inter', sans-serif;
-                background-color: #0b1c30;
-                color: #ffffff;
+                min-height: 100vh;
                 display: flex;
                 flex-direction: column;
-                min-height: 100vh;
                 -webkit-font-smoothing: antialiased;
             }
 
-            /* Contenedor Principal / Fondo */
+            ::selection {
+                background: var(--primary);
+                color: #ffffff;
+            }
+
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+                user-select: none;
+            }
+
+            a {
+                text-decoration: none;
+            }
+            button {
+                font-family: inherit;
+                cursor: pointer;
+                border: none;
+            }
+
+            /* ---------- Main ---------- */
             main {
                 flex-grow: 1;
                 display: flex;
@@ -44,252 +112,233 @@
                 overflow: hidden;
             }
 
-            .bg-container {
+            .bg-photo {
                 position: absolute;
                 inset: 0;
                 z-index: 0;
-                background-color: #0f172a;
                 overflow: hidden;
             }
-
-            .bg-container img {
+            .bg-photo img {
                 position: absolute;
                 inset: 0;
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                opacity: 0.4;
+                opacity: 0.18;
                 filter: blur(2px);
                 transform: scale(1.05);
             }
-
-            .bg-overlay {
+            .bg-photo::after {
+                content: "";
                 position: absolute;
                 inset: 0;
-                background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 58, 138, 0.6), rgba(22, 78, 99, 0.7));
+                background: var(--gradient-overlay);
             }
 
-            /* Tarjeta de Login Glassmorphism Oscura */
+            /* ---------- Tarjeta de login (glass) ---------- */
             .login-card {
                 position: relative;
                 z-index: 10;
                 width: 100%;
                 max-width: 440px;
-                background: rgba(15, 23, 42, 0.75);
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 16px;
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                border-radius: var(--radius-xl);
                 padding: 32px;
                 overflow: hidden;
-                color: #ffffff;
+                background: var(--card-bg);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border: 1px solid var(--card-border);
+                box-shadow: var(--shadow-card);
+                opacity: 0;
+                transform: translateY(16px);
+                animation: card-in 0.5s ease forwards;
+            }
+            @keyframes card-in {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
-            .card-accent-line {
+            .login-card .accent-line {
                 position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 4px;
-                background: linear-gradient(90deg, #38bdf8, #6366f1);
+                background: var(--gradient-accent);
             }
 
-            /* Cabecera del Formulario */
-            .card-header {
+            .login-header {
                 text-align: center;
                 margin-bottom: 32px;
                 padding-top: 16px;
             }
 
-            .icon-wrapper {
+            .login-icon {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
                 width: 56px;
                 height: 56px;
-                background-color: rgba(37, 99, 235, 0.3);
+                background: var(--icon-circle-bg);
+                border: 1px solid var(--icon-circle-border);
                 border-radius: 50%;
                 margin-bottom: 16px;
-                border: 1px solid rgba(96, 165, 250, 0.3);
             }
-
-            .icon-wrapper span {
-                color: #60a5fa;
+            .login-icon .material-symbols-outlined {
+                color: var(--primary);
                 font-size: 30px;
             }
 
-            .card-header h1 {
+            .login-header h1 {
                 font-family: 'Manrope', sans-serif;
                 font-size: 28px;
                 font-weight: 700;
-                color: #ffffff;
-                letter-spacing: -0.02em;
+                color: var(--on-surface);
+                letter-spacing: -0.01em;
+                margin: 0;
             }
-
-            .card-header p {
+            .login-header p {
                 font-size: 14px;
-                color: #cbd5e1;
-                margin-top: 4px;
+                color: var(--on-surface-muted);
+                margin: 4px 0 0;
             }
 
-            /* Estilos del Formulario */
+            /* ---------- Formulario ---------- */
             form {
                 display: flex;
                 flex-direction: column;
                 gap: 20px;
             }
 
-            .input-group {
+            .field {
                 display: flex;
                 flex-direction: column;
                 gap: 6px;
             }
-
-            .input-group label {
+            .field label {
                 font-size: 14px;
                 font-weight: 600;
-                color: #e2e8f0;
+                color: var(--on-surface-labels);
             }
-
-            .input-wrapper {
+            .field-input-wrap {
                 position: relative;
                 display: flex;
                 align-items: center;
             }
-
-            .input-wrapper .material-symbols-outlined {
+            .field-input-wrap .material-symbols-outlined {
                 position: absolute;
                 left: 12px;
-                color: #94a3b8;
                 font-size: 18px;
+                color: var(--on-surface-faint);
+                transition: color 0.2s ease;
             }
-
-            .input-wrapper input {
+            .field-input-wrap input {
                 width: 100%;
                 padding: 12px 16px 12px 40px;
-                border: 1px solid #475569;
-                background-color: rgba(30, 41, 59, 0.6);
-                border-radius: 10px;
+                border: 1px solid var(--border-soft);
+                background: var(--input-bg);
+                border-radius: var(--radius-lg);
                 font-size: 14px;
-                color: #ffffff;
+                color: var(--on-surface);
                 outline: none;
-                transition: all 0.2s ease;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            }
+            .field-input-wrap input::placeholder {
+                color: var(--on-surface-faint);
+            }
+            .field-input-wrap input:focus {
+                border-color: var(--primary);
+                background: var(--input-focus-bg);
+                box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+            }
+            .field-input-wrap input:focus + .material-symbols-outlined,
+            .field-input-wrap:focus-within .material-symbols-outlined {
+                color: var(--primary);
             }
 
-            .input-wrapper input::placeholder {
-                color: #94a3b8;
-            }
-
-            .input-wrapper input:focus {
-                border-color: #3b82f6;
-                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-                background-color: rgba(15, 23, 42, 0.8);
-            }
-
-            /* Opciones Extra (Recordar / Olvidé contraseña) */
-            .form-actions {
+            .row-between {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 font-size: 14px;
                 padding: 4px 0;
             }
-
             .remember-me {
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                color: #cbd5e1;
+                color: var(--on-surface-variant);
                 cursor: pointer;
+                user-select: none;
             }
-
             .remember-me input {
                 width: 16px;
                 height: 16px;
-                accent-color: #2563eb;
+                accent-color: var(--primary);
                 border-radius: 4px;
-                background-color: #1e293b;
-                border: 1px solid #475569;
+                border: 1px solid var(--border-soft);
+                background: var(--surface-container-low);
             }
-
-            .form-actions a {
-                color: #60a5fa;
-                text-decoration: none;
+            .link-accent {
+                color: var(--link);
                 font-weight: 500;
-                transition: color 0.2s;
+                transition: color 0.2s ease;
             }
-
-            .form-actions a:hover {
-                color: #93c5fd;
+            .link-accent:hover {
+                color: var(--link-hover);
                 text-decoration: underline;
             }
 
-            /* Botón de Enviar con Gradiente */
             .btn-submit {
                 width: 100%;
-                background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
                 color: #ffffff;
-                border: none;
-                border-radius: 10px;
-                padding: 12px 24px;
-                font-size: 14px;
                 font-weight: 600;
-                cursor: pointer;
+                font-size: 14px;
+                padding: 12px 24px;
+                border-radius: var(--radius-lg);
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 gap: 8px;
-                box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
-                transition: all 0.2s ease;
                 margin-top: 8px;
+                background: var(--gradient-button);
+                box-shadow: 0 10px 20px -8px rgba(37,99,235,0.4);
+                transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
             }
-
             .btn-submit:hover {
-                background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-                transform: translateY(-1px);
-                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+                background: var(--gradient-button-hover);
+                box-shadow: 0 12px 24px -8px rgba(37,99,235,0.5);
             }
-
             .btn-submit:active {
-                transform: translateY(1px);
+                transform: scale(0.99);
             }
 
-            /* Pie de la tarjeta */
-            .card-footer {
+            .login-footer-note {
                 margin-top: 32px;
                 text-align: center;
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                border-top: 1px solid var(--hairline);
                 padding-top: 20px;
             }
-
-            .card-footer p {
+            .login-footer-note p {
                 font-size: 14px;
-                color: #94a3b8;
+                color: var(--on-surface-muted);
+                margin: 0;
             }
 
-            .card-footer a {
-                color: #60a5fa;
-                text-decoration: none;
-                font-weight: 500;
-            }
-
-            .card-footer a:hover {
-                text-decoration: underline;
-            }
-
-            /* Footer General de la Página */
+            /* ---------- Footer general ---------- */
             footer {
-                background-color: rgba(15, 23, 42, 0.9);
-                backdrop-filter: blur(12px);
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                background: var(--footer-bg);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border-top: 1px solid var(--hairline);
                 position: relative;
                 z-index: 10;
-                color: #cbd5e1;
+                color: var(--on-surface-variant);
             }
-
-            .footer-content {
-                max-width: 1200px;
+            .footer-inner {
+                max-width: 1280px;
                 margin: 0 auto;
                 padding: 24px;
                 display: flex;
@@ -298,9 +347,8 @@
                 justify-content: space-between;
                 gap: 16px;
             }
-
-            @media(min-width: 768px) {
-                .footer-content {
+            @media (min-width: 768px) {
+                .footer-inner {
                     flex-direction: row;
                 }
             }
@@ -311,11 +359,10 @@
                 gap: 8px;
                 font-weight: 700;
                 font-size: 16px;
-                color: #ffffff;
+                color: var(--on-surface);
             }
-
-            .footer-brand span {
-                color: #60a5fa;
+            .footer-brand .material-symbols-outlined {
+                color: var(--primary);
             }
 
             .footer-links {
@@ -323,22 +370,19 @@
                 flex-wrap: wrap;
                 justify-content: center;
                 gap: 24px;
-            }
-
-            .footer-links a {
                 font-size: 14px;
-                color: #94a3b8;
-                text-decoration: none;
-                transition: color 0.2s;
             }
-
+            .footer-links a {
+                color: var(--on-surface-variant);
+                transition: color 0.2s ease;
+            }
             .footer-links a:hover {
-                color: #60a5fa;
+                color: var(--primary);
             }
 
             .footer-copy {
-                font-size: 13px;
-                color: #64748b;
+                font-size: 12px;
+                color: var(--on-surface-faint);
             }
         </style>
     </head>
@@ -346,18 +390,17 @@
 
         <!-- Main Content -->
         <main>
-            <!-- Modern Corporate Background -->
-            <div class="bg-container" aria-hidden="true">
+            <!-- Fondo con imagen y overlay claro -->
+            <div class="bg-photo" aria-hidden="true">
                 <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIKobOXIeN8nbtV02UgQ2IlFuCSdgL2palJtK2Puxh_ymGovFcwV0gaAkVQv9_wPPwXfadZ5mZfFPNTxcD2GPKQx1OBxsKEjmu-r33Tsg99fVXxfiYRUWFp9bvu6GJ4gHMTZFaF6zyvlpkFMFc59NxN-wME_SeOsK_Sf-kwt0ip_Vv4_ghH4tCXqNtKRoiJGQALLq0sueImOCVcOAd4Gif-JpKZsfUsRPumIi07cR-si6DrtYpRmxO" alt="">
-                <div class="bg-overlay"></div>
             </div>
 
-            <!-- Login Card con Estilo Oscuro / Glassmorphism -->
+            <!-- Tarjeta de login -->
             <div class="login-card">
-                <div class="card-accent-line"></div>
-                
-                <div class="card-header">
-                    <div class="icon-wrapper">
+                <div class="accent-line"></div>
+
+                <div class="login-header">
+                    <div class="login-icon">
                         <span class="material-symbols-outlined" aria-hidden="true">support_agent</span>
                     </div>
                     <h1>Mesa de Ayuda</h1>
@@ -366,47 +409,57 @@
 
                 <!-- Formulario apuntando a tu Servlet o controlador -->
                 <form action="loginController" method="POST">
-                    <!-- Email Field -->
-                    <div class="input-group">
+                    <div class="field">
                         <label for="email">Correo Electrónico</label>
-                        <div class="input-wrapper">
+                        <div class="field-input-wrap">
                             <span class="material-symbols-outlined">mail</span>
                             <input type="email" id="email" name="email" placeholder="Ingresa tu correo corporativo" required>
                         </div>
                     </div>
 
-                    <!-- Password Field -->
-                    <div class="input-group">
+                    <div class="field">
                         <label for="password">Contraseña</label>
-                        <div class="input-wrapper">
+                        <div class="field-input-wrap">
                             <span class="material-symbols-outlined">lock</span>
                             <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
                         </div>
                     </div>
 
-                    <!-- Remember Me & Forgot Password -->
-                    <div class="form-actions">
+                    <div class="row-between">
                         <label class="remember-me" for="remember_me">
                             <input type="checkbox" id="remember_me" name="remember_me">
                             Recordarme
                         </label>
-                        <a href="#">¿Olvidaste tu contraseña?</a>
+                        <a href="#" class="link-accent">¿Olvidaste tu contraseña?</a>
                     </div>
 
-                    <!-- Sign In Button -->
                     <button type="submit" class="btn-submit">
                         Iniciar Sesión
-                        <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+                        <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
                     </button>
                 </form>
 
-                <div class="card-footer">
-                    <p>¿Necesitas ayuda? Contacta a <a href="#">Soporte IT</a>.</p>
+                <div class="login-footer-note">
+                    <p>¿Necesitas ayuda? Contacta a <a href="#" class="link-accent">Soporte IT</a>.</p>
                 </div>
             </div>
         </main>
 
-
+        <!-- Footer general -->
+        <footer>
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <span class="material-symbols-outlined" aria-hidden="true">support_agent</span>
+                    Mesa de Ayuda CIMM
+                </div>
+                <div class="footer-links">
+                    <a href="#">Términos y Condiciones</a>
+                    <a href="#">Política de Privacidad</a>
+                    <a href="#">Contacto IT</a>
+                </div>
+                <div class="footer-copy">&copy; 2026 CIMM. Todos los derechos reservados.</div>
+            </div>
+        </footer>
 
     </body>
 </html>
