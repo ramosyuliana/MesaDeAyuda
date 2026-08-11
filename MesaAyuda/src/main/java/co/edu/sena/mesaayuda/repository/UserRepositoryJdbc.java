@@ -131,4 +131,35 @@ public class UserRepositoryJdbc implements UserRepository {
 
     }
 
+    @Override
+    public List<User> MtListAgents() throws SQLException {
+        String sql = "Select u.\"Id\", u.\"Name\", u.\"Email\", r.\"Name\" as \"RoleName\" From \"User\" u "
+                + "Inner Join \"Role\" r "
+                + "ON "
+                + "u.\"IdRole\" = r.\"Id\" Where r.\"Name\" = 'Agente'";
+
+        List<User> list = new ArrayList<>();
+
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User oUser = new User();
+                    oUser.setId(rs.getInt("Id"));
+                    oUser.setName(rs.getString("Name"));
+                    oUser.setEmail(rs.getString("Email"));
+                    Role oRole = new Role();
+                    oRole.setName(rs.getString("RoleName"));
+                    oUser.setRole(oRole);
+
+                    list.add(oUser);
+                }
+            }
+
+        }
+
+        return list;
+
+    }
+
 }

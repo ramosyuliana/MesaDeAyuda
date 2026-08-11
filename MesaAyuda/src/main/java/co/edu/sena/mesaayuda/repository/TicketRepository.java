@@ -21,4 +21,5 @@ public interface TicketRepository {
     List<Ticket> MtListAll() throws SQLException;
     void MtEditAgent(int agent,Ticket oticket)throws SQLException;
     void MtEditState(String estado,Ticket oticket)throws SQLException;
+    int MtCountAssignments() throws SQLException;
 }
