@@ -28,5 +28,4 @@ public class StrategySLAStandard implements StrategySLA {
         return entity.getAttentionTime();
 
     }
-
 }

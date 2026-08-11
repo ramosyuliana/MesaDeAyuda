@@ -28,6 +28,6 @@ public interface UserRepository {
 
     int MtCountActiveByAgent(int agentId);
     
-    List<User> MtListAgentsByCategory(String category);
+    List<User> MtListAgentsByCategory(int idCategory);
 
 }
