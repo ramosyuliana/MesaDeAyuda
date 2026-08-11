@@ -13,12 +13,24 @@ public class Priority {
     private int Id;
 
     private String Name;
+    
+    private int AttentionTime;
 
     public Priority() {
     }
 
-    public Priority(String Name) {
+    public Priority(int Id, String Name, int AttentionTime) {
+        this.Id = Id;
         this.Name = Name;
+        this.AttentionTime = AttentionTime;
+    }
+
+    public int getAttentionTime() {
+        return AttentionTime;
+    }
+
+    public void setAttentionTime(int AttentionTime) {
+        this.AttentionTime = AttentionTime;
     }
 
     public int getId() {
