@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class CategoryRepositoryJdbc implements CategoryRepository {
 
     @Override
-    public List<Category> MtListCategories() throws SQLException {
+    public List<Category> MtListCategories() {
 
         String sql = "Select c.\"Id\", c.\"Name\", p.\"Name\" as \"PriorityName\" From \"Category\" c "
                 + "Inner Join \"Priority\" p "
@@ -41,6 +41,8 @@ public class CategoryRepositoryJdbc implements CategoryRepository {
                 }
             }
             return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudieron listar las categorias", e);
         }
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 public class TicketRepositoryJdbc implements TicketRepository {
 
     @Override
-    public void MtCreate(Ticket oticket) throws SQLException {
+    public void MtCreate(Ticket oticket) {
         String consulta = "Insert into \"Ticket\"(\"Title\",\"Description\",\"IdCategoty\",\"IdApplicant\",\"IdAgent\",\"State\",\"CreateDate\") Values (?,?,?,?,?,?,?)";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
             ps.setString(1, oticket.getTitle());
@@ -34,11 +34,13 @@ public class TicketRepositoryJdbc implements TicketRepository {
             ps.setDate(7, Date.valueOf(oticket.getCreateDate()));
             ps.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo crear el ticket ", e);
         }
     }
 
     @Override
-    public void MtEdit(Ticket oticket) throws SQLException {
+    public void MtEdit(Ticket oticket) {
         String consulta = "Update \"Ticket\" set \"Title\" = ?,\"Description\" = ?,\"IdCategoty\" = ? Where \"Id\" = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
             ps.setString(1, oticket.getTitle());
@@ -47,33 +49,39 @@ public class TicketRepositoryJdbc implements TicketRepository {
             ps.setInt(4, oticket.getId());
             ps.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo editar el ticket ", e);
         }
     }
 
     @Override
-    public void MtEditState(String estado, Ticket oticket) throws SQLException {
+    public void MtEditState(String estado, Ticket oticket) {
         String consulta = "Update \"Ticket\" set \"State\" = ? Where \"Id\" = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
             ps.setString(1, "estado");
             ps.setInt(2, oticket.getId());
             ps.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo editar el estado del ticket ", e);
         }
     }
 
     @Override
-    public void MtEditAgent(int IdAgent, Ticket oticket) throws SQLException {
+    public void MtEditAgent(int IdAgent, Ticket oticket) {
         String consulta = "Update \"Ticket\" set \"IdAgent\" = ?  Where \"Id\" = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
             ps.setInt(1, IdAgent);
             ps.setInt(2, oticket.getId());
             ps.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo editar el agente asignado al ticket ", e);
         }
     }
 
     @Override
-    public List<Ticket> MtListByAgent(int IdAgent) throws SQLException {
+    public List<Ticket> MtListByAgent(int IdAgent) {
         String consulta = "Select * from \"Ticket\"  where \"IdAgent\"= ?";
         List<Ticket> list = new ArrayList<Ticket>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
@@ -95,12 +103,14 @@ public class TicketRepositoryJdbc implements TicketRepository {
             }
 
             return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo listar los tickets asociados al agente ", e);
         }
 
     }
 
     @Override
-    public List<Ticket> MtListByApplicant(int IdApplicant) throws SQLException {
+    public List<Ticket> MtListByApplicant(int IdApplicant) {
         String consulta = "Select * from \"Ticket\"  where \"IdApplicant\"= ?";
         List<Ticket> list = new ArrayList<Ticket>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
@@ -122,11 +132,13 @@ public class TicketRepositoryJdbc implements TicketRepository {
             }
 
             return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo listar los tickets del solicitante ", e);
         }
     }
 
     @Override
-    public List<Ticket> MtListAll() throws SQLException {
+    public List<Ticket> MtListAll() {
         String consulta = "Select * from \"Ticket\" ";
         List<Ticket> list = new ArrayList<Ticket>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
@@ -148,11 +160,13 @@ public class TicketRepositoryJdbc implements TicketRepository {
             }
 
             return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo listar los tickets ", e);
         }
     }
 
     @Override
-    public int MtCountAssignments() throws SQLException {
+    public int MtCountAssignments() {
 
         String sql = "Select Count(*) From \"Ticket\" Where \"IdAgent\" IS NOT NULL ";
 
@@ -163,6 +177,8 @@ public class TicketRepositoryJdbc implements TicketRepository {
             if (rs.next()) {
                 return rs.getInt(1);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo contar los tickets sin agente asignado ", e);
         }
 
         return 0;

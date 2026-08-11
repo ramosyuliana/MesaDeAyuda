@@ -17,10 +17,10 @@ import java.util.List;
  *
  * @author Admin
  */
-public class PriorityRepositoryJdbc implements PriorityRepository{
-    
+public class PriorityRepositoryJdbc implements PriorityRepository {
+
     @Override
-    public List<Priority> MtListPriorities() throws SQLException {
+    public List<Priority> MtListPriorities() {
 
         String sql = "Select \"Id\", \"Name\", \"AttentionTime\" From \"Priority\"";
 
@@ -34,19 +34,20 @@ public class PriorityRepositoryJdbc implements PriorityRepository{
                     oPriority.setId(rs.getInt("Id"));
                     oPriority.setName(rs.getString("Name"));
                     oPriority.setAttentionTime(rs.getInt("AttentionTime"));
-                       
 
                     list.add(oPriority);
                 }
             }
             return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudieron listar las prioridades", e);
         }
     }
-    
-    @Override
-    public Priority MtFindByName(String name) throws SQLException {
 
-        String sql = "Select \"Id\", \"Name\", \"AttentionTime\" From \"Priority\" where \"Name\" = ? " ;
+    @Override
+    public Priority MtFindByName(String name) {
+
+        String sql = "Select \"Id\", \"Name\", \"AttentionTime\" From \"Priority\" where \"Name\" = ? ";
 
         Priority oPriority = null;
 
@@ -59,12 +60,13 @@ public class PriorityRepositoryJdbc implements PriorityRepository{
                     oPriority.setId(rs.getInt("Id"));
                     oPriority.setName(rs.getString("Name"));
                     oPriority.setAttentionTime(rs.getInt("AttentionTime"));
-                       
 
                 }
             }
             return oPriority;
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudieron buscar prioridades por nombre", e);
         }
     }
-    
+
 }
