@@ -23,5 +23,7 @@ public interface UserRepository {
     User MtFindByEmail(String email) throws SQLException;
 
     User MtFindById(int id) throws SQLException;
+    
+    List<User>MtListAgents() throws SQLException;
 
 }

@@ -151,4 +151,21 @@ public class TicketRepositoryJdbc implements TicketRepository {
         }
     }
 
+    @Override
+    public int MtCountAssignments() throws SQLException {
+
+        String sql = "Select Count(*) From \"Ticket\" Where \"IdAgent\" IS NOT NULL ";
+
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+
+        return 0;
+    }
+
 }
