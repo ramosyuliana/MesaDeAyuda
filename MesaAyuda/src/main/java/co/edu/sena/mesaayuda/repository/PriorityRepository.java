@@ -13,6 +13,8 @@ import java.util.List;
  * @author Admin
  */
 public interface PriorityRepository {
-    List<Priority> MtListPriorities() throws SQLException;
-    Priority MtFindByName(String Name) throws SQLException;
+
+    List<Priority> MtListPriorities();
+
+    Priority MtFindByName(String Name);
 }

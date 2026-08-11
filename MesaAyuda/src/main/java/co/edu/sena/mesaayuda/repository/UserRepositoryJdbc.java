@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
 public class UserRepositoryJdbc implements UserRepository {
 
     @Override
-    public void MtCreate(User oUser) throws SQLException {
+    public void MtCreate(User oUser) {
 
         String sql = "Insert Into \"User\" (\"Name\",\"Email\", \"IdRole\") "
                 + "VALUES(?, ?, ?)";
@@ -31,11 +32,13 @@ public class UserRepositoryJdbc implements UserRepository {
             ps.setString(2, oUser.getEmail());
             ps.setInt(3, oUser.getRole().getId());
             ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo crear el usuario ", e);
         }
     }
 
     @Override
-    public void MtEdit(User oUser) throws SQLException {
+    public void MtEdit(User oUser) {
         String sql = "Update \"User\" set \"Name\" = ?, \"Email\" = ? "
                 + "Where \"Id\" = ?";
 
@@ -44,11 +47,13 @@ public class UserRepositoryJdbc implements UserRepository {
             ps.setString(2, oUser.getEmail());
             ps.setInt(3, oUser.getId());
             ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo ditar el usuario ", e);
         }
     }
 
     @Override
-    public List<User> MtList() throws SQLException {
+    public List<User> MtList() {
 
         String sql = "Select u.\"Id\", u.\"Name\", u.\"Email\", r.\"Name\" as \"RoleName\" From \"User\" u "
                 + "Inner Join \"Role\" r "
@@ -73,6 +78,8 @@ public class UserRepositoryJdbc implements UserRepository {
                 }
             }
 
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo listar los usuarios ", e);
         }
 
         return list;
@@ -80,7 +87,7 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public User MtFindByEmail(String email) throws SQLException {
+    public User MtFindByEmail(String email) {
 
         String sql = "Select u.\"Id\", u.\"Name\", u.\"Email\", r.\"Name\" as \"RoleName\" From \"User\" u "
                 + "Inner Join \"Role\" r "
@@ -104,12 +111,14 @@ public class UserRepositoryJdbc implements UserRepository {
 
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo buscar el usuario por su email ", e);
         }
         return oUser;
     }
 
     @Override
-    public User MtFindById(int id) throws SQLException {
+    public User MtFindById(int id) {
 
         String sql = "Select u.\"Id\", u.\"Name\" From \"User\" u "
                 + "Where u.\"Id\" = ? ";
@@ -126,13 +135,15 @@ public class UserRepositoryJdbc implements UserRepository {
 
                 }
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo buscar el usuario por su id ", e);
         }
         return oUser;
 
     }
 
     @Override
-    public List<User> MtListAgents() throws SQLException {
+    public List<User> MtListAgents() {
         String sql = "Select u.\"Id\", u.\"Name\", u.\"Email\", r.\"Name\" as \"RoleName\" From \"User\" u "
                 + "Inner Join \"Role\" r "
                 + "ON "
@@ -156,10 +167,61 @@ public class UserRepositoryJdbc implements UserRepository {
                 }
             }
 
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo listar los agentes ", e);
         }
 
         return list;
 
+    }
+
+    @Override
+    public int MtCountActiveByAgent(int agentId) {
+        String sql = "Select Count(*) FROM \"Ticket\" Where \"IdAgent\" = ? And \"State\" "
+                + "NOT IN ('RESUELTO', 'CERRADO', 'CANCELADO')";
+
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, agentId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al contar tickets activos por agente", e);
+        }
+    }
+
+    public List<User> MtListAgentsByCategory(int idCategory) {
+
+        String sql = "Select u.\"Id\", u.\"Name\" From \"User\" u "
+                + "Inner Join \"AgentCategory\" ac "
+                + "ON "
+                + "u.\"Id\" = ac.\"IdAgent\" "
+                + "Inner Join \"Category\" c "
+                + "ON "
+                + "ac.\"IdCategory\" = c.\"Id\" "
+                + "Where c.\"Id\" = ? ";
+
+        List<User> list = new ArrayList<>();
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            ps.setInt(1, idCategory);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User oUser = new User();
+                    oUser.setId(rs.getInt("Id"));
+                    oUser.setName("Name");
+
+                    list.add(oUser);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo listar los agentes de la categoria ", e);
+        }
+
+        return list;
     }
 
 }

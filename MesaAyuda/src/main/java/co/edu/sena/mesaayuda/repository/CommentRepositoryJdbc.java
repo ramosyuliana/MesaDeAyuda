@@ -22,7 +22,7 @@ import java.util.List;
 public class CommentRepositoryJdbc implements CommentRepository {
 
     @Override
-    public void MtCreate(Comment ocomment) throws SQLException {
+    public void MtCreate(Comment ocomment) {
         String consulta = "Insert into \"Comment\"(\"IdAuthor\",\"Text\",\"Date\",\"IdTicket\") Values (?,?,?,?)";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
             ps.setInt(1, ocomment.getIdAuthor());
@@ -31,11 +31,13 @@ public class CommentRepositoryJdbc implements CommentRepository {
             ps.setInt(4, ocomment.getIdTicket());
             ps.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo crear el comentario", e);
         }
     }
 
     @Override
-    public List<Comment> MtListByTicket(int id)throws SQLException {
+    public List<Comment> MtListByTicket(int id) {
         String consulta = "Select * from \"Comment\"  where \"IdTicket\"= ?";
         List<Comment> list = new ArrayList<Comment>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
@@ -52,23 +54,27 @@ public class CommentRepositoryJdbc implements CommentRepository {
                     list.add(ocomment);
                 }
             }
-            
+
             return list;
+        } catch (SQLException e) {
+
+            throw new RuntimeException("No se pudieron listar los comentarios asociados al ticket", e);
         }
 
     }
 
     @Override
-    public void MtEdit(Comment ocomment)throws SQLException{
+    public void MtEdit(Comment ocomment) {
         String consulta = "Update \"Comment\" set \"Text\" = ?,\"Date\" = ? Where \"Id\" = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
-           
+
             ps.setString(1, ocomment.getText());
             ps.setDate(2, Date.valueOf(ocomment.getDate()));
             ps.setInt(3, ocomment.getId());
             ps.executeUpdate();
-     
 
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo editar el comentario", e);
         }
     }
 

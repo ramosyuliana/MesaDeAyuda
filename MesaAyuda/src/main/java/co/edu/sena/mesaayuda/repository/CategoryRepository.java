@@ -14,5 +14,5 @@ import java.util.List;
  */
 public interface CategoryRepository {
     
-    List<Category> MtListCategories() throws SQLException;
+    List<Category> MtListCategories();
 }

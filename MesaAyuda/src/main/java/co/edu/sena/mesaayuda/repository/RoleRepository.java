@@ -13,6 +13,6 @@ import java.util.List;
  * @author julil
  */
 public interface RoleRepository {
-    
-    List<Role> MtListRoles() throws SQLException;
+
+    List<Role> MtListRoles();
 }

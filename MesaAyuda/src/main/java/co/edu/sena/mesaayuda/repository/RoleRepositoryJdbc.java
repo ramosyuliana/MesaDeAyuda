@@ -20,7 +20,7 @@ import java.util.List;
 public class RoleRepositoryJdbc implements RoleRepository {
 
     @Override
-    public List<Role> MtListRoles() throws SQLException {
+    public List<Role> MtListRoles() {
 
         String sql = "Select \"Id\", \"Name\" From \"Role\"";
 
@@ -38,6 +38,8 @@ public class RoleRepositoryJdbc implements RoleRepository {
                 }
             }
             return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudieron listar los roles", e);
         }
     }
 

@@ -14,16 +14,20 @@ import java.util.List;
  */
 public interface UserRepository {
 
-    void MtCreate(User oUser) throws SQLException;
+    void MtCreate(User oUser);
 
-    void MtEdit(User oUser) throws SQLException;
+    void MtEdit(User oUser);
 
-    List<User> MtList() throws SQLException;
+    List<User> MtList();
 
-    User MtFindByEmail(String email) throws SQLException;
+    User MtFindByEmail(String email);
 
-    User MtFindById(int id) throws SQLException;
+    User MtFindById(int id);
+
+    List<User> MtListAgents();
+
+    int MtCountActiveByAgent(int agentId);
     
-    List<User>MtListAgents() throws SQLException;
+    List<User> MtListAgentsByCategory(String category);
 
 }
