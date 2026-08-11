@@ -13,6 +13,6 @@ import java.util.List;
  * @author julil
  */
 public interface CategoryRepository {
-    
+
     List<Category> MtListCategories();
 }
