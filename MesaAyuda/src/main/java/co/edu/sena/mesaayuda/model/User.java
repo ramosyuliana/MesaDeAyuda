@@ -21,11 +21,14 @@ public class User {
     public User() {
     }
 
-    public User(String Name, String Email, Role Role) {
+    public User(int Id, String Name, String Email, Role Role) {
+        this.Id = Id;
         this.Name = Name;
         this.Email = Email;
         this.Role = Role;
     }
+
+    
 
     public int getId() {
         return Id;
