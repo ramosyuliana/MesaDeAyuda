@@ -18,14 +18,14 @@ public class CommentMapper {
 
     public static Comment toEntityFromCreate(CommentCreateDTO dto) {
 
-       Comment oComment = new Comment();
+        Comment oComment = new Comment();
         oComment.setIdAuthor(dto.getIdAuthor());
         oComment.setText(dto.getText());
-        oComment.setDate(dto.getDate());
+
         oComment.setIdTicket(dto.getIdTicket());
         return oComment;
     }
-    
+
     public static Comment toEntityFromUpdate(CommentDTO dto) {
 
         Comment oComment = new Comment();

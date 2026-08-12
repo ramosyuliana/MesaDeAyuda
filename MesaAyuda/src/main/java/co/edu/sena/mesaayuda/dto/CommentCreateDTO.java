@@ -11,20 +11,19 @@ import java.time.LocalDate;
  * @author Admin
  */
 public class CommentCreateDTO {
-      
+
     private int IdAuthor;
     private String Text;
-    private LocalDate Date;
+
     private int IdTicket;
 
-    public CommentCreateDTO(int IdAuthor, String Text, LocalDate Date, int IdTicket) {
+    public CommentCreateDTO(int IdAuthor, String Text, int IdTicket) {
         this.IdAuthor = IdAuthor;
         this.Text = Text;
-        this.Date = Date;
+
         this.IdTicket = IdTicket;
     }
 
-    
     public int getIdAuthor() {
         return IdAuthor;
     }
@@ -41,14 +40,6 @@ public class CommentCreateDTO {
         this.Text = Text;
     }
 
-    public LocalDate getDate() {
-        return Date;
-    }
-
-    public void setDate(LocalDate Date) {
-        this.Date = Date;
-    }
-
     public int getIdTicket() {
         return IdTicket;
     }
@@ -56,5 +47,5 @@ public class CommentCreateDTO {
     public void setIdTicket(int IdTicket) {
         this.IdTicket = IdTicket;
     }
-    
+
 }

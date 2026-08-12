@@ -15,4 +15,5 @@ import java.util.List;
 public interface CategoryRepository {
 
     List<Category> MtListCategories();
+    Category MtFindById(int id);
 }
