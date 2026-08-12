@@ -6,8 +6,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-
 <style>
 
     :root {
@@ -433,6 +431,7 @@
                 <nav class="topbar-nav">
                     <a href="#">Dashboard</a>
                     <a href="#">Todos Los Tickets</a>
+                    <a href="#">Usuarios</a>
                 </nav>
             </c:if>
         </div>
