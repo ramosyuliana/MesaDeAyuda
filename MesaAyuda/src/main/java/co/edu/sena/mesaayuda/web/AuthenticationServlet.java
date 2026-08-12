@@ -31,7 +31,6 @@ public class AuthenticationServlet extends HttpServlet {
         String email = req.getParameter("email");
         User oUser;
 
-        // Solo la autenticacion va dentro del try
         try {
             oUser = userAuthService.MtAuthenticate(email);
         } catch (Exception e) {
