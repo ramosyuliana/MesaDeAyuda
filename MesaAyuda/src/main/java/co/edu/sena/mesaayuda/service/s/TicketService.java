@@ -6,6 +6,8 @@ package co.edu.sena.mesaayuda.service.s;
 
 import co.edu.sena.mesaayuda.dto.TicketCreateDTO;
 import co.edu.sena.mesaayuda.dto.TicketDTO;
+import co.edu.sena.mesaayuda.model.Ticket;
+import co.edu.sena.mesaayuda.model.state.TicketState;
 import java.util.List;
 
 /**
@@ -27,5 +29,7 @@ public interface TicketService {
     List<TicketDTO> MtListByApplicant(int IdApplicant);
 
     List<TicketDTO> MtListAll();
+    
+    void MtNotifyStateChange(Ticket oTicket, TicketState oPreviousState);
 
 }

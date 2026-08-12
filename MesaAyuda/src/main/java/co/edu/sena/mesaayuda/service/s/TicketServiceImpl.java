@@ -7,6 +7,7 @@ package co.edu.sena.mesaayuda.service.s;
 import co.edu.sena.mesaayuda.dto.TicketCreateDTO;
 import co.edu.sena.mesaayuda.dto.TicketDTO;
 import co.edu.sena.mesaayuda.mapper.TicketMapper;
+import co.edu.sena.mesaayuda.model.Notification;
 import co.edu.sena.mesaayuda.model.Priority;
 import co.edu.sena.mesaayuda.model.Ticket;
 import co.edu.sena.mesaayuda.model.User;
@@ -17,6 +18,7 @@ import co.edu.sena.mesaayuda.repository.CategoryRepository;
 import co.edu.sena.mesaayuda.repository.TicketRepository;
 import co.edu.sena.mesaayuda.repository.UserRepository;
 import co.edu.sena.mesaayuda.service.assignment.StrategyAssignment;
+import co.edu.sena.mesaayuda.service.notification.Notificator;
 import co.edu.sena.mesaayuda.service.sla.StrategyPriority;
 import co.edu.sena.mesaayuda.service.sla.StrategySLA;
 import java.time.LocalDate;
@@ -34,19 +36,16 @@ public class TicketServiceImpl implements TicketService {
     private final StrategySLA strategySla;
     private final StrategyAssignment strategyAssignment;
     private final StrategyPriority strategyPriority;
+    private final Notificator notificator;
 
-    public TicketServiceImpl(TicketRepository ticketRepository,
-            UserRepository userRepository,
-            CategoryRepository categoryRepository,
-            StrategySLA strategySla,
-            StrategyAssignment strategyAssignment,
-            StrategyPriority strategyPriority) {
+    public TicketServiceImpl(TicketRepository ticketRepository, UserRepository userRepository, CategoryRepository categoryRepository, StrategySLA strategySla, StrategyAssignment strategyAssignment, StrategyPriority strategyPriority, Notificator notificator) {
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.strategySla = strategySla;
         this.strategyAssignment = strategyAssignment;
         this.strategyPriority = strategyPriority;
+        this.notificator = notificator;
     }
 
     @Override
@@ -156,5 +155,24 @@ public class TicketServiceImpl implements TicketService {
             throw new IllegalArgumentException("La descripcion no puede superar los 1000 caracteres");
         }
 
+    }
+
+    @Override
+    public void MtNotifyStateChange(Ticket oTicket, TicketState oPreviousState) {
+
+        String subject = "Ticket #" + oTicket.getId() + " - " + oTicket.getState();
+
+        String message = "Su ticket \"" + oTicket.getTitle() + "\" paso de "
+                + oPreviousState.Name() + " a " + oTicket.getState() + ".";
+
+        User oApplicant = userRepository.MtFindById(oTicket.getIdApplicant());
+        Notification oNotification = new Notification(
+                oTicket.getId(),
+                oApplicant,
+                subject,
+                message
+        );
+
+        notificator.MtSendNotification(oNotification);
     }
 }
