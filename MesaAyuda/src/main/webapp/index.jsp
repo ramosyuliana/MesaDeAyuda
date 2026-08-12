@@ -384,6 +384,10 @@
                 font-size: 12px;
                 color: var(--on-surface-faint);
             }
+            
+            h1{
+                font-size: 2px;
+            }
         </style>
     </head>
     <body>
@@ -403,12 +407,13 @@
                     <div class="login-icon">
                         <span class="material-symbols-outlined" aria-hidden="true">support_agent</span>
                     </div>
-                    <h1>Mesa de Ayuda</h1>
-                    <p>Portal de Soporte Técnico</p>
+                    <h1 style="font-size: 19px;">Mesa de Ayuda</h1>
+                    <p style="font-size: 12px;">Portal de Soporte Técnico</p>
                 </div>
 
                 <!-- Formulario apuntando a tu Servlet o controlador -->
-                <form action="loginController" method="POST">
+                <form action="${pageContext.request.contextPath}/AuthServlet" method="POST">
+                    <input type="hidden" name="action" value="ingresar">
                     <div class="field">
                         <label for="email">Correo Electrónico</label>
                         <div class="field-input-wrap">
@@ -417,49 +422,14 @@
                         </div>
                     </div>
 
-                    <div class="field">
-                        <label for="password">Contraseña</label>
-                        <div class="field-input-wrap">
-                            <span class="material-symbols-outlined">lock</span>
-                            <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
-                        </div>
-                    </div>
-
-                    <div class="row-between">
-                        <label class="remember-me" for="remember_me">
-                            <input type="checkbox" id="remember_me" name="remember_me">
-                            Recordarme
-                        </label>
-                        <a href="#" class="link-accent">¿Olvidaste tu contraseña?</a>
-                    </div>
-
                     <button type="submit" class="btn-submit">
                         Iniciar Sesión
                         <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
                     </button>
                 </form>
 
-                <div class="login-footer-note">
-                    <p>¿Necesitas ayuda? Contacta a <a href="#" class="link-accent">Soporte IT</a>.</p>
-                </div>
             </div>
         </main>
-
-        <!-- Footer general -->
-        <footer>
-            <div class="footer-inner">
-                <div class="footer-brand">
-                    <span class="material-symbols-outlined" aria-hidden="true">support_agent</span>
-                    Mesa de Ayuda CIMM
-                </div>
-                <div class="footer-links">
-                    <a href="#">Términos y Condiciones</a>
-                    <a href="#">Política de Privacidad</a>
-                    <a href="#">Contacto IT</a>
-                </div>
-                <div class="footer-copy">&copy; 2026 CIMM. Todos los derechos reservados.</div>
-            </div>
-        </footer>
 
     </body>
 </html>
