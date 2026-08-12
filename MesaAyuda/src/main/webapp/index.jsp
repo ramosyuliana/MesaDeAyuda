@@ -391,11 +391,6 @@
         </style>
     </head>
     <body>
-    <c:if test="${not empty errorMsg}">
-        <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
-            <strong>Error:</strong> ${errorMsg}
-        </div>
-    </c:if>
 
     <!-- Main Content -->
     <main>
