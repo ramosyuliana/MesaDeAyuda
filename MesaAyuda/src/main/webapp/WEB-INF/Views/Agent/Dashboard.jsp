@@ -404,7 +404,6 @@
                 flex: 1;
                 overflow: hidden;
                 height: 100vh;
-                padding-top: 64px;
             }
 
             /* ---------- Sidebar ---------- */
@@ -948,65 +947,13 @@
                     transform: none;
                 }
             }
+
         </style>
     </head>
     <body>
 
-        <!-- TopAppBar -->
-        <header class="topbar glass-panel">
-            <div class="topbar-inner">
-                <div class="topbar-left">
-                    <div class="brand">
-                        <span class="material-symbols-outlined">support_agent</span>
-                        <span class="name">EtherHelp</span>
-                    </div>
-                    <nav class="topbar-nav">
-                        <a href="#">Dashboard</a>
-                        <a href="#">Tickets</a>
-                        <a href="#" class="active">Knowledge Base</a>
-                        <a href="#">Reports</a>
-                    </nav>
-                </div>
-                <div class="topbar-right">
-                    <div class="topbar-search">
-                        <span class="material-symbols-outlined">search</span>
-                        <input type="text" placeholder="Buscar artículos...">
-                    </div>
-                    <button class="icon-btn" aria-label="Notificaciones">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="dot-badge"></span>
-                    </button>
-                    <button class="icon-btn" aria-label="Configuración">
-                        <span class="material-symbols-outlined">settings</span>
-                    </button>
-                    <div class="avatar">
-                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3m9EkKo6N0PIIjPm5vPDZVlo_tUdyK3bVdlPwTHTwI58u_n_0rI-UcunhNAP01Wgx0ei4BeEz1tsFK24igkp0qonw70S36W4fQSY0NK4zadzd06Mw2mMwG-7ab5hwRsTboQc_4vxgHHUNhytmiOkTi8xBqIxn0_NjdrvuyIEKzNf6lYcTkvuryWD7CTQdpVdEmgOP2GCkaLQUBBjDLxZu8KqmgRKE2PjVj7nM_U_SMZwBeiS87cvpmQ" alt="Avatar de usuario">
-                    </div>
-                </div>
-            </div>
-        </header>
-
+        <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
         <div class="app-body">
-            <!-- SideNavBar -->
-            <aside class="sidebar glass-panel">
-                <div class="sidebar-header">
-                    <h2>Knowledge Base</h2>
-                    <p>Luminous Ether v1.0</p>
-                </div>
-                <nav class="sidebar-nav">
-                    <a href="#" class="active"><span class="material-symbols-outlined icon-filled">article</span> Todos los artículos</a>
-                    <a href="#"><span class="material-symbols-outlined">dns</span> Cloud &amp; Sync</a>
-                    <a href="#"><span class="material-symbols-outlined">lock</span> Acceso y Seguridad</a>
-                    <a href="#"><span class="material-symbols-outlined">receipt_long</span> Facturación y Q3</a>
-                    <a href="#" class="push-bottom"><span class="material-symbols-outlined">bookmark</span> Guardados</a>
-                </nav>
-                <div class="sidebar-footer">
-                    <button class="btn-new-article">
-                        <span class="material-symbols-outlined" style="font-size:16px">add</span>
-                        Nuevo Artículo
-                    </button>
-                </div>
-            </aside>
 
             <!-- Main Content Canvas -->
             <main class="content">
@@ -1140,7 +1087,6 @@
                 function setupReveal() {
                     var targets = [
                         document.querySelector('header.topbar'),
-                        document.querySelector('aside.sidebar'),
                         document.querySelector('.page-head > div'),
                         document.querySelectorAll('.stat-card'),
                         document.querySelector('.articles-panel'),
@@ -1185,28 +1131,6 @@
                     var lifties = document.querySelectorAll('.stat-card, .articles-panel, .detail-card');
                     Array.prototype.forEach.call(lifties, function (el) {
                         el.classList.add('is-liftable');
-                    });
-                }
-
-                /* ---------- 3. Ripple en botones principales ---------- */
-                function setupRipple() {
-                    if (reduced)
-                        return;
-                    var buttons = document.querySelectorAll('.btn-new-article, .btn-edit');
-                    Array.prototype.forEach.call(buttons, function (btn) {
-                        btn.addEventListener('click', function (e) {
-                            var rect = btn.getBoundingClientRect();
-                            var size = Math.max(rect.width, rect.height);
-                            var ripple = document.createElement('span');
-                            ripple.className = 'ripple';
-                            ripple.style.width = ripple.style.height = size + 'px';
-                            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-                            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-                            btn.appendChild(ripple);
-                            setTimeout(function () {
-                                ripple.remove();
-                            }, 620);
-                        });
                     });
                 }
 
@@ -1255,7 +1179,6 @@
                 function init() {
                     setupReveal();
                     setupLift();
-                    setupRipple();
                     setupCounters();
                     setupRowSelection();
                 }

@@ -824,57 +824,8 @@
         </style>
     </head>
     <body>
+        <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
 
-        <!-- TopNavBar (Expanded with links moved from sidebar) -->
-        <header class="topbar glass-panel">
-            <div class="topbar-left">
-                <div class="brand">
-                    <div class="brand-mark">
-                        <span class="material-symbols-outlined icon-18">support_agent</span>
-                    </div>
-                    <h1 class="brand-name">Luminous Desk</h1>
-                </div>
-                <nav class="topbar-nav">
-                    <a class="active" href="#">
-                        <span class="material-symbols-outlined icon-18 icon-filled">home</span>
-                        Home
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-outlined icon-18">confirmation_number</span>
-                        My Tickets
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-outlined icon-18">book</span>
-                        Knowledge Base
-                    </a>
-                    <a href="#">
-                        <span class="material-symbols-outlined icon-18">contact_support</span>
-                        Support
-                    </a>
-                </nav>
-            </div>
-            <div class="topbar-search">
-                <div class="search-field">
-                    <span class="material-symbols-outlined">search</span>
-                    <input placeholder="Buscar en la base de conocimientos..." type="text"/>
-                </div>
-            </div>
-            <div class="topbar-right">
-                <button class="btn-primary">
-                    <span class="material-symbols-outlined icon-18">add</span>
-                    New Ticket
-                </button>
-                <button class="icon-btn" aria-label="Notificaciones">
-                    <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-                </button>
-                <button class="icon-btn" aria-label="Ayuda">
-                    <span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
-                </button>
-                <div class="avatar">
-                    <img alt="User profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx9Xl5Yu2PGaKsDvh5slfpZRJRiyka-jn_q8tHAdZoW02zJq3VeWtxolZLzmQ5qilih1EPPQMI0RHqvWyz36C7DhIUjNRxKkIfH57x4Unzg8vDH1yhnTSFbtqc99JNYrQmB50cubUnLTJc2m-A2yTwJiqOVDPmW9SlJOkg-ADodQjfSYxytoqaqqKcjDm1q0fE5O9W2Iz5QlfH-y8NRflT8c9TWcsPDzQsGDhdVOr-wamoW2SG2rya_g"/>
-                </div>
-            </div>
-        </header>
 
         <div class="page-wrap">
             <!-- Main Content Area -->

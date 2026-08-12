@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -890,56 +891,22 @@
             .col-right {
                 text-align: right;
             }
+
         </style>
     </head>
 
     <body>
+
+        <c:if test="${not empty errorMsg}">
+            <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                <strong>Error:</strong> ${errorMsg}
+            </div>
+        </c:if>
+        <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
+
         <div class="app-shell">
 
-            <!-- Navbar superior -->
-            <header class="navbar">
-                <div class="navbar-inner">
-                    <div class="navbar-left">
-                        <div class="brand">
-                            <span class="material-symbols-outlined">hub</span>
-                            <span class="brand-name">Table Help</span>
-                        </div>
-                        <nav class="nav-links">
-                            <a href="#" class="active">Dashboard</a>
-                            <a href="#">Analytics</a>
-                            <a href="#">Team</a>
-                            <a href="#">Settings</a>
-                        </nav>
-                    </div>
 
-                    <div class="search-wrap">
-                        <span class="material-symbols-outlined">search</span>
-                        <input type="text" placeholder="Buscar...">
-                    </div>
-
-                    <div class="navbar-right">
-                        <!-- Selector de estilo -->
-                        <div class="style-switcher">
-                            <button class="icon-btn" id="styleBtn" aria-label="Cambiar estilo">
-                                <span class="material-symbols-outlined">palette</span>
-                            </button>
-                            <div class="style-switcher-menu" id="styleMenu">
-                                <button data-theme="indigo"><span class="swatch"
-                                                                  style="background:linear-gradient(135deg,#38bdf8,#6366f1)"></span> Índigo (por
-                                    defecto)</button>
-                                <button data-theme="cyan"><span class="swatch"
-                                                                style="background:linear-gradient(135deg,#22d3ee,#0ea5e9)"></span> Cian</button>
-                                <button data-theme="violet"><span class="swatch"
-                                                                  style="background:linear-gradient(135deg,#818cf8,#a855f7)"></span> Violeta</button>
-                                <button data-theme="teal"><span class="swatch"
-                                                                style="background:linear-gradient(135deg,#2dd4bf,#0d9488)"></span> Verde
-                                    azulado</button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </header>
 
             <!-- Contenido principal -->
             <main>
@@ -1165,37 +1132,7 @@
                 });
             });
 
-            // 6. Selector de estilo/paleta en el navbar
-            const styleBtn = document.getElementById('styleBtn');
-            const styleMenu = document.getElementById('styleMenu');
-            const themes = {
-                indigo: {start: '#38bdf8', end: '#6366f1', primary: '#2563eb', container: '#3b82f6', link: '#60a5fa'},
-                cyan: {start: '#22d3ee', end: '#0ea5e9', primary: '#0891b2', container: '#06b6d4', link: '#38bdf8'},
-                violet: {start: '#818cf8', end: '#a855f7', primary: '#7c3aed', container: '#8b5cf6', link: '#a78bfa'},
-                teal: {start: '#2dd4bf', end: '#0d9488', primary: '#0f766e', container: '#14b8a6', link: '#5eead4'},
-            };
 
-            styleBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                styleMenu.classList.toggle('open');
-            });
-            document.addEventListener('click', () => styleMenu.classList.remove('open'));
-
-            styleMenu.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const theme = themes[btn.dataset.theme];
-                    const root = document.documentElement.style;
-                    root.setProperty('--accent-start', theme.start);
-                    root.setProperty('--accent-end', theme.end);
-                    root.setProperty('--gradient-accent', `linear-gradient(90deg, ${theme.start}, ${theme.end})`);
-                    root.setProperty('--gradient-button', `linear-gradient(135deg, ${theme.container}, ${theme.primary})`);
-                    root.setProperty('--primary', theme.primary);
-                    root.setProperty('--primary-container', theme.container);
-                    root.setProperty('--link', theme.link);
-                    root.setProperty('--link-hover', theme.start);
-                    styleMenu.classList.remove('open');
-                });
-            });
         </script>
     </body>
 

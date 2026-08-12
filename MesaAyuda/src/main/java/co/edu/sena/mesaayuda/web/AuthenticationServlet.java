@@ -22,48 +22,50 @@ import javax.servlet.http.HttpSession;
 public class AuthenticationServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
-        UserAuthService userAuthService = (UserAuthService) getServletContext().getAttribute(AppContextListener.USERAUTH_SERVICE);
+        UserAuthService userAuthService = (UserAuthService) getServletContext()
+                .getAttribute(AppContextListener.USERAUTH_SERVICE);
 
-        String action = req.getParameter("action");
+        String email = req.getParameter("email");
+        User oUser;
 
-        if (action.equals("ingresar")) {
-
-            try {
-
-                String email = req.getParameter("email");
-
-                User oUser = userAuthService.MtAuthenticate(email);
-
-                if (oUser != null) {
-                    HttpSession oSession = req.getSession(true);
-                    oSession.setAttribute("user", oUser);
-
-                    switch (oUser.getRole().getName()) {
-                        case "Administrador":
-                            req.getRequestDispatcher("/WEB-INF/Views/Admin/Dashboard.jsp").forward(req, resp);
-                            break;
-                        case "Solicitante":
-                            req.getRequestDispatcher("/WEB-INF/Views/Applicant/Dashboard.jsp").forward(req, resp);
-                            break;
-                        case "Agente":
-                            req.getRequestDispatcher("/WEB-INF/Views/Agent/Dashboard.jsp").forward(req, resp);
-                            break;
-                        default:
-                            throw new IllegalStateException(
-                                    "Rol no reconocido: " + oUser.getRole().getName());
-                    }
-                }
-
-            } catch (Exception e) {
-                req.setAttribute("errorMsg", e.getMessage());
-                req.getRequestDispatcher("index.jsp").forward(req, resp);
-
-            }
-
+        // Solo la autenticacion va dentro del try
+        try {
+            oUser = userAuthService.MtAuthenticate(email);
+        } catch (Exception e) {
+            req.setAttribute("errorMsg", "Correo o contrasena incorrectos");
+            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+            return;
         }
 
+        if (oUser == null) {
+            req.setAttribute("errorMsg", "Correo o contrasena incorrectos");
+            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+            return;
+        }
+
+        HttpSession oSession = req.getSession(true);
+        oSession.setAttribute("user", oUser);
+        oSession.setMaxInactiveInterval(30 * 60);
+
+        String vista;
+        switch (oUser.getRole().getName()) {
+            case "Administrador":
+                vista = "/WEB-INF/Views/Admin/Dashboard.jsp";
+                break;
+            case "Solicitante":
+                vista = "/WEB-INF/Views/Applicant/Dashboard.jsp";
+                break;
+            case "Agente":
+                vista = "/WEB-INF/Views/Agent/Dashboard.jsp";
+                break;
+            default:
+                throw new ServletException("Rol no reconocido: " + oUser.getRole().getName());
+        }
+
+        req.getRequestDispatcher(vista).forward(req, resp);
     }
 
 }
