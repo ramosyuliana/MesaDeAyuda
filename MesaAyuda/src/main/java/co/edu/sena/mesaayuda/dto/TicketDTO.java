@@ -12,7 +12,7 @@ import java.time.LocalDate;
  */
 public class TicketDTO {
     
-    private int Int;
+    private int Id;
     private String Title;
     private String Description;
     private int IdCategory;
@@ -20,9 +20,10 @@ public class TicketDTO {
     private int IdAgent;
     private String State;
     private LocalDate CreateDate;
+    private LocalDate ExpirationDate;
 
-    public TicketDTO(int Int, String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State, LocalDate CreateDate) {
-        this.Int = Int;
+    public TicketDTO(int Id, String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State, LocalDate CreateDate, LocalDate ExpirationDate) {
+        this.Id = Id;
         this.Title = Title;
         this.Description = Description;
         this.IdCategory = IdCategory;
@@ -30,14 +31,23 @@ public class TicketDTO {
         this.IdAgent = IdAgent;
         this.State = State;
         this.CreateDate = CreateDate;
+        this.ExpirationDate = ExpirationDate;
     }
 
-    public int getInt() {
-        return Int;
+    public int getId() {
+        return Id;
     }
 
-    public void setInt(int Int) {
-        this.Int = Int;
+    public void setId(int Id) {
+        this.Id = Id;
+    }
+
+    public LocalDate getExpirationDate() {
+        return ExpirationDate;
+    }
+
+    public void setExpirationDate(LocalDate ExpirationDate) {
+        this.ExpirationDate = ExpirationDate;
     }
 
     public String getTitle() {

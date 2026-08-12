@@ -28,12 +28,14 @@ public class Ticket {
     
     private LocalDate CreateDate;
     
+    private LocalDate ExpirationDate;
+    
     
 
     public Ticket() {
     }
 
-    public Ticket(String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State, LocalDate CreateDate, int IdComment) {
+    public Ticket(String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State, LocalDate CreateDate, LocalDate ExpirationDate) {
         this.Title = Title;
         this.Description = Description;
         this.IdCategory = IdCategory;
@@ -41,7 +43,15 @@ public class Ticket {
         this.IdAgent = IdAgent;
         this.State = State;
         this.CreateDate = CreateDate;
-      
+        this.ExpirationDate = ExpirationDate;
+    }
+
+    public LocalDate getExpirationDate() {
+        return ExpirationDate;
+    }
+
+    public void setExpirationDate(LocalDate ExpirationDate) {
+        this.ExpirationDate = ExpirationDate;
     }
 
     public int getId() {

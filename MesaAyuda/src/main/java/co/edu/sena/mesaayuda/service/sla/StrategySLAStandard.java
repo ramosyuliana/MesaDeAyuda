@@ -21,7 +21,7 @@ public class StrategySLAStandard implements StrategySLA {
     }
 
     @Override
-    public int MtCalculeHours(Priority oPriority) {
+    public int MtCalculeDays(Priority oPriority) {
         Priority entity;
 
         entity = priorityRepository.MtFindByName(oPriority.getName());

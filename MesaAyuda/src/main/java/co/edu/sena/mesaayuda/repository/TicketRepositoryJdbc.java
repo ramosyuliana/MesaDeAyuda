@@ -23,7 +23,7 @@ public class TicketRepositoryJdbc implements TicketRepository {
 
     @Override
     public void MtCreate(Ticket oticket) {
-        String consulta = "Insert into \"Ticket\"(\"Title\",\"Description\",\"IdCategoty\",\"IdApplicant\",\"IdAgent\",\"State\",\"CreateDate\") Values (?,?,?,?,?,?,?)";
+        String consulta = "Insert into \"Ticket\"(\"Title\",\"Description\",\"IdCategory\",\"IdApplicant\",\"IdAgent\",\"State\",\"CreateDate\") Values (?,?,?,?,?,?,?)";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
             ps.setString(1, oticket.getTitle());
             ps.setString(2, oticket.getDescription());
@@ -41,7 +41,7 @@ public class TicketRepositoryJdbc implements TicketRepository {
 
     @Override
     public void MtEdit(Ticket oticket) {
-        String consulta = "Update \"Ticket\" set \"Title\" = ?,\"Description\" = ?,\"IdCategoty\" = ? Where \"Id\" = ?";
+        String consulta = "Update \"Ticket\" set \"Title\" = ?,\"Description\" = ?,\"IdCategory\" = ? Where \"Id\" = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
             ps.setString(1, oticket.getTitle());
             ps.setString(2, oticket.getDescription());
@@ -58,7 +58,7 @@ public class TicketRepositoryJdbc implements TicketRepository {
     public void MtEditState(String estado, Ticket oticket) {
         String consulta = "Update \"Ticket\" set \"State\" = ? Where \"Id\" = ?";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
-            ps.setString(1, "estado");
+            ps.setString(1, estado);
             ps.setInt(2, oticket.getId());
             ps.executeUpdate();
 
@@ -93,10 +93,11 @@ public class TicketRepositoryJdbc implements TicketRepository {
                     oticket.setTitle(rs.getString("Title"));
                     oticket.setDescription(rs.getString("Description"));
                     oticket.setIdCategory(rs.getInt("IdCategory"));
-                    oticket.setIdCategory(rs.getInt("IdApplicant"));
-                    oticket.setIdCategory(rs.getInt("IdAgent"));
+                    oticket.setIdApplicant(rs.getInt("IdApplicant"));
+                    oticket.setIdAgent(rs.getInt("IdAgent"));
                     oticket.setState(rs.getString("State"));
                     oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
+                    oticket.setExpirationDate(rs.getObject("ExpirationDate", LocalDate.class));
 
                     list.add(oticket);
                 }
@@ -122,10 +123,11 @@ public class TicketRepositoryJdbc implements TicketRepository {
                     oticket.setTitle(rs.getString("Title"));
                     oticket.setDescription(rs.getString("Description"));
                     oticket.setIdCategory(rs.getInt("IdCategory"));
-                    oticket.setIdCategory(rs.getInt("IdApplicant"));
-                    oticket.setIdCategory(rs.getInt("IdAgent"));
+                    oticket.setIdApplicant(rs.getInt("IdApplicant"));
+                    oticket.setIdAgent(rs.getInt("IdAgent"));
                     oticket.setState(rs.getString("State"));
                     oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
+                    oticket.setExpirationDate(rs.getObject("ExpirationDate", LocalDate.class));
 
                     list.add(oticket);
                 }
@@ -150,10 +152,11 @@ public class TicketRepositoryJdbc implements TicketRepository {
                     oticket.setTitle(rs.getString("Title"));
                     oticket.setDescription(rs.getString("Description"));
                     oticket.setIdCategory(rs.getInt("IdCategory"));
-                    oticket.setIdCategory(rs.getInt("IdApplicant"));
-                    oticket.setIdCategory(rs.getInt("IdAgent"));
+                    oticket.setIdApplicant(rs.getInt("IdApplicant"));
+                    oticket.setIdAgent(rs.getInt("IdAgent"));
                     oticket.setState(rs.getString("State"));
                     oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
+                    oticket.setExpirationDate(rs.getObject("ExpirationDate", LocalDate.class));
 
                     list.add(oticket);
                 }
@@ -182,6 +185,32 @@ public class TicketRepositoryJdbc implements TicketRepository {
         }
 
         return 0;
+    }
+
+    @Override
+    public Ticket MtFindById(int id) {
+        String consulta = "Select * from \"Ticket\" where \"Id\" = ?";
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Ticket oticket = new Ticket();
+                    oticket.setId(rs.getInt("Id"));
+                    oticket.setTitle(rs.getString("Title"));
+                    oticket.setDescription(rs.getString("Description"));
+                    oticket.setIdCategory(rs.getInt("IdCategory"));
+                    oticket.setIdApplicant(rs.getInt("IdApplicant"));
+                    oticket.setIdAgent(rs.getInt("IdAgent"));
+                    oticket.setState(rs.getString("State"));
+                    oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
+                    oticket.setExpirationDate(rs.getObject("ExpirationDate", LocalDate.class));
+                    return oticket;
+                }
+                return null; // el Service valida null y lanza IllegalArgumentException
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo buscar el ticket por id", e);
+        }
     }
 
 }

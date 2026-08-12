@@ -45,4 +45,35 @@ public class CategoryRepositoryJdbc implements CategoryRepository {
             throw new RuntimeException("No se pudieron listar las categorias", e);
         }
     }
+    
+     @Override
+    public Category MtFindById(int id) {
+        String consulta = """
+            Select c."Id", c."Name", p."Id" as "PriorityId", p."Name" as "PriorityName", p."SlaDays"
+            From "Category" c
+            Join "Priority" p On p."Id" = c."IdPriority"
+            Where c."Id" = ?
+        """;
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Priority priority = new Priority();
+                    priority.setId(rs.getInt("PriorityId"));
+                    priority.setName(rs.getString("PriorityName"));
+                    priority.setAttentionTime(rs.getInt("AttentionTime"));
+
+                    Category category = new Category();
+                    category.setId(rs.getInt("Id"));
+                    category.setName(rs.getString("Name"));
+                    category.setPriority(priority);
+
+                    return category;
+                }
+                return null; 
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo buscar la categoría por id", e);
+        }
+    }
 }

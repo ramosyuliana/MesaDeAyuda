@@ -18,16 +18,16 @@ public class TicketCreateDTO {
     private int IdApplicant;
     private int IdAgent;
     private String State;
-    private LocalDate CreateDate;
 
-    public TicketCreateDTO(String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State, LocalDate CreateDate) {
+
+    public TicketCreateDTO(String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State) {
         this.Title = Title;
         this.Description = Description;
         this.IdCategory = IdCategory;
         this.IdApplicant = IdApplicant;
         this.IdAgent = IdAgent;
         this.State = State;
-        this.CreateDate = CreateDate;
+       
     }
 
     public String getTitle() {
@@ -76,14 +76,6 @@ public class TicketCreateDTO {
 
     public void setState(String State) {
         this.State = State;
-    }
-
-    public LocalDate getCreateDate() {
-        return CreateDate;
-    }
-
-    public void setCreateDate(LocalDate CreateDate) {
-        this.CreateDate = CreateDate;
     }
 
     

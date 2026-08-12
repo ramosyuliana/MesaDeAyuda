@@ -29,4 +29,6 @@ public interface TicketRepository {
     void MtEditState(String estado, Ticket oticket);
 
     int MtCountAssignments();
+    
+    Ticket MtFindById(int id);
 }

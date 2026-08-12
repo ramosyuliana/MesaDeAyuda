@@ -24,13 +24,13 @@ public class TicketMapper {
         oTicket.setIdApplicant(dto.getIdApplicant());
         oTicket.setIdAgent(dto.getIdAgent());
         oTicket.setState(dto.getState());
-        oTicket.setCreateDate(dto.getCreateDate());
+        
         return oTicket;
     }
     
      public static Ticket toEntityFromUpdate(TicketDTO dto){
         Ticket oTicket = new Ticket();
-        oTicket.setId(dto.getInt());
+        oTicket.setId(dto.getId());
         oTicket.setTitle(dto.getTitle());
         oTicket.setDescription(dto.getDescription());
         oTicket.setIdCategory(dto.getIdCategory());
@@ -38,6 +38,7 @@ public class TicketMapper {
         oTicket.setIdAgent(dto.getIdAgent());
         oTicket.setState(dto.getState());
         oTicket.setCreateDate(dto.getCreateDate());
+        oTicket.setCreateDate(dto.getExpirationDate());
         return oTicket;
     }
      
@@ -50,7 +51,8 @@ public class TicketMapper {
                 oticket.getIdApplicant(),
                 oticket.getIdAgent(),
                 oticket.getState(),
-                oticket.getCreateDate()
+                oticket.getCreateDate(),
+                oticket.getExpirationDate()
         );
     }
 

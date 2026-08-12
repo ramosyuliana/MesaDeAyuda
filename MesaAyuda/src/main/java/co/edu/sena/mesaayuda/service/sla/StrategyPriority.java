@@ -5,12 +5,12 @@
 package co.edu.sena.mesaayuda.service.sla;
 
 import co.edu.sena.mesaayuda.model.Priority;
+import co.edu.sena.mesaayuda.model.Ticket;
 
 /**
  *
  * @author Admin
  */
-public interface StrategySLA {
-    
-    int MtCalculeDays(Priority oPriority);
+public interface StrategyPriority {
+       Priority MtDeterminePriority(Ticket ticket);
 }
