@@ -8,6 +8,10 @@ package co.edu.sena.mesaayuda.model.state;
  *
  * @author julil
  */
-public class EstadoTicketResuelto implements EstadoTicket {
-    
+public class InvalidTransitionException extends RuntimeException {
+
+    public InvalidTransitionException(String state, String action, String reason) {
+        super("No se puede " + action + " un ticket en estado " + state + ": " + reason);
+    }
+
 }

@@ -9,15 +9,16 @@ package co.edu.sena.mesaayuda.model;
  * @author Admin
  */
 public class Role {
-    
+
     private int Id;
-    
+
     private String Name;
 
     public Role() {
     }
 
-    public Role(String Name) {
+    public Role(int Id, String Name) {
+        this.Id = Id;
         this.Name = Name;
     }
 
@@ -36,7 +37,5 @@ public class Role {
     public void setName(String Name) {
         this.Name = Name;
     }
-    
-    
-    
+
 }
