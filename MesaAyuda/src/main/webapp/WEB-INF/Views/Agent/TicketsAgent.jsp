@@ -388,6 +388,32 @@
                 background: #fee2e2;
                 color: #991b1b;
             }
+            .filter-bar {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 4px;
+            }
+            .filter-chip {
+                padding: 8px 16px;
+                border-radius: var(--radius-full);
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--on-surface-variant);
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                transition: all var(--t-fast);
+            }
+            .filter-chip:hover {
+                border-color: var(--primary);
+                color: var(--primary);
+            }
+            .filter-chip.active {
+                background: var(--gradient-button);
+                color: #fff;
+                border-color: transparent;
+                box-shadow: var(--shadow-rest);
+            }
         </style>
     </head>
     <body>
@@ -404,129 +430,153 @@
 
 
             </div>
+            <div class="filter-bar">
+                <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets"
+                   class="filter-chip ${empty param.state ? 'active' : ''}">Todos</a>
+                <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets&state=ASIGNADO"
+                   class="filter-chip ${param.state == 'ASIGNADO' ? 'active' : ''}">Asignado</a>
+                <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets&state=ENPROCESO"
+                   class="filter-chip ${param.state == 'EN_PROCESO' ? 'active' : ''}">En proceso</a>
+                <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets&state=RESUELTO"
+                   class="filter-chip ${param.state == 'RESUELTO' ? 'active' : ''}">Resuelto</a>
+                <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets&state=CERRADO"
+                   class="filter-chip ${param.state == 'CERRADO' ? 'active' : ''}">Cerrado</a>
+                <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets&state=CANCELADO"
+                   class="filter-chip ${param.state == 'CANCELADO' ? 'active' : ''}">Cancelado</a>
+            </div>
 
 
             <div class="cards-grid">
-                <c:forEach var="t" items="${tickets}">
-                    <div class="detail-card">
-                        <div class="detail-top">
-                            <div>
-                                <span class="detail-eyebrow">TCK-${t.id}</span>
-                                <h4 class="detail-title">${t.title}</h4>
+                <c:choose>
+                    <c:when test="${empty tickets}">
+                        <div class="detail-card">
+                            <p class="empty-hint" style="padding:0;">
+                                <c:choose>
+                                    <c:when test="${not empty param.state}">No tienes tickets en estado "${param.state}".</c:when>
+                                    <c:otherwise>Sin tickets asignados por el momento.</c:otherwise>
+                                </c:choose>
+                            </p>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+
+                        <c:forEach var="t" items="${tickets}">
+                            <div class="detail-card">
+                                <div class="detail-top">
+                                    <div>
+                                        <span class="detail-eyebrow">TCK-${t.id}</span>
+                                        <h4 class="detail-title">${t.title}</h4>
+                                    </div>
+                                    <span class="tag-badge tag-blue">${t.state}</span>
+                                </div>
+
+                                <p class="detail-desc">${t.description}</p>
+
+                                <div class="detail-meta">
+                                    <div class="detail-meta-row"><span>Categoría</span><span>${t.categoryName}</span></div>
+                                    <div class="detail-meta-row"><span>Prioridad / SLA</span><span>${t.priorityName} — vence ${t.expirationDate}</span></div>
+                                    <div class="detail-meta-row"><span>Solicitante</span><span>${t.applicantName}</span></div>
+                                    <div class="detail-meta-row"><span>Creado</span><span>${t.createDate}</span></div>
+                                </div>
+
+                                <div class="comments-box">
+                                    <p class="comments-heading">Comentarios (${fn:length(t.comments)})</p>
+                                    <c:choose>
+                                        <c:when test="${empty t.comments}">
+                                            <p class="no-comments">Aún no hay comentarios en este ticket.</p>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:forEach var="c" items="${t.comments}">
+                                                <div class="mini-comment">
+                                                    <div class="mini-avatar-icon">
+                                                        <span class="material-symbols-outlined">person</span>
+                                                    </div>
+                                                    <div class="mini-comment-body">
+
+                                                        <p class="mini-date">${c.date}</p>
+                                                        <p class="mini-text">${c.text}</p>
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
+
+                                        </c:otherwise>
+                                    </c:choose>
+
+
+                                </div>
+
+                                <div class="workflow-box">
+
+                                    <div class="state-actions-grid">
+
+                                        <c:if test="${t.state == 'ASIGNADO'}">
+                                            <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
+                                                <input type="hidden" name="action" value="editState"/>
+                                                <input type="hidden" name="idTicket" value="${t.id}"/>
+                                                <input type="hidden" name="stateAction" value="ENPROCESO"/>
+                                                <button class="action-state-btn primary-action" type="submit">
+                                                    <span class="material-symbols-outlined">play_arrow</span> Iniciar atención
+                                                </button>
+                                            </form>
+                                        </c:if>
+
+                                        <c:if test="${t.state == 'ENPROCESO'}">
+                                            <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
+                                                <input type="hidden" name="action" value="editState"/>
+                                                <input type="hidden" name="idTicket" value="${t.id}"/>
+                                                <input type="hidden" name="stateAction" value="RESOLVER"/>
+                                                <button class="action-state-btn primary-action" type="submit">
+                                                    <span class="material-symbols-outlined">check_circle</span> Resolver ticket
+                                                </button>
+                                            </form>
+                                        </c:if>
+
+                                        <c:if test="${t.state == 'RESUELTO'}">
+                                            <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
+                                                <input type="hidden" name="action" value="editState"/>
+                                                <input type="hidden" name="idTicket" value="${t.id}"/>
+                                                <input type="hidden" name="stateAction" value="CERRAR"/>
+                                                <button class="action-state-btn primary-action" type="submit">
+                                                    <span class="material-symbols-outlined">check_circle</span> Cerrar ticket
+                                                </button>
+                                            </form>
+                                        </c:if>
+
+                                        <c:if test="${t.state != 'CERRADO' && t.state != 'CANCELADO' && t.state != 'RESUELTO'}">
+                                            <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
+                                                <input type="hidden" name="action" value="editState"/>
+                                                <input type="hidden" name="idTicket" value="${t.id}"/>
+                                                <input type="hidden" name="stateAction" value="CANCELAR"/>
+                                                <button class="action-state-btn danger" type="submit">
+                                                    <span class="material-symbols-outlined">cancel</span> Cancelar
+                                                </button>
+                                            </form>
+
+
+                                        </c:if>
+
+                                        <c:if test="${t.state == 'CERRADO' || t.state == 'CANCELADO'}">
+                                            <span class="tag-badge tag-neutral" style="grid-column: span 2; justify-content:center; padding:10px;">
+                                                Sin acciones disponibles
+                                            </span>
+                                        </c:if>
+
+                                    </div>
+                                </div>
+
+                                <form action="${pageContext.request.contextPath}/CommentServlet?action=create" method="post" style="display:flex; gap:8px;">
+                                    <input type="hidden" name="idTicket" value="${t.id}"/>
+                                    <input type="text" name="text" placeholder="Escribe un comentario técnico..."
+                                           style="flex:1; padding:10px 12px; border-radius: var(--radius-lg); background: var(--input-bg); border:1px solid var(--input-border); font-size:13px; outline:none;"/>
+                                    <button title="Enviar comentario" type="submit" style="color: var(--primary);">
+                                        <span class="material-symbols-outlined">send</span>
+                                    </button>
+                                </form>
                             </div>
-                            <span class="tag-badge tag-blue">${t.state}</span>
-                        </div>
+                        </c:forEach>
 
-                        <p class="detail-desc">${t.description}</p>
-
-                        <div class="detail-meta">
-                            <div class="detail-meta-row"><span>Categoría</span><span>${t.categoryName}</span></div>
-                            <div class="detail-meta-row"><span>Prioridad / SLA</span><span>${t.priorityName} — vence ${t.expirationDate}</span></div>
-                            <div class="detail-meta-row"><span>Solicitante</span><span>${t.applicantName}</span></div>
-                            <div class="detail-meta-row"><span>Creado</span><span>${t.createDate}</span></div>
-                        </div>
-
-                        <div class="comments-box">
-                            <p class="comments-heading">Comentarios (${fn:length(t.comments)})</p>
-                            <c:choose>
-                                <c:when test="${empty t.comments}">
-                                    <p class="no-comments">Aún no hay comentarios en este ticket.</p>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:forEach var="c" items="${t.comments}">
-                                        <div class="mini-comment">
-                                            <div class="mini-avatar-icon">
-                                                <span class="material-symbols-outlined">person</span>
-                                            </div>
-                                            <div class="mini-comment-body">
-
-                                                <p class="mini-date">${c.date}</p>
-                                                <p class="mini-text">${c.text}</p>
-                                            </div>
-                                        </div>
-                                    </c:forEach>
-
-                                </c:otherwise>
-                            </c:choose>
-
-
-                        </div>
-
-                        <div class="workflow-box">
-
-                            <div class="state-actions-grid">
-
-                                <c:if test="${t.state == 'ASIGNADO'}">
-                                    <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
-                                        <input type="hidden" name="action" value="editState"/>
-                                        <input type="hidden" name="idTicket" value="${t.id}"/>
-                                        <input type="hidden" name="stateAction" value="ENPROCESO"/>
-                                        <button class="action-state-btn primary-action" type="submit">
-                                            <span class="material-symbols-outlined">play_arrow</span> Iniciar atención
-                                        </button>
-                                    </form>
-                                </c:if>
-
-                                <c:if test="${t.state == 'ENPROCESO'}">
-                                    <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
-                                        <input type="hidden" name="action" value="editState"/>
-                                        <input type="hidden" name="idTicket" value="${t.id}"/>
-                                        <input type="hidden" name="stateAction" value="RESOLVER"/>
-                                        <button class="action-state-btn primary-action" type="submit">
-                                            <span class="material-symbols-outlined">check_circle</span> Resolver ticket
-                                        </button>
-                                    </form>
-                                </c:if>
-
-                                <c:if test="${t.state == 'RESUELTO'}">
-                                    <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
-                                        <input type="hidden" name="action" value="editState"/>
-                                        <input type="hidden" name="idTicket" value="${t.id}"/>
-                                        <input type="hidden" name="stateAction" value="CERRAR"/>
-                                        <button class="action-state-btn primary-action" type="submit">
-                                            <span class="material-symbols-outlined">check_circle</span> Cerrar ticket
-                                        </button>
-                                    </form>
-                                </c:if>
-
-                                <c:if test="${t.state != 'CERRADO' && t.state != 'CANCELADO' && t.state != 'RESUELTO'}">
-                                    <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
-                                        <input type="hidden" name="action" value="editState"/>
-                                        <input type="hidden" name="idTicket" value="${t.id}"/>
-                                        <input type="hidden" name="stateAction" value="CANCELAR"/>
-                                        <button class="action-state-btn danger" type="submit">
-                                            <span class="material-symbols-outlined">cancel</span> Cancelar
-                                        </button>
-                                    </form>
-
-
-                                </c:if>
-
-                                <c:if test="${t.state == 'CERRADO' || t.state == 'CANCELADO'}">
-                                    <span class="tag-badge tag-neutral" style="grid-column: span 2; justify-content:center; padding:10px;">
-                                        Sin acciones disponibles
-                                    </span>
-                                </c:if>
-
-                            </div>
-                        </div>
-
-                        <form action="${pageContext.request.contextPath}/CommentServlet?action=create" method="post" style="display:flex; gap:8px;">
-                            <input type="hidden" name="idTicket" value="${t.id}"/>
-                            <input type="text" name="text" placeholder="Escribe un comentario técnico..."
-                                   style="flex:1; padding:10px 12px; border-radius: var(--radius-lg); background: var(--input-bg); border:1px solid var(--input-border); font-size:13px; outline:none;"/>
-                            <button title="Enviar comentario" type="submit" style="color: var(--primary);">
-                                <span class="material-symbols-outlined">send</span>
-                            </button>
-                        </form>
-                    </div>
-                </c:forEach>
-
-                <!-- Estado vacío de ejemplo (cuando no hay tickets asignados)
-                <div class="detail-card">
-                    <p class="empty-hint" style="padding:0;">Sin tickets activos para mostrar acciones.</p>
-                </div>
-                -->
+                    </c:otherwise>
+                </c:choose>
             </div>
 
         </main>
