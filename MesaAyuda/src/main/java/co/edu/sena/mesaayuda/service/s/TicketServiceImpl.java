@@ -147,6 +147,10 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.MtListAll();
 
     }
+    @Override
+    public TicketDTO MtFindTicket(int id){
+        return ticketRepository.MtFindTicket(id);
+    }
 
     private void validar(String Title, String Description, int idCategory) {
         if (Title == null || Title.trim().isEmpty()) {

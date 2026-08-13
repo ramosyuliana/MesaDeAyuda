@@ -39,6 +39,7 @@ public class CommentServlet extends HttpServlet {
             User usuarioActual = (User) session.getAttribute("user");
 
             try {
+
                 int idTicket = Integer.parseInt(request.getParameter("idTicket"));
                 String text = request.getParameter("text");
 
@@ -46,13 +47,17 @@ public class CommentServlet extends HttpServlet {
                 commentDTO.setIdTicket(idTicket);
                 commentDTO.setIdAuthor(usuarioActual.getId());
                 commentDTO.setText(text);
-                
+
                 commentService.MtCreateComment(commentDTO);
-                
-                 response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
-            }catch(Exception e){
-                 request.setAttribute("errorMsg","No se pudo crear el comentario");
-                 response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
+
+                if (usuarioActual.getRole().getName().equals("Solicitante")) {
+                    response.sendRedirect(request.getContextPath() + "/TicketServlet?action=view&id=" + idTicket);
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
+                }
+            } catch (Exception e) {
+                request.setAttribute("errorMsg", "No se pudo crear el comentario");
+                response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
             }
         }
     }

@@ -311,77 +311,80 @@
                     Nuevo Ticket
                 </a>
             </div>
-
-
-
-            <div class="table-panel glass-panel">
-                <div class="panel-head">
-                    <h3>Historial de Solicitudes</h3>
-                    <span class="tag-badge tag-blue">Rol: Solicitante</span>
-                </div>
-                <div class="table-scroll">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Título</th>
-                                <th>Categoría</th>
-                                <th>Agente</th>
-                                <th>Estado</th>
-                                <th>Prioridad</th>
-                                <th>Vence</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="t" items="${tickets}"> 
-                                <tr>
-                                    <td class="code-cell">TCK-${t.id}</td>
-                                    <td>
-                                        <p class="ticket-title">${t.title}</p>
-                                        <p class="ticket-desc">${t.description}</p>
-                                    </td>
-                                    <td><span class="tag-badge tag-blue">${t.categoryName}</span></td>
-                                    <td>${t.agentName}</td>
-                                    <c:if test="${t.state == 'ASIGNADO'}">
-                                        <td><span class="tag-badge tag-neutral">ASIGNADO</span></td>
-                                    </c:if>
-                                    <c:if test="${t.state == 'ENPROCESO'}">
-                                        <td><span class="tag-badge tag-warning">EN_PROCESO</span></td>
-                                    </c:if>
-                                    <c:if test="${t.state == 'CERRADO'}">
-                                        <td><span class="tag-badge tag-neutral">CERRADO</span></td>
-                                    </c:if>  
-                                    <c:if test="${t.state == 'CANCELADO'}">
-                                        <td><span class="tag-badge tag-error">CANCELADO</span></td>
-                                    </c:if>  
-                                    <c:if test="${t.state == 'RESUELTO'}">
-                                        <td><span class="tag-badge tag-success">RESUELTO</span></td>
-                                    </c:if> 
-
-
-                                    <td><span class="tag-badge tag-violet">${t.priorityName}</span></td>
-                                    <td>${t.expirationDate}</td>
-                                    <td>
-                                        <a class="btn-view" href="4-ticket-detalle-solicitante.html">
-                                            <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> Ver
-                                        </a>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-
-
-
-                    </table>
-
-                    <!-- Estado vacío de ejemplo (oculto por defecto, usar cuando no hay tickets)
+            <c:choose>
+                <c:when test="${empty tickets}">
                     <div class="empty-state">
                         <span class="material-symbols-outlined">inbox</span>
                         <p>Aún no has creado ningún ticket.</p>
                     </div>
-                    -->
-                </div>
-            </div>
+
+                </c:when>
+                <c:otherwise>
+                    <div class="table-panel glass-panel">
+                        <div class="panel-head">
+                            <h3>Historial de Solicitudes</h3>
+                            <span class="tag-badge tag-blue">Rol: Solicitante</span>
+                        </div>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Título</th>
+                                        <th>Categoría</th>
+                                        <th>Agente</th>
+                                        <th>Estado</th>
+                                        <th>Prioridad</th>
+                                        <th>Vence</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="t" items="${tickets}"> 
+                                        <tr>
+                                            <td class="code-cell">TCK-${t.id}</td>
+                                            <td>
+                                                <p class="ticket-title">${t.title}</p>
+                                                <p class="ticket-desc">${t.description}</p>
+                                            </td>
+                                            <td><span class="tag-badge tag-blue">${t.categoryName}</span></td>
+                                            <td>${t.agentName}</td>
+                                            <c:if test="${t.state == 'ASIGNADO'}">
+                                                <td><span class="tag-badge tag-neutral">ASIGNADO</span></td>
+                                            </c:if>
+                                            <c:if test="${t.state == 'ENPROCESO'}">
+                                                <td><span class="tag-badge tag-warning">EN_PROCESO</span></td>
+                                            </c:if>
+                                            <c:if test="${t.state == 'CERRADO'}">
+                                                <td><span class="tag-badge tag-neutral">CERRADO</span></td>
+                                            </c:if>  
+                                            <c:if test="${t.state == 'CANCELADO'}">
+                                                <td><span class="tag-badge tag-error">CANCELADO</span></td>
+                                            </c:if>  
+                                            <c:if test="${t.state == 'RESUELTO'}">
+                                                <td><span class="tag-badge tag-success">RESUELTO</span></td>
+                                            </c:if> 
+
+
+                                            <td><span class="tag-badge tag-violet">${t.priorityName}</span></td>
+                                            <td>${t.expirationDate}</td>
+                                            <td>
+                                                <a class="btn-view" href="${pageContext.request.contextPath}/TicketServlet?action=view&id=${t.id}">
+                                                    <span class="material-symbols-outlined" style="font-size:14px;">visibility</span> Ver
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+
+
+
+                            </table>
+
+
+                        </div>
+                    </div>
+                </c:otherwise>
+            </c:choose>
 
         </main>
     </body>

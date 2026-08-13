@@ -10,6 +10,7 @@ import co.edu.sena.mesaayuda.service.s.CommentService;
 import co.edu.sena.mesaayuda.service.s.TicketService;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,47 +36,68 @@ public class TicketServlet extends HttpServlet {
                 request.setAttribute("errorMsg", "No se pudieron cargar las categorías");
             }
             request.getRequestDispatcher("/WEB-INF/Views/Applicant/CreateTicket.jsp").forward(request, response);
-        }
-        else if("tickets".equals(action)){
-            try{
-            HttpSession session = request.getSession(false);
-            User usuarioActual = (User)session.getAttribute("user");
-            int id = usuarioActual.getId();
-            List<TicketDTO> listTickets;
-            
-            if(usuarioActual.getRole().getName().equals("Agente")){
-                
-                listTickets = ticketService.MtListByAgent(id);
-                for(TicketDTO t: listTickets){
-                    List<CommentDTO> listComments = commentService.MtListComment(t.getId());
-                    t.setComments(listComments);
+        } else if ("tickets".equals(action)) {
+            try {
+                HttpSession session = request.getSession(false);
+                User usuarioActual = (User) session.getAttribute("user");
+                int id = usuarioActual.getId();
+                List<TicketDTO> listTickets;
+
+                if (usuarioActual.getRole().getName().equals("Agente")) {
+
+                    listTickets = ticketService.MtListByAgent(id);
+
+                    String stateFilter = request.getParameter("state");
+                    if (stateFilter != null && !stateFilter.isEmpty()) {
+                        listTickets = listTickets.stream()
+                                .filter(t -> stateFilter.equals(t.getState()))
+                                .collect(Collectors.toList());
+                    }
+                    for (TicketDTO t : listTickets) {
+                        List<CommentDTO> listComments = commentService.MtListComment(t.getId());
+                        t.setComments(listComments);
+                    }
+
+                    request.setAttribute("tickets", listTickets);
+
+                    request.getRequestDispatcher("/WEB-INF/Views/Agent/TicketsAgent.jsp").forward(request, response);
+                } else if (usuarioActual.getRole().getName().equals("Solicitante")) {
+                    listTickets = ticketService.MtListByApplicant(id);
+
+                    for (TicketDTO t : listTickets) {
+                        List<CommentDTO> listComments = commentService.MtListComment(t.getId());
+                        t.setComments(listComments);
+                    }
+
+                    request.setAttribute("tickets", listTickets);
+                    request.getRequestDispatcher("/WEB-INF/Views/Applicant/TicketsAplicant.jsp").forward(request, response);
+                } else {
+                    listTickets = ticketService.MtListAll();
+                    request.setAttribute("tickets", listTickets);
+                    request.getRequestDispatcher("/WEB-INF/Views/Applicant/Tickets.jsp").forward(request, response);
+
                 }
- 
-                request.setAttribute("tickets", listTickets);
+
+            } catch (Exception e) {
+                request.setAttribute("errorMsg", "No se puedieron cargar los tickets");
+            }
+        } else if ("view".equals(action)) {
+            try {
+
+                int idTicket = Integer.parseInt(request.getParameter("id"));
+                TicketDTO ticket = ticketService.MtFindTicket(idTicket);
+
+                List<CommentDTO> listComments = commentService.MtListComment(ticket.getId());
+                ticket.setComments(listComments);
                 
-                request.getRequestDispatcher("/WEB-INF/Views/Agent/TicketsAgent.jsp").forward(request, response);
+                request.setAttribute("ticket",ticket);
+                request.getRequestDispatcher("/WEB-INF/Views/Applicant/ViewTicket.jsp").forward(request, response);
             }
-            else if(usuarioActual.getRole().getName().equals("Solicitante")){
-                listTickets = ticketService.MtListByApplicant(id);
-                
-                for(TicketDTO t: listTickets){
-                    List<CommentDTO> listComments = commentService.MtListComment(t.getId());
-                    t.setComments(listComments);
-                }
- 
-                request.setAttribute("tickets", listTickets);
-                request.getRequestDispatcher("/WEB-INF/Views/Applicant/TicketsAplicant.jsp").forward(request, response);
+            catch(Exception e){
+                request.setAttribute("errorMsg", "No se pudieron cargar los datos del ticket");
+                request.getRequestDispatcher("/WEB-INF/Views/Applicant/ViewTicket.jsp").forward(request, response);
             }
-            else{
-                listTickets = ticketService.MtListAll();
-                request.setAttribute("tickets", listTickets);
-                request.getRequestDispatcher("/WEB-INF/Views/Applicant/Tickets.jsp").forward(request, response);
-                
-            }
-            
-            }catch(Exception e){
-                request.setAttribute("errorMsg","No se puedieron cargar los tickets");
-            }
+
         }
     }
 
@@ -115,15 +137,14 @@ public class TicketServlet extends HttpServlet {
 
                 request.getRequestDispatcher("/WEB-INF/Views/Applicant/CreateTicket.jsp").forward(request, response);
             }
-        }
-        else if("editState".equals(action)){
-            try{
+        } else if ("editState".equals(action)) {
+            try {
                 int idTicket = Integer.parseInt(request.getParameter("idTicket"));
                 String stateAction = request.getParameter("stateAction");
-                
-                ticketService.MtEditState(idTicket,stateAction);
+
+                ticketService.MtEditState(idTicket, stateAction);
                 response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
-            }catch(Exception e){
+            } catch (Exception e) {
                 request.setAttribute("eroorMsg", e.getMessage());
                 response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
             }
