@@ -220,5 +220,22 @@ public class TicketRepositoryJdbc implements TicketRepository {
             throw new RuntimeException("No se pudo buscar el ticket por id", e);
         }
     }
+    
+     @Override
+    public TicketDTO MtFindTicket(int id) {
+        String consulta = SELECT_WITH_DETAILS +"Where t.\"Id\" = ?";
+        TicketDTO ticket;
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapearTicketDTO(rs);
+                }
+                return null; 
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo buscar el ticket por id", e);
+        }
+    }
 
 }
