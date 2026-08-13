@@ -30,14 +30,20 @@ public interface TicketRepository {
     void MtEditState(String estado, Ticket oticket);
 
     int MtCountAssignments();
-    
-    Ticket MtFindById(int id);
-    
+
+    Ticket MtFindById(int id);    
 
     TicketDTO MtFindTicket(int id);
 
     double MtCanceledTicketRate();
-    
+
     double MtResolvedTicketRate();
 
+    int MtCountClosedTickets(int idApplicant);
+
+    int MtCountUnresolvedTickets(int idApplicant);
+
+    int MtCountAsignedTickets(int idApplicant);
+
+    List<TicketDTO> MtListTop5ByApplicant(int idApplicant);
 }

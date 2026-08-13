@@ -962,7 +962,7 @@
                     <!-- Header Area -->
                     <section class="page-head">
                         <div>
-                            <h1>Base de Conocimiento</h1>
+                            <h1>Hola, ${name}</h1>
                             <p>Encuentra guías, manuales de resolución y documentación oficial.</p>
                         </div>
                         <div class="stat-row">

@@ -284,11 +284,114 @@ public class TicketRepositoryJdbc implements TicketRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("No se pudo obtener la tasa de cancelacion", e);
+            throw new RuntimeException("No se pudo obtener la tasa de tickets resueltos", e);
 
         }
 
         return Math.round(tasaResuelto * 100.0) / 100.0;
+    }
+
+    @Override
+    public int MtCountClosedTickets(int idApplicant) {
+
+        String sql = "Select COUNT(*) From \"Ticket\" where \"IdApplicant\" = ? AND \"State\" = 'CERRADO' ";
+
+        try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idApplicant);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+
+                    return rs.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo la cantidad de tickets cerrados", e);
+
+        }
+
+        return 0;
+
+    }
+
+    @Override
+    public int MtCountUnresolvedTickets(int idApplicant) {
+        String sql = "Select COUNT(*) From \"Ticket\" where \"IdApplicant\" = ? AND \"State\" IN ('NUEVO', 'ASIGNADO', 'EN_PROCESO') ";
+
+        try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idApplicant);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+
+                    return rs.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo la cantidad de tickets resueltos", e);
+
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int MtCountAsignedTickets(int idApplicant) {
+        String sql = "Select COUNT(*) From \"Ticket\" where \"IdApplicant\" = ? AND \"State\" = 'ASIGNADO' ";
+
+        try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idApplicant);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+
+                    return rs.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo contar la cantidad de tickets recien abiertos", e);
+
+        }
+
+        return 0;
+    }
+
+    @Override
+    public List<TicketDTO> MtListTop5ByApplicant(int idApplicant) {
+        String sql = "Select t.\"Id\", t.\"Title\", t.\"Description\", t.\"State\", "
+                + "t.\"CreateDate\", t.\"ExpirationDate\", "
+                + "t.\"IdCategory\", c.\"Name\" as \"CategoryName\", "
+                + "t.\"IdApplicant\", ua.\"Name\" as \"ApplicantName\", "
+                + "t.\"IdAgent\", uag.\"Name\" as \"AgentName\", "
+                + "p.\"Name\" as \"PriorityName\" "
+                + "From \"Ticket\" t "
+                + "Join \"Category\" c On c.\"Id\" = t.\"IdCategory\" "
+                + "Join \"User\" ua On ua.\"Id\" = t.\"IdApplicant\" "
+                + "Left Join \"User\" uag On uag.\"Id\" = t.\"IdAgent\" "
+                + "Join \"Priority\" p On p.\"Id\" = c.\"IdPriority\" "
+                + "Where \"IdApplicant\" = ? ";
+
+        List<TicketDTO> list = new ArrayList<TicketDTO>();
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql);) {
+
+            ps.setInt(1, idApplicant);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapearTicketDTO(rs));
+                }
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo listar los tickets ", e);
+        }
+
     }
 
 }
