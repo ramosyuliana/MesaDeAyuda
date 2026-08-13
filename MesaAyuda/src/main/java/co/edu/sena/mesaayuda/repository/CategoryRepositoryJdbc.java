@@ -48,12 +48,10 @@ public class CategoryRepositoryJdbc implements CategoryRepository {
     
      @Override
     public Category MtFindById(int id) {
-        String consulta = """
-            Select c."Id", c."Name", p."Id" as "PriorityId", p."Name" as "PriorityName", p."SlaDays"
-            From "Category" c
-            Join "Priority" p On p."Id" = c."IdPriority"
-            Where c."Id" = ?
-        """;
+        String consulta = "Select c.\"Id\", c.\"Name\", p.\"Id\" as \"PriorityId\", p.\"Name\" as \"PriorityName\", p.\"AttentionTime\" "
+        + "From \"Category\" c "
+        + "Join \"Priority\" p On p.\"Id\" = c.\"IdPriority\" "
+        + "Where c.\"Id\" = ?";
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {

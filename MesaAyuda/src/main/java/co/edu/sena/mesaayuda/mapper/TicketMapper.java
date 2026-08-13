@@ -15,20 +15,18 @@ import java.util.stream.Collectors;
  * @author Admin
  */
 public class TicketMapper {
-    
-    public static Ticket toEntityFromCreate(TicketCreateDTO dto){
+
+    public static Ticket toEntityFromCreate(TicketCreateDTO dto) {
         Ticket oTicket = new Ticket();
         oTicket.setTitle(dto.getTitle());
         oTicket.setDescription(dto.getDescription());
         oTicket.setIdCategory(dto.getIdCategory());
         oTicket.setIdApplicant(dto.getIdApplicant());
-        oTicket.setIdAgent(dto.getIdAgent());
-        oTicket.setState(dto.getState());
-        
+
         return oTicket;
     }
-    
-     public static Ticket toEntityFromUpdate(TicketDTO dto){
+
+    public static Ticket toEntityFromUpdate(TicketDTO dto) {
         Ticket oTicket = new Ticket();
         oTicket.setId(dto.getId());
         oTicket.setTitle(dto.getTitle());
@@ -41,8 +39,8 @@ public class TicketMapper {
         oTicket.setCreateDate(dto.getExpirationDate());
         return oTicket;
     }
-     
-      public static TicketDTO aDTO(Ticket oticket) {
+
+    public static TicketDTO aDTO(Ticket oticket) {
         return new TicketDTO(
                 oticket.getId(),
                 oticket.getTitle(),

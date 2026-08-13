@@ -4,6 +4,7 @@
  */
 package co.edu.sena.mesaayuda.repository;
 
+import co.edu.sena.mesaayuda.dto.TicketDTO;
 import co.edu.sena.mesaayuda.model.Ticket;
 import co.edu.sena.mesaayuda.util.*;
 import java.sql.Connection;
@@ -23,7 +24,7 @@ public class TicketRepositoryJdbc implements TicketRepository {
 
     @Override
     public void MtCreate(Ticket oticket) {
-        String consulta = "Insert into \"Ticket\"(\"Title\",\"Description\",\"IdCategory\",\"IdApplicant\",\"IdAgent\",\"State\",\"CreateDate\") Values (?,?,?,?,?,?,?)";
+        String consulta = "Insert into \"Ticket\"(\"Title\",\"Description\",\"IdCategory\",\"IdApplicant\",\"IdAgent\",\"State\",\"CreateDate\",\"ExpirationDate\") Values (?,?,?,?,?,?,?,?)";
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(consulta)) {
             ps.setString(1, oticket.getTitle());
             ps.setString(2, oticket.getDescription());
@@ -32,6 +33,7 @@ public class TicketRepositoryJdbc implements TicketRepository {
             ps.setInt(5, oticket.getIdAgent());
             ps.setString(6, oticket.getState());
             ps.setDate(7, Date.valueOf(oticket.getCreateDate()));
+            ps.setDate(8, Date.valueOf(oticket.getExpirationDate()));
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -80,26 +82,28 @@ public class TicketRepositoryJdbc implements TicketRepository {
         }
     }
 
+    private static final String SELECT_WITH_DETAILS
+            = "Select t.\"Id\", t.\"Title\", t.\"Description\", t.\"State\", "
+            + "t.\"CreateDate\", t.\"ExpirationDate\", "
+            + "t.\"IdCategory\", c.\"Name\" as \"CategoryName\", "
+            + "t.\"IdApplicant\", ua.\"Name\" as \"ApplicantName\", "
+            + "t.\"IdAgent\", uag.\"Name\" as \"AgentName\", "
+            + "p.\"Name\" as \"PriorityName\" "
+            + "From \"Ticket\" t "
+            + "Join \"Category\" c On c.\"Id\" = t.\"IdCategory\" "
+            + "Join \"User\" ua On ua.\"Id\" = t.\"IdApplicant\" "
+            + "Left Join \"User\" uag On uag.\"Id\" = t.\"IdAgent\" "
+            + "Join \"Priority\" p On p.\"Id\" = c.\"IdPriority\" ";
+
     @Override
-    public List<Ticket> MtListByAgent(int IdAgent) {
-        String consulta = "Select * from \"Ticket\"  where \"IdAgent\"= ?";
-        List<Ticket> list = new ArrayList<Ticket>();
+    public List<TicketDTO> MtListByAgent(int IdAgent) {
+        String consulta = SELECT_WITH_DETAILS + "Where t.\"IdAgent\" = ?";
+        List<TicketDTO> list = new ArrayList<TicketDTO>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
             ps.setInt(1, IdAgent);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Ticket oticket = new Ticket();
-                    oticket.setId(rs.getInt("Id"));
-                    oticket.setTitle(rs.getString("Title"));
-                    oticket.setDescription(rs.getString("Description"));
-                    oticket.setIdCategory(rs.getInt("IdCategory"));
-                    oticket.setIdApplicant(rs.getInt("IdApplicant"));
-                    oticket.setIdAgent(rs.getInt("IdAgent"));
-                    oticket.setState(rs.getString("State"));
-                    oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
-                    oticket.setExpirationDate(rs.getObject("ExpirationDate", LocalDate.class));
-
-                    list.add(oticket);
+                    list.add(mapearTicketDTO(rs));
                 }
             }
 
@@ -111,25 +115,14 @@ public class TicketRepositoryJdbc implements TicketRepository {
     }
 
     @Override
-    public List<Ticket> MtListByApplicant(int IdApplicant) {
-        String consulta = "Select * from \"Ticket\"  where \"IdApplicant\"= ?";
-        List<Ticket> list = new ArrayList<Ticket>();
+    public List<TicketDTO> MtListByApplicant(int IdApplicant) {
+        String consulta = SELECT_WITH_DETAILS + "Where t.\"IdApplicant\" = ?";
+        List<TicketDTO> list = new ArrayList<TicketDTO>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
             ps.setInt(1, IdApplicant);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Ticket oticket = new Ticket();
-                    oticket.setId(rs.getInt("Id"));
-                    oticket.setTitle(rs.getString("Title"));
-                    oticket.setDescription(rs.getString("Description"));
-                    oticket.setIdCategory(rs.getInt("IdCategory"));
-                    oticket.setIdApplicant(rs.getInt("IdApplicant"));
-                    oticket.setIdAgent(rs.getInt("IdAgent"));
-                    oticket.setState(rs.getString("State"));
-                    oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
-                    oticket.setExpirationDate(rs.getObject("ExpirationDate", LocalDate.class));
-
-                    list.add(oticket);
+                    list.add(mapearTicketDTO(rs));
                 }
             }
 
@@ -140,25 +133,14 @@ public class TicketRepositoryJdbc implements TicketRepository {
     }
 
     @Override
-    public List<Ticket> MtListAll() {
-        String consulta = "Select * from \"Ticket\" ";
-        List<Ticket> list = new ArrayList<Ticket>();
+    public List<TicketDTO> MtListAll() {
+        String consulta = SELECT_WITH_DETAILS;
+        List<TicketDTO> list = new ArrayList<TicketDTO>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Ticket oticket = new Ticket();
-                    oticket.setId(rs.getInt("Id"));
-                    oticket.setTitle(rs.getString("Title"));
-                    oticket.setDescription(rs.getString("Description"));
-                    oticket.setIdCategory(rs.getInt("IdCategory"));
-                    oticket.setIdApplicant(rs.getInt("IdApplicant"));
-                    oticket.setIdAgent(rs.getInt("IdAgent"));
-                    oticket.setState(rs.getString("State"));
-                    oticket.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
-                    oticket.setExpirationDate(rs.getObject("ExpirationDate", LocalDate.class));
-
-                    list.add(oticket);
+                    list.add(mapearTicketDTO(rs));
                 }
             }
 
@@ -166,6 +148,32 @@ public class TicketRepositoryJdbc implements TicketRepository {
         } catch (SQLException e) {
             throw new RuntimeException("No se pudo listar los tickets ", e);
         }
+    }
+
+    private TicketDTO mapearTicketDTO(ResultSet rs) throws SQLException {
+        TicketDTO dto = new TicketDTO();
+        dto.setId(rs.getInt("Id"));
+        dto.setTitle(rs.getString("Title"));
+        dto.setDescription(rs.getString("Description"));
+        dto.setState(rs.getString("State"));
+        dto.setCreateDate(rs.getObject("CreateDate", LocalDate.class));
+        dto.setExpirationDate(rs.getObject("ExpirationDate", LocalDate.class));
+
+        dto.setIdCategory(rs.getInt("IdCategory"));
+        dto.setCategoryName(rs.getString("CategoryName"));
+
+        dto.setIdApplicant(rs.getInt("IdApplicant"));
+        dto.setApplicantName(rs.getString("ApplicantName"));
+
+        int idAgent = rs.getInt("IdAgent");
+        if (!rs.wasNull()) {
+            dto.setIdAgent(idAgent);
+            dto.setAgentName(rs.getString("AgentName"));
+        }
+
+        dto.setPriorityName(rs.getString("PriorityName"));
+
+        return dto;
     }
 
     @Override
