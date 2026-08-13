@@ -22,6 +22,20 @@ import javax.servlet.http.HttpSession;
 public class AuthenticationServlet extends HttpServlet {
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String action = req.getParameter("action");
+
+        if (action.equals("logout")) {
+
+            HttpSession session = req.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+            resp.sendRedirect("index.jsp");
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
@@ -49,22 +63,22 @@ public class AuthenticationServlet extends HttpServlet {
         oSession.setAttribute("user", oUser);
         oSession.setMaxInactiveInterval(30 * 60);
 
-        String vista;
+        String contextPath = req.getContextPath();
         switch (oUser.getRole().getName()) {
             case "Administrador":
-                vista = "/WEB-INF/Views/Admin/Dashboard.jsp";
+                resp.sendRedirect(contextPath + "/AdminServlet?action=dashboard");
                 break;
             case "Solicitante":
-                vista = "/WEB-INF/Views/Applicant/Dashboard.jsp";
+                resp.sendRedirect(contextPath + "/ApplicantServlet?action=dashboard");
                 break;
             case "Agente":
-                vista = "/WEB-INF/Views/Agent/Dashboard.jsp";
+                resp.sendRedirect(contextPath + "/AgentServlet?action=dashboard");
                 break;
             default:
                 throw new ServletException("Rol no reconocido: " + oUser.getRole().getName());
         }
 
-        req.getRequestDispatcher(vista).forward(req, resp);
+
     }
 
 }

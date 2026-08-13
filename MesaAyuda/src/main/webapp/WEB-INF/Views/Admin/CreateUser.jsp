@@ -46,23 +46,72 @@
                 font-family: 'Inter', sans-serif;
                 font-size: 16px;
                 line-height: 1.6;
+                overflow-x: hidden;
             }
             h2 {
                 font-family: 'Manrope', sans-serif;
                 margin: 0;
             }
+
+            /* Animaciones de entrada generales */
+            @keyframes cardEntrance {
+                0% {
+                    opacity: 0;
+                    transform: translateY(30px) scale(0.98);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            @keyframes fadeInStagger {
+                0% {
+                    opacity: 0;
+                    transform: translateY(15px);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
             .form-card {
                 position: relative;
                 width: 100%;
                 max-width: 42rem;
-                background: rgba(255,255,255,0.6);
-                backdrop-filter: blur(12px);
+                background: rgba(255,255,255,0.7);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
                 border: 1px solid var(--color-border);
                 border-radius: var(--radius-xl);
-                box-shadow: 0 10px 30px -5px rgba(59,130,246,0.12);
+                box-shadow: 0 20px 40px -10px rgba(59,130,246,0.15);
                 padding: var(--space-lg);
                 overflow: hidden;
+                animation: cardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
+
+            /* Elementos internos con animación en cascada */
+            .form-header, .field, .form-actions {
+                animation: fadeInStagger 0.5s ease forwards;
+                opacity: 0;
+            }
+            .form-header {
+                animation-delay: 0.1s;
+            }
+            .field:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+            .field:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+            .field:nth-child(4) {
+                animation-delay: 0.4s;
+            }
+            .form-actions {
+                animation-delay: 0.5s;
+            }
+
             .form-card::before, .form-card::after {
                 content: '';
                 position: absolute;
@@ -72,6 +121,7 @@
                 filter: blur(60px);
                 opacity: 0.4;
                 pointer-events: none;
+                transition: transform 0.5s ease;
             }
             .form-card::before {
                 top: -6rem;
@@ -92,6 +142,9 @@
             .form-header h2 {
                 font-size: 32px;
                 margin-bottom: var(--space-xs);
+                background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
             }
             .form-header p {
                 color: var(--color-on-surface-variant);
@@ -108,14 +161,16 @@
                 display: flex;
                 flex-direction: column;
                 gap: var(--space-xs);
+                position: relative;
             }
             label {
                 font-size: 14px;
                 font-weight: 500;
                 color: var(--color-on-surface);
+                transition: color 0.2s ease;
             }
             input, select {
-                background: rgba(255,255,255,0.4);
+                background: rgba(255,255,255,0.5);
                 border: 1px solid var(--color-border);
                 border-radius: var(--radius-lg);
                 padding: var(--space-sm) var(--space-md);
@@ -123,23 +178,51 @@
                 color: var(--color-on-surface);
                 font-family: inherit;
                 width: 100%;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             }
             input::placeholder {
                 color: var(--color-outline);
             }
+            input:hover, select:hover {
+                border-color: #93c5fd;
+                background: rgba(255,255,255,0.8);
+            }
             input:focus, select:focus {
                 outline: none;
                 border-color: #3b82f6;
-                box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+                background: #ffffff;
+                box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+                transform: translateY(-1px);
             }
             input.invalid, select.invalid {
                 border-color: var(--color-error);
+                animation: shake 0.4s ease-in-out;
             }
+
+            @keyframes shake {
+                0%, 100% {
+                    transform: translateX(0);
+                }
+                20%, 60% {
+                    transform: translateX(-4px);
+                }
+                40%, 80% {
+                    transform: translateX(4px);
+                }
+            }
+
             .field-error {
                 font-size: 12px;
                 color: var(--color-error);
                 min-height: 14px;
                 margin: 0;
+                opacity: 0;
+                transform: translateY(-4px);
+                transition: opacity 0.2s ease, transform 0.2s ease;
+            }
+            .field-error.visible {
+                opacity: 1;
+                transform: translateY(0);
             }
             .select-wrap {
                 position: relative;
@@ -156,6 +239,11 @@
                 transform: translateY(-50%);
                 color: var(--color-on-surface-variant);
                 pointer-events: none;
+                transition: transform 0.3s ease;
+            }
+            .select-wrap select:focus ~ .material-symbols-outlined {
+                transform: translateY(-50%) rotate(180deg);
+                color: var(--color-primary);
             }
             .form-actions {
                 display: flex;
@@ -166,7 +254,7 @@
                 border-top: 1px solid var(--color-border);
             }
             .btn-outline {
-                background: rgba(255,255,255,0.4);
+                background: rgba(255,255,255,0.5);
                 border: 1px solid var(--color-border);
                 color: var(--color-primary);
                 border-radius: var(--radius-lg);
@@ -174,10 +262,16 @@
                 font-size: 14px;
                 font-weight: 500;
                 cursor: pointer;
-                transition: background 0.15s ease;
+                transition: all 0.2s ease;
             }
             .btn-outline:hover {
                 background: var(--color-surface-container-low);
+                border-color: #93c5fd;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            }
+            .btn-outline:active {
+                transform: translateY(0);
             }
             .btn-gradient {
                 background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
@@ -188,25 +282,24 @@
                 font-size: 14px;
                 font-weight: 500;
                 cursor: pointer;
-                box-shadow: 0 4px 14px 0 rgba(59,130,246,0.2);
-                transition: all 0.2s ease;
+                box-shadow: 0 4px 14px 0 rgba(59,130,246,0.3);
+                transition: all 0.25s ease;
+                position: relative;
+                overflow: hidden;
             }
             .btn-gradient:hover {
                 background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px 0 rgba(59,130,246,0.4);
+            }
+            .btn-gradient:active {
+                transform: translateY(0);
             }
             .btn-gradient:disabled {
                 opacity: 0.6;
                 cursor: not-allowed;
-            }
-            .alert-error {
-                background: var(--color-error-container);
-                color: var(--color-error);
-                padding: var(--space-sm);
-                border-radius: var(--radius-lg);
-                margin-bottom: var(--space-md);
-                font-size: 14px;
-                position: relative;
-                z-index: 1;
+                transform: none;
+                box-shadow: none;
             }
         </style>
 
@@ -220,31 +313,29 @@
                 <p>Agrega un nuevo miembro al sistema y asígnale un rol.</p>
             </div>
 
-
             <form id="createUserForm" action="${pageContext.request.contextPath}/AdminServlet" method="post">
                 <input type="hidden" name="action" value="createUser">
 
                 <div class="field">
                     <label for="fullName">Nombre completo</label>
-                    <input id="fullName" name="fullName" type="text" placeholder="ej. Ana López">
+                    <input id="fullName" name="fullName" type="text" placeholder="ej. Ana López" autocomplete="off">
                     <p class="field-error" data-error-for="fullName"></p>
                 </div>
 
                 <div class="field">
                     <label for="email">Correo electrónico</label>
-                    <input id="email" name="email" type="email" placeholder="ana.lopez@sena.edu.co">
+                    <input id="email" name="email" type="email" placeholder="ana.lopez@sena.edu.co" autocomplete="off">
                     <p class="field-error" data-error-for="email"></p>
                 </div>
 
                 <div class="field">
                     <label for="role">Rol</label>
                     <div class="select-wrap">
-                        <select id="role" name="idRole" required>
+                        <select id="role" name="idRole">
                             <option value="" disabled selected>-- Seleccione un rol registrado --</option>
                             <c:forEach var="r" items="${listRoles}">
                                 <option value="${r.id}"> - ${r.name} - </option>
                             </c:forEach>
-
                         </select>
                         <span class="material-symbols-outlined">expand_more</span>
                     </div>
@@ -265,23 +356,16 @@
                 var oForm = document.getElementById('createUserForm');
                 var oSubmitBtn = document.getElementById('submitBtn');
 
-                var oValidators = {
-                    fullName: function (oInput) {
-                        return oInput.value.trim().length >= 3 ? '' : 'El nombre debe tener al menos 3 caracteres.';
-                    },
-                    email: function (oInput) {
-                        var pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        return pattern.test(oInput.value.trim()) ? '' : 'Ingresa un correo válido.';
-                    },
-                    role: function (oInput) {
-                        return oInput.value ? '' : 'Selecciona un rol.';
-                    }
-                };
-
                 function showError(oInput, message) {
                     var oErrorEl = oForm.querySelector('[data-error-for="' + oInput.name + '"]');
-                    if (oErrorEl)
+                    if (oErrorEl) {
                         oErrorEl.textContent = message;
+                        if (message) {
+                            oErrorEl.classList.add('visible');
+                        } else {
+                            oErrorEl.classList.remove('visible');
+                        }
+                    }
                     oInput.classList.toggle('invalid', !!message);
                 }
 
@@ -298,12 +382,15 @@
                     var oInput = oForm.elements[fieldName];
                     if (!oInput)
                         return;
+
                     oInput.addEventListener('blur', function () {
                         validateField(oInput);
                     });
+
                     oInput.addEventListener('input', function () {
-                        if (oInput.classList.contains('invalid'))
+                        if (oInput.classList.contains('invalid')) {
                             validateField(oInput);
+                        }
                     });
                 });
 
@@ -315,11 +402,17 @@
 
                     if (!isFormValid) {
                         e.preventDefault();
+                        // Efecto de enfoque visual al primer elemento con error
+                        var firstInvalid = oForm.querySelector('.invalid');
+                        if (firstInvalid) {
+                            firstInvalid.focus();
+                        }
                         return;
                     }
 
                     oSubmitBtn.disabled = true;
-                    oSubmitBtn.textContent = 'Creando...';
+                    oSubmitBtn.style.opacity = '0.8';
+                    oSubmitBtn.innerHTML = '<span style="display:inline-block; animation: rotation 1s infinite linear;">⏳</span> Creando...';
                 });
             })();
         </script>
@@ -342,14 +435,19 @@
                         title: '¡Realizado con éxito!',
                         text: 'El usuario ha sido creado',
                         icon: 'success',
-                        timer: 2000,
+                        timer: 3500,
                         timerProgressBar: true,
                         showConfirmButton: false,
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown animate__faster'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp animate__faster'
+                        },
                         willClose: () => {
                             window.location.href = 'AdminServlet?action=manageUsers';
                         }
                     });
-
                 }
             });
         </script>

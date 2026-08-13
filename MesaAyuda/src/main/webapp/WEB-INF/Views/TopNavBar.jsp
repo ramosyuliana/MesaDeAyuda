@@ -411,7 +411,7 @@
     <div class="topbar-inner">
         <div class="topbar-left">
             <div class="brand">
-                <span class="material-symbols-outlined">support_agent</span>
+                <a href="${pageContext.request.contextPath}/AuthServlet?action=logout"><span class="material-symbols-outlined">support_agent</span></a>
                 <span class="name">TableHelp</span>
             </div>
             <c:if test="${user.role.name == 'Agente'}">
