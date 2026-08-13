@@ -14,7 +14,7 @@ public class TicketStateFactory {
         return switch (name) {
             case "NUEVO" -> new NewState();
             case "ASIGNADO" -> new AssignedState();
-            case "EN_PROCESO" -> new InProcessState();
+            case "ENPROCESO" -> new InProcessState();
             case "RESUELTO" -> new ResolvedState();
             case "CERRADO" -> new ClosedState();
             case "CANCELADO" -> new CancelledState();

@@ -5,6 +5,7 @@
 package co.edu.sena.mesaayuda.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -25,6 +26,7 @@ public class TicketDTO {
     private String State;
     private LocalDate CreateDate;
     private LocalDate ExpirationDate;
+    private List<CommentDTO> comments;
 
     public TicketDTO() {
     }
@@ -42,6 +44,15 @@ public class TicketDTO {
         this.ExpirationDate = ExpirationDate;
     }
 
+    public List<CommentDTO> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentDTO> comments) {
+        this.comments = comments;
+    }
+
+    
     public String getCategoryName() {
         return categoryName;
     }
