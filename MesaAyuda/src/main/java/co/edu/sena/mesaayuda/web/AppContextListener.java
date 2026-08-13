@@ -32,6 +32,7 @@ public class AppContextListener implements ServletContextListener {
     public static final String TICKET_SERVICE = "ticketService";
     public static final String USERAUTH_SERVICE = "userAuthService";
     public static final String USER_SERVICE = "userService";
+    public static final String NOTIFICATION_SERVICE = "notificatioService";
 
     @Override
     public void contextInitialized(ServletContextEvent oEvent) {

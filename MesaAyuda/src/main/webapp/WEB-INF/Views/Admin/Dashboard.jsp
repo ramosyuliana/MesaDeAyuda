@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" isELIgnored="false" %>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -912,14 +912,8 @@
             <main>
                 <div class="page-header">
                     <div>
-                        <h1>Resumen del Dashboard</h1>
-                        <p>Esto es lo que está pasando con tus proyectos hoy.</p>
-                    </div>
-                    <div class="range-toggle">
-                        <button class="active" data-range="7">7 días</button>
-                        <button data-range="30">30 días</button>
-                        <button data-range="custom"><span class="material-symbols-outlined"
-                                                          style="font-size:16px">calendar_today</span> Personalizado</button>
+                        <h1>👋🏻 Hola ${name}, Resumen del Dashboard</h1>
+                        <p>Esto es lo que está pasando con tus tickets hoy.</p>
                     </div>
                 </div>
 
@@ -949,24 +943,22 @@
                     </div>
                     <div class="kpi-card" style="animation-delay:0.25s">
                         <div class="kpi-top">
-                            <span class="kpi-label">Registros nuevos</span>
-                            <div class="kpi-icon"><span class="material-symbols-outlined">person_add</span></div>
+                            <span class="kpi-label">Tasa de resolucion de tickets</span>
+                            <div class="kpi-icon"><span class="material-symbols-outlined">trending_up</span></div>
                         </div>
                         <div class="kpi-bottom">
-                            <span class="kpi-value" data-count="184">0</span>
-                            <div class="kpi-trend trend-down"><span
-                                    class="material-symbols-outlined">trending_down</span><span>-2.0%</span></div>
+                            <span class="kpi-value" data-count="${resolvedTickets}" data-suffix="%"></span>
+
                         </div>
                     </div>
                     <div class="kpi-card" style="animation-delay:0.35s">
                         <div class="kpi-top">
-                            <span class="kpi-label">Tasa de cancelación</span>
+                            <span class="kpi-label">Tasa de cancelación de tickets</span>
                             <div class="kpi-icon"><span class="material-symbols-outlined">trending_down</span></div>
                         </div>
                         <div class="kpi-bottom">
-                            <span class="kpi-value" data-count="1.2" data-suffix="%">0%</span>
-                            <div class="kpi-trend trend-flat"><span
-                                    class="material-symbols-outlined">trending_flat</span><span>+0.1%</span></div>
+                            <span class="kpi-value" data-count="${cancelledTickets}" data-suffix="%"></span>
+
                         </div>
                     </div>
                 </div>
@@ -1024,7 +1016,7 @@
                 <div class="table-panel">
                     <div class="table-panel-header">
                         <h2>Actividad reciente</h2>
-                        <button class="link-btn">Ver todo</button>
+                        <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets">Ver todo</a>
                     </div>
                     <div style="overflow-x:auto">
                         <table>
