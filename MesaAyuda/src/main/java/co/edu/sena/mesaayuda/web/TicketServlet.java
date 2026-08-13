@@ -1,10 +1,12 @@
 package co.edu.sena.mesaayuda.web;
 
 import co.edu.sena.mesaayuda.dto.CategoryDTO;
+import co.edu.sena.mesaayuda.dto.CommentDTO;
 import co.edu.sena.mesaayuda.dto.TicketCreateDTO;
 import co.edu.sena.mesaayuda.dto.TicketDTO;
 import co.edu.sena.mesaayuda.model.User;
 import co.edu.sena.mesaayuda.service.s.CategoryService;
+import co.edu.sena.mesaayuda.service.s.CommentService;
 import co.edu.sena.mesaayuda.service.s.TicketService;
 import java.io.IOException;
 import java.util.List;
@@ -23,6 +25,7 @@ public class TicketServlet extends HttpServlet {
         String action = request.getParameter("action");
         CategoryService categoryService = (CategoryService) getServletContext().getAttribute(AppContextListener.CATEGORY_SERVICE);
         TicketService ticketService = (TicketService) getServletContext().getAttribute(AppContextListener.TICKET_SERVICE);
+        CommentService commentService = (CommentService) getServletContext().getAttribute(AppContextListener.COMMENT_SERVICE);
 
         if ("new".equals(action)) {
             try {
@@ -39,16 +42,29 @@ public class TicketServlet extends HttpServlet {
             User usuarioActual = (User)session.getAttribute("user");
             int id = usuarioActual.getId();
             List<TicketDTO> listTickets;
+            
             if(usuarioActual.getRole().getName().equals("Agente")){
-   
+                
                 listTickets = ticketService.MtListByAgent(id);
+                for(TicketDTO t: listTickets){
+                    List<CommentDTO> listComments = commentService.MtListComment(t.getId());
+                    t.setComments(listComments);
+                }
+ 
                 request.setAttribute("tickets", listTickets);
-                request.getRequestDispatcher("/WEB-INF/Views/Agent/Tickets.jsp").forward(request, response);
+                
+                request.getRequestDispatcher("/WEB-INF/Views/Agent/TicketsAgent.jsp").forward(request, response);
             }
             else if(usuarioActual.getRole().getName().equals("Solicitante")){
                 listTickets = ticketService.MtListByApplicant(id);
+                
+                for(TicketDTO t: listTickets){
+                    List<CommentDTO> listComments = commentService.MtListComment(t.getId());
+                    t.setComments(listComments);
+                }
+ 
                 request.setAttribute("tickets", listTickets);
-                request.getRequestDispatcher("/WEB-INF/Views/Applicant/Tickets.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/Views/Applicant/TicketsAplicant.jsp").forward(request, response);
             }
             else{
                 listTickets = ticketService.MtListAll();
@@ -98,6 +114,18 @@ public class TicketServlet extends HttpServlet {
                 request.setAttribute("errorMsg", e.getMessage());
 
                 request.getRequestDispatcher("/WEB-INF/Views/Applicant/CreateTicket.jsp").forward(request, response);
+            }
+        }
+        else if("editState".equals(action)){
+            try{
+                int idTicket = Integer.parseInt(request.getParameter("idTicket"));
+                String stateAction = request.getParameter("stateAction");
+                
+                ticketService.MtEditState(idTicket,stateAction);
+                response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
+            }catch(Exception e){
+                request.setAttribute("eroorMsg", e.getMessage());
+                response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
             }
         }
     }

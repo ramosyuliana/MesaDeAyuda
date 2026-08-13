@@ -282,75 +282,70 @@
         </style>
     </head>
     <body>
-    <c:if test="${not empty errorMsg}">
-        <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
-            <strong>Error:</strong> ${errorMsg}
-        </div>
-    </c:if>
-    <main class="page-container">
-        <div class="back-link-wrapper">
-            <a class="back-link" href="#">
-                <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span>
-                Back to Dashboard
-            </a>
-        </div>
-
-        <div class="glass-card">
-            <div class="card-glow"></div>
-
-            <div style="margin-bottom: 32px;">
-                <h1 class="form-title">Create a New Ticket</h1>
-                <p class="form-desc">Describe your issue and our team will get back to you shortly.</p>
+        <c:if test="${not empty errorMsg}">
+            <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                <strong>Error:</strong> ${errorMsg}
             </div>
+        </c:if>
+        <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
+        <main class="page-container">
 
-            <form style="display: flex; flex-direction: column; gap: 24px;"    action="${pageContext.request.contextPath}/TicketServlet?action=register" method="POST">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="subject">Ticket Subject</label>
-                    <div>
-                        <input class="form-input" id="subject" name="Title" placeholder="Brief summary of the issue" type="text"/>
-                    </div>
+            <div class="glass-card">
+                <div class="card-glow"></div>
+
+                <div style="margin-bottom: 32px;">
+                    <h1 class="form-title">Create a New Ticket</h1>
+                    <p class="form-desc">Describe your issue and our team will get back to you shortly.</p>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="category">Category</label>
-                    <div class="select-wrapper">
-                        <select class="form-select" id="category" name="Category">
-                            <option disabled="" selected="" value="">Select a category...</option>
-                            <c:forEach var="c"  items="${categories}">
-                                <option value="${c.id}">${c.name}</option>
-                            </c:forEach>
-                        </select>
-                        <div class="select-icon">
-                            <span class="material-symbols-outlined">expand_more</span>
+                <form style="display: flex; flex-direction: column; gap: 24px;"    action="${pageContext.request.contextPath}/TicketServlet?action=register" method="POST">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="subject">Ticket Subject</label>
+                        <div>
+                            <input class="form-input" id="subject" name="Title" placeholder="Brief summary of the issue" type="text"/>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label" for="description">Problem Description</label>
-                    <div>
-                        <textarea class="form-textarea" id="description" name="Description" placeholder="Please provide detailed information about the issue..." rows="5"></textarea>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="category">Category</label>
+                        <div class="select-wrapper">
+                            <select class="form-select" id="category" name="Category">
+                                <option disabled="" selected="" value="">Select a category...</option>
+                                <c:forEach var="c"  items="${categories}">
+                                    <option value="${c.id}">${c.name}</option>
+                                </c:forEach>
+                            </select>
+                            <div class="select-icon">
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-actions">
-                    <button class="btn-cancel" type="button">
-                        Cancel
-                    </button>
-                    <button class="btn-submit" type="submit">
-                        <span class="material-symbols-outlined" style="font-size: 18px;">send</span>
-                        Submit Ticket
-                    </button>
-                </div>
-            </form>
-        </div>
-    </main>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" for="description">Problem Description</label>
+                        <div>
+                            <textarea class="form-textarea" id="description" name="Description" placeholder="Please provide detailed information about the issue..." rows="5"></textarea>
+                        </div>
+                    </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.body.style.opacity = "1";
-            document.body.style.transform = "translateY(0)";
-        });
-    </script>
-</body>
+                    <div class="form-actions">
+                        <button class="btn-cancel" type="button">
+                            Cancel
+                        </button>
+                        <button class="btn-submit" type="submit">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">send</span>
+                            Submit Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                document.body.style.opacity = "1";
+                document.body.style.transform = "translateY(0)";
+            });
+        </script>
+    </body>
 </html>

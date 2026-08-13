@@ -417,18 +417,19 @@
             <c:if test="${user.role.name == 'Agente'}">
                 <nav class="topbar-nav">
                     <a href="#">Dashboard</a>
-                    <a href="#">Tickets</a>
+                    <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets">Tickets</a>
                 </nav>
             </c:if>
             <c:if test="${user.role.name == 'Solicitante'}">
                 <nav class="topbar-nav">
-                    <a href="#">Dashboard</a>
-                    <a href="#">Crear Ticket</a>
-                    <a href="#">Mis Tickets</a>
+                    <a href="">Dashboard</a>
+                    <a href="${pageContext.request.contextPath}/TicketServlet?action=new">Crear Ticket</a>
+                    <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets" >Mis Tickets</a>
                 </nav>
             </c:if>
             <c:if test="${user.role.name == 'Administrador'}">
                 <nav class="topbar-nav">
+
                     <a href="${pageContext.request.contextPath}/AdminServlet?action=dashboard">Dashboard</a>
                     <a href="${pageContext.request.contextPath}/AdminServlet?action=manage">Todos Los Tickets</a>
                     <a href="${pageContext.request.contextPath}/AdminServlet?action=manageUsers">Usuarios</a>

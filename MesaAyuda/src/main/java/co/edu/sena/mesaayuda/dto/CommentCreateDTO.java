@@ -17,6 +17,10 @@ public class CommentCreateDTO {
 
     private int IdTicket;
 
+    public CommentCreateDTO() {
+    }
+
+    
     public CommentCreateDTO(int IdAuthor, String Text, int IdTicket) {
         this.IdAuthor = IdAuthor;
         this.Text = Text;
