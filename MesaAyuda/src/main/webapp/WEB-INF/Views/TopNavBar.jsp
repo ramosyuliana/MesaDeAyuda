@@ -416,13 +416,13 @@
             </div>
             <c:if test="${user.role.name == 'Agente'}">
                 <nav class="topbar-nav">
-                    <a href="#">Dashboard</a>
+                    <a href="${pageContext.request.contextPath}/AgentServlet?action=dashboard">Dashboard</a>
                     <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets">Tickets</a>
                 </nav>
             </c:if>
             <c:if test="${user.role.name == 'Solicitante'}">
                 <nav class="topbar-nav">
-                    <a href="">Dashboard</a>
+                    <a href="${pageContext.request.contextPath}/ApplicantServlet?action=dashboard">Dashboard</a>
                     <a href="${pageContext.request.contextPath}/TicketServlet?action=new">Crear Ticket</a>
                     <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets" >Mis Tickets</a>
                 </nav>
@@ -437,6 +437,23 @@
             </c:if>
         </div>
         <div class="topbar-right">
+            <!-- Información y Avatar del usuario -->
+            <div class="user-info-container" style="display: flex; align-items: center; gap: 12px;">
+                <div class="user-details" style="text-align: right; line-height: 1.2;">
+                    <span style="display: block; font-size: 13px; font-weight: 600; color: var(--on-surface);">
+                        <c:out value="${user.name}" />
+                    </span>
+                    <span style="display: block; font-size: 11px; font-weight: 500; color: var(--on-surface-variant);">
+                        <c:out value="${user.role.name}" />
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- Separador vertical sutil -->
+            <div style="width: 1px; height: 24px; background-color: var(--hairline); margin: 0 4px;"></div>
+
+            <!-- Botón de notificaciones -->
             <button class="icon-btn" aria-label="Notificaciones">
                 <span class="material-symbols-outlined">notifications</span>
                 <span class="dot-badge"></span>

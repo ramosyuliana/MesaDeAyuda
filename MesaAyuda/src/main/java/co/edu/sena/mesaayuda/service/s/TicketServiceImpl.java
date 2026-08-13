@@ -99,10 +99,10 @@ public class TicketServiceImpl implements TicketService {
         TicketState newState = switch (action) {
             case "ASIGNAR" ->
                 currentState.MtAssign();
-            
+
             case "ENPROCESO" ->
                 currentState.MtStart();
-                
+
             case "RESOLVER" ->
                 currentState.MtResolve();
             case "CERRAR" ->
@@ -111,7 +111,7 @@ public class TicketServiceImpl implements TicketService {
                 currentState.MtReOpen();
             case "CANCELAR" ->
                 currentState.MtCancel();
-            
+
             default ->
                 throw new IllegalArgumentException("Acción no reconocida: " + action);
         };
@@ -192,5 +192,27 @@ public class TicketServiceImpl implements TicketService {
     public double MtResolvedTicketRate() {
 
         return ticketRepository.MtResolvedTicketRate();
+    }
+
+    @Override
+    public int MtCountClosedTickets(int idApplicant) {
+
+        return ticketRepository.MtCountClosedTickets(idApplicant);
+    }
+
+    @Override
+    public int MtCountUnresolvedTickets(int idApplicant) {
+
+        return ticketRepository.MtCountUnresolvedTickets(idApplicant);
+    }
+
+    @Override
+    public int MtCountAsignedTickets(int idApplicant) {
+        return ticketRepository.MtCountAsignedTickets(idApplicant);
+    }
+
+    @Override
+    public List<TicketDTO> MtListTop5ByApplicant(int idApplicant) {
+        return ticketRepository.MtListTop5ByApplicant(idApplicant);
     }
 }

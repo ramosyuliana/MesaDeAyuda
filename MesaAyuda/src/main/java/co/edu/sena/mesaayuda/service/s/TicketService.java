@@ -36,4 +36,12 @@ public interface TicketService {
 
     double MtResolvedTicketRate();
 
+    int MtCountClosedTickets(int idApplicant);
+
+    int MtCountUnresolvedTickets(int idApplicant);
+
+    int MtCountAsignedTickets(int idApplicant);
+
+    List<TicketDTO> MtListTop5ByApplicant(int idApplicant);
+
 }

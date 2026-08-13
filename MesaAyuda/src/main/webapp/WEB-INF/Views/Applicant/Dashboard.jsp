@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -393,28 +394,6 @@
                 transform: scale(.94);
             }
 
-            .avatar {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                overflow: hidden;
-                border: 1px solid var(--card-border);
-                background: var(--surface-container-high);
-                cursor: pointer;
-                margin-left: 8px;
-                transition: transform var(--t-base), box-shadow var(--t-base);
-            }
-            .avatar:hover {
-                transform: scale(1.06);
-                box-shadow: 0 0 0 3px rgba(59,130,246,.25), var(--shadow-hover);
-            }
-            .avatar img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                display: block;
-            }
-
             /* ---------- Layout ---------- */
             .page-wrap {
                 width: 100%;
@@ -576,9 +555,9 @@
                 letter-spacing: .01em;
             }
             .chip-error {
-                background: rgba(220,38,38,.1);
-                color: var(--error);
-                margin-bottom: 4px;
+                background-color: rgba(5, 150, 105, 0.1);
+                color: var(--success);
+                border: 1px solid rgba(5, 150, 105, 0.2);
             }
 
             /* ---------- Grilla inferior ---------- */
@@ -684,9 +663,10 @@
             .cell-id {
                 color: var(--on-surface-muted);
                 font-family: monospace;
-                font-size: 14px;
+                font-size: 12px;
             }
             .cell-subject {
+                font-size: 14px;
                 font-weight: 500;
                 color: var(--on-surface);
             }
@@ -695,38 +675,6 @@
                 font-size: 14px;
             }
 
-            .status {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                padding: 4px 8px;
-                border-radius: var(--radius-sm);
-                font-size: 12px;
-                font-weight: 500;
-            }
-            .status .dot {
-                width: 6px;
-                height: 6px;
-                border-radius: 50%;
-            }
-            .status-progress {
-                background: rgba(59,130,246,.12);
-                color: var(--primary);
-            }
-            .status-progress .dot {
-                background: var(--primary-container);
-            }
-            .status-pending {
-                background: rgba(56,189,248,.16);
-                color: #0284c7;
-            }
-            .status-pending .dot {
-                background: var(--tertiary);
-            }
-            .status-done {
-                background: rgba(5,150,105,.1);
-                color: var(--success);
-            }
             tbody tr:hover .status {
                 transform: translateY(-1px);
                 transition: transform var(--t-fast);
@@ -821,6 +769,48 @@
                     transform: none;
                 }
             }
+
+            /* Estilo base del badge */
+            .tag-badge {
+                display: inline-flex;
+                align-items: center;
+                padding: 3px 10px;
+                border-radius: var(--radius-full, 999px);
+                font-size: 11px;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+
+            /* Variantes de color */
+            .tag-blue {
+                background: rgba(59, 130, 246, .12);
+                color: var(--primary, #2563eb);
+            }
+
+            .tag-violet {
+                background: rgba(99, 102, 241, .12);
+                color: var(--secondary, #6366f1);
+            }
+
+            .tag-warning {
+                background: rgba(217, 119, 6, .12);
+                color: var(--warning, #d97706);
+            }
+
+            .tag-success {
+                background: rgba(5, 150, 105, .12);
+                color: var(--success, #059669);
+            }
+
+            .tag-error {
+                background: rgba(220, 38, 38, .12);
+                color: var(--error, #dc2626);
+            }
+
+            .tag-neutral {
+                background: rgba(107, 122, 151, .12);
+                color: var(--on-surface-muted, #6b7a97);
+            }
         </style>
     </head>
     <body>
@@ -833,25 +823,20 @@
 
                 <!-- Hero Section -->
                 <section class="hero">
-                    <h1>¡Hola, Sarah!</h1>
+                    <h1>¡Hola, ${name}!</h1>
                     <p>¿En qué podemos ayudarte hoy?</p>
-                    <div class="hero-search">
-                        <span class="material-symbols-outlined">search</span>
-                        <input placeholder="Describe tu problema (ej. 'No puedo acceder al correo')..." type="text"/>
-                    </div>
                 </section>
 
-                <!-- KPI Cards -->
                 <section class="kpi-grid">
                     <div class="kpi-card glass-panel">
                         <div class="kpi-blob error"></div>
                         <div>
-                            <p class="kpi-label">Tickets Abiertos</p>
+                            <p class="kpi-label">Tickets Asignados</p>
                             <div class="kpi-row">
-                                <h3 class="kpi-value">3</h3>
-                                <span class="chip chip-error">
-                                    <span class="material-symbols-outlined icon-14">error</span>
-                                    Urgente
+                                <h3 class="kpi-value">${ticketsAsigned}</h3>
+                                <span class="status status-done">
+                                    <span class="material-symbols-outlined icon-14">done_all</span>
+                                    Recientes
                                 </span>
                             </div>
                         </div>
@@ -859,18 +844,18 @@
                     <div class="kpi-card glass-panel">
                         <div class="kpi-blob teal"></div>
                         <div>
-                            <p class="kpi-label">Pendientes de Acción</p>
+                            <p class="kpi-label">Tickets sin Resolver</p>
                             <div class="kpi-row">
-                                <h3 class="kpi-value">1</h3>
+                                <h3 class="kpi-value">${ticketsUnresolved}</h3>
                             </div>
                         </div>
                     </div>
                     <div class="kpi-card glass-panel">
                         <div class="kpi-blob blue"></div>
                         <div>
-                            <p class="kpi-label">Resueltos este mes</p>
+                            <p class="kpi-label">Tickets Cerrados</p>
                             <div class="kpi-row">
-                                <h3 class="kpi-value">12</h3>
+                                <h3 class="kpi-value">${ticketsClosed}</h3>
                             </div>
                         </div>
                     </div>
@@ -878,95 +863,88 @@
 
                 <div class="lower-grid">
                     <!-- Mis Tickets Recientes -->
-                    <section class="panel panel-wide glass-panel">
+                    <section class="panel panel-wide glass-panel" style="grid-column: 1 / -1; width: 100%;">
                         <div class="panel-head">
                             <h2>Mis Tickets Recientes</h2>
-                            <button class="link-btn">Ver todos</button>
+                            <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets" class="link-btn">Ver todos</a>
                         </div>
-                        <div class="table-scroll">
-                            <table>
+                        <div class="table-scroll" style="width: 100%;">
+                            <table style="width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Asunto</th>
+                                        <th>Titulo</th>
+                                        <th>Categoria</th>
+                                        <th>Fecha Creacion</th>
+                                        <th>Fecha Expiracion</th>
+                                        <th>Agente Encargado</th>
+                                        <th>Prioridad</th>
                                         <th>Estado</th>
-                                        <th>Última Act.</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="cell-id">#TCK-892</td>
-                                        <td class="cell-subject">Error al sincronizar calendario Outlook</td>
-                                        <td>
-                                            <span class="status status-progress">
-                                                <span class="dot"></span>
-                                                En Progreso
-                                            </span>
-                                        </td>
-                                        <td class="cell-time">Hace 2 horas</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="cell-id">#TCK-890</td>
-                                        <td class="cell-subject">Solicitud de licencia de software (Figma)</td>
-                                        <td>
-                                            <span class="status status-pending">
-                                                <span class="dot"></span>
-                                                Pendiente
-                                            </span>
-                                        </td>
-                                        <td class="cell-time">Ayer</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="cell-id">#TCK-875</td>
-                                        <td class="cell-subject">Renovación de equipo asignado</td>
-                                        <td>
-                                            <span class="status status-done">
-                                                <span class="material-symbols-outlined icon-14">check_circle</span>
-                                                Resuelto
-                                            </span>
-                                        </td>
-                                        <td class="cell-time">Hace 5 días</td>
-                                    </tr>
+                                    <c:forEach var="item" items="${list}">
+                                        <tr>
+                                            <td>
+                                                <div class="cell-subject">${item.title}</div    >
+                                                <div class="cell-id">${item.description}</div>
+                                            </td>
+                                            <td>
+                                                <span class="tag-badge tag-blue">${item.categoryName}</span>
+
+                                            </td>
+                                            <td>${item.createDate}</td>
+                                            <td>${item.expirationDate}</td>
+                                            <td>${item.agentName}</td>
+                                            <td>
+                                                <span class="tag-badge tag-violet">
+                                                    <span class="dot"></span>
+                                                    ${item.priorityName}
+                                                </span>
+                                            </td>   
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${item.state == 'ASIGNADO'}">
+                                                        <span class="tag-badge tag-neutral">
+                                                            <span class="dot"></span>
+                                                            Asignado
+                                                        </span>
+                                                    </c:when>
+                                                    <c:when test="${item.state == 'ENPROCESO'}">
+                                                        <span class="tag-badge tag-warning">
+                                                            <span class="dot"></span>
+                                                            En Proceso
+                                                        </span>
+                                                    </c:when>
+                                                    <c:when test="${item.state == 'RESUELTO'}">
+                                                        <span class="tag-badge tag-success">
+                                                            <span class="dot"></span>
+                                                            Resuelto
+                                                        </span>
+                                                    </c:when>
+                                                    <c:when test="${item.state == 'CERRADO'}">
+                                                        <span class="tag-badge tag-neutral">
+                                                            <span class="dot"></span>
+                                                            Cerrado
+                                                        </span>
+                                                    </c:when>
+                                                    <c:when test="${item.state == 'CANCELADO'}">
+                                                        <span class="tag-badge tag-error">
+                                                            <span class="dot"></span>
+                                                            Cancelado
+                                                        </span>
+                                                    </c:when>
+                                                </c:choose>
+                                            </td> 
+                                        </tr>
+                                    </c:forEach>
+
+
                                 </tbody>
                             </table>
                         </div>
                     </section>
 
-                    <!-- Base de Conocimientos (Quick Links) -->
-                    <section class="panel kb-panel glass-panel">
-                        <div class="panel-head">
-                            <h2>Base de Conocimientos</h2>
-                        </div>
-                        <div class="kb-list">
-                            <a class="kb-item" href="#">
-                                <div class="kb-icon">
-                                    <span class="material-symbols-outlined">password</span>
-                                </div>
-                                <div>
-                                    <h4 class="kb-title">Reset de Contraseña</h4>
-                                    <p class="kb-sub">Guía paso a paso</p>
-                                </div>
-                            </a>
-                            <a class="kb-item" href="#">
-                                <div class="kb-icon">
-                                    <span class="material-symbols-outlined">mark_email_read</span>
-                                </div>
-                                <div>
-                                    <h4 class="kb-title">Configuración de Correo</h4>
-                                    <p class="kb-sub">iOS &amp; Android</p>
-                                </div>
-                            </a>
-                            <a class="kb-item" href="#">
-                                <div class="kb-icon">
-                                    <span class="material-symbols-outlined">vpn_key</span>
-                                </div>
-                                <div>
-                                    <h4 class="kb-title">Guía VPN Remota</h4>
-                                    <p class="kb-sub">Acceso seguro</p>
-                                </div>
-                            </a>
-                        </div>
-                    </section>
+
                 </div>
 
             </main>
