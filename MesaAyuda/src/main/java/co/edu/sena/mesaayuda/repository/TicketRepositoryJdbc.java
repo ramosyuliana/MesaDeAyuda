@@ -238,4 +238,57 @@ public class TicketRepositoryJdbc implements TicketRepository {
         }
     }
 
+    @Override
+    public double MtCanceledTicketRate() {
+        double tasaCancelacion = 0.0;
+        String sql = "SELECT "
+                + "  (SELECT COUNT(*) FROM \"Ticket\" WHERE \"State\" = 'CANCELADO') AS \"Cancelados\", "
+                + "  (SELECT COUNT(*) FROM \"Ticket\") AS \"Total\"";
+
+        try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                double cancelados = rs.getDouble("Cancelados");
+                double total = rs.getDouble("Total");
+
+                if (total > 0) {
+                    tasaCancelacion = (cancelados / total) * 100.0;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo obtener la tasa de cancelacion", e);
+
+        }
+
+        return Math.round(tasaCancelacion * 100.0) / 100.0;
+    }
+
+    @Override
+    public double MtResolvedTicketRate() {
+
+        double tasaResuelto = 0.0;
+        String sql = "SELECT "
+                + "  (SELECT COUNT(*) FROM \"Ticket\" WHERE \"State\" = 'RESUELTO') AS \"Resueltos\", "
+                + "  (SELECT COUNT(*) FROM \"Ticket\") AS \"Total\"";
+
+        try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                double cancelados = rs.getDouble("Resueltos");
+                double total = rs.getDouble("Total");
+
+                if (total > 0) {
+                    tasaResuelto = (cancelados / total) * 100.0;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo obtener la tasa de cancelacion", e);
+
+        }
+
+        return Math.round(tasaResuelto * 100.0) / 100.0;
+    }
+
 }

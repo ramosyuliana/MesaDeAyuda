@@ -33,5 +33,11 @@ public interface TicketRepository {
     
     Ticket MtFindById(int id);
     
+
     TicketDTO MtFindTicket(int id);
+
+    double MtCanceledTicketRate();
+    
+    double MtResolvedTicketRate();
+
 }

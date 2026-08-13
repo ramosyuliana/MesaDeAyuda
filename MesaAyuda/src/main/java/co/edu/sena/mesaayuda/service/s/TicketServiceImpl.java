@@ -186,4 +186,15 @@ public class TicketServiceImpl implements TicketService {
 
         notificator.MtSendNotification(oNotification);
     }
+
+    @Override
+    public double MtCanceledTicketRate() {
+        return ticketRepository.MtCanceledTicketRate();
+    }
+
+    @Override
+    public double MtResolvedTicketRate() {
+
+        return ticketRepository.MtResolvedTicketRate();
+    }
 }

@@ -29,9 +29,13 @@ public interface TicketService {
     List<TicketDTO> MtListByApplicant(int IdApplicant);
 
     List<TicketDTO> MtListAll();
-    
+
     void MtNotifyStateChange(Ticket oTicket, TicketState oPreviousState);
     
     TicketDTO MtFindTicket(int id);
+
+    double MtCanceledTicketRate();
+
+    double MtResolvedTicketRate();
 
 }
