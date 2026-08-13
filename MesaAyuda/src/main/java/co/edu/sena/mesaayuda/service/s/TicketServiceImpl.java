@@ -59,10 +59,14 @@ public class TicketServiceImpl implements TicketService {
         int AttentionTime = this.strategySla.MtCalculeDays(priority);
         ticket.setExpirationDate(ticket.getCreateDate().plusDays(AttentionTime));
 
-        TicketState nuevoTicketState = new NewState();
-        ticket.setState(nuevoTicketState.Name());
+        List<User> availableAgents = userRepository.MtListAgents();
+        User agent = strategyAssignment.MtAssigmentAgent(ticket, availableAgents);
+        ticket.setIdAgent(agent.getId());
 
-        TicketState estadoAsignado = nuevoTicketState.MtAssign();
+        TicketState newTicketState = new NewState();
+        ticket.setState(newTicketState.Name());
+
+        TicketState estadoAsignado = newTicketState.MtAssign();
         ticket.setState(estadoAsignado.Name());
 
         ticketRepository.MtCreate(ticket);
@@ -127,17 +131,17 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<TicketDTO> MtListByAgent(int IdAgent) {
-        return TicketMapper.aDTO(ticketRepository.MtListByAgent(IdAgent));
+        return ticketRepository.MtListByAgent(IdAgent);
     }
 
     @Override
     public List<TicketDTO> MtListByApplicant(int IdApplicant) {
-        return TicketMapper.aDTO(ticketRepository.MtListByApplicant(IdApplicant));
+        return ticketRepository.MtListByApplicant(IdApplicant);
     }
 
     @Override
     public List<TicketDTO> MtListAll() {
-        return TicketMapper.aDTO(ticketRepository.MtListAll());
+        return ticketRepository.MtListAll();
 
     }
 

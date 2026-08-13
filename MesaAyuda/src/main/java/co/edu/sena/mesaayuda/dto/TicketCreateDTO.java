@@ -4,8 +4,6 @@
  */
 package co.edu.sena.mesaayuda.dto;
 
-import java.time.LocalDate;
-
 /**
  *
  * @author Admin
@@ -16,18 +14,16 @@ public class TicketCreateDTO {
     private String Description;
     private int IdCategory;
     private int IdApplicant;
-    private int IdAgent;
-    private String State;
 
+    public TicketCreateDTO() {
+    }
 
-    public TicketCreateDTO(String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State) {
+    
+    public TicketCreateDTO(String Title, String Description, int IdCategory, int IdApplicant) {
         this.Title = Title;
         this.Description = Description;
         this.IdCategory = IdCategory;
         this.IdApplicant = IdApplicant;
-        this.IdAgent = IdAgent;
-        this.State = State;
-       
     }
 
     public String getTitle() {
@@ -61,22 +57,4 @@ public class TicketCreateDTO {
     public void setIdApplicant(int IdApplicant) {
         this.IdApplicant = IdApplicant;
     }
-
-    public int getIdAgent() {
-        return IdAgent;
-    }
-
-    public void setIdAgent(int IdAgent) {
-        this.IdAgent = IdAgent;
-    }
-
-    public String getState() {
-        return State;
-    }
-
-    public void setState(String State) {
-        this.State = State;
-    }
-
-    
 }

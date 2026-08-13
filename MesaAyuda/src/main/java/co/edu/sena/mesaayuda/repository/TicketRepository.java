@@ -4,6 +4,7 @@
  */
 package co.edu.sena.mesaayuda.repository;
 
+import co.edu.sena.mesaayuda.dto.TicketDTO;
 import co.edu.sena.mesaayuda.model.Ticket;
 import java.sql.SQLException;
 import java.util.List;
@@ -18,11 +19,11 @@ public interface TicketRepository {
 
     void MtEdit(Ticket oticket);
 
-    List<Ticket> MtListByAgent(int IdAgent);
+    List<TicketDTO> MtListByAgent(int IdAgent);
 
-    List<Ticket> MtListByApplicant(int IdApplicant);
+    List<TicketDTO> MtListByApplicant(int IdApplicant);
 
-    List<Ticket> MtListAll();
+    List<TicketDTO> MtListAll();
 
     void MtEditAgent(int agent, Ticket oticket);
 

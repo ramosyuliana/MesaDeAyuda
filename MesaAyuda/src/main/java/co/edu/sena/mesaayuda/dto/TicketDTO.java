@@ -16,12 +16,20 @@ public class TicketDTO {
     private String Title;
     private String Description;
     private int IdCategory;
+    private String categoryName;
     private int IdApplicant;
+    private String applicantName;
     private int IdAgent;
+    private String agentName;
+    private String priorityName;
     private String State;
     private LocalDate CreateDate;
     private LocalDate ExpirationDate;
 
+    public TicketDTO() {
+    }
+
+    
     public TicketDTO(int Id, String Title, String Description, int IdCategory, int IdApplicant, int IdAgent, String State, LocalDate CreateDate, LocalDate ExpirationDate) {
         this.Id = Id;
         this.Title = Title;
@@ -34,6 +42,39 @@ public class TicketDTO {
         this.ExpirationDate = ExpirationDate;
     }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getApplicantName() {
+        return applicantName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
+
+    public String getAgentName() {
+        return agentName;
+    }
+
+    public void setAgentName(String agentName) {
+        this.agentName = agentName;
+    }
+
+    public String getPriorityName() {
+        return priorityName;
+    }
+
+    public void setPriorityName(String priorityName) {
+        this.priorityName = priorityName;
+    }
+
+    
     public int getId() {
         return Id;
     }
