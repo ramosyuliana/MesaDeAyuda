@@ -4,12 +4,18 @@
  */
 package co.edu.sena.mesaayuda.web;
 
+
 import co.edu.sena.mesaayuda.dto.RoleDTO;
 import co.edu.sena.mesaayuda.dto.UserCreateDTO;
 import co.edu.sena.mesaayuda.dto.UserDTO;
 import co.edu.sena.mesaayuda.dto.UserUpdateDTO;
 import co.edu.sena.mesaayuda.service.s.RoleService;
 import co.edu.sena.mesaayuda.service.s.UserService;
+
+import co.edu.sena.mesaayuda.dto.TicketDTO;
+import co.edu.sena.mesaayuda.model.Ticket;
+import co.edu.sena.mesaayuda.service.s.TicketService;
+
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -27,6 +33,7 @@ public class AdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
 
         String action = req.getParameter("action");
 
@@ -102,6 +109,7 @@ public class AdminServlet extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/Views/Admin/ManagementUsers.jsp").forward(req, resp);
 
         }
+
     }
 
 }

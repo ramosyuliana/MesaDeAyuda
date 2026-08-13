@@ -99,8 +99,10 @@ public class TicketServiceImpl implements TicketService {
         TicketState newState = switch (action) {
             case "ASIGNAR" ->
                 currentState.MtAssign();
-            case "INICIAR" ->
+            
+            case "ENPROCESO" ->
                 currentState.MtStart();
+                
             case "RESOLVER" ->
                 currentState.MtResolve();
             case "CERRAR" ->
@@ -109,6 +111,7 @@ public class TicketServiceImpl implements TicketService {
                 currentState.MtReOpen();
             case "CANCELAR" ->
                 currentState.MtCancel();
+            
             default ->
                 throw new IllegalArgumentException("Acción no reconocida: " + action);
         };

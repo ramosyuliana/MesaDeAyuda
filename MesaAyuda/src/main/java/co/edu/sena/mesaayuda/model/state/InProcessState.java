@@ -24,7 +24,7 @@ public class InProcessState implements TicketState {
 
     @Override
     public TicketState MtResolve() {
-        return new ClosedState();
+        return new ResolvedState();
     }
 
     @Override
