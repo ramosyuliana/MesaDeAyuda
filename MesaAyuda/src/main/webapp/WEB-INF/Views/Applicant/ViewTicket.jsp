@@ -276,7 +276,44 @@
                 padding:12px;
                 border-radius:var(--radius-lg);
             }
+            .otp-desc {
+                font-size:13px;
+                color:var(--on-surface-variant);
+                margin-bottom:16px;
+                line-height:1.5;
+            }
+            .otp-request-form {
+                margin-bottom:16px;
+            }
+            .otp-confirm-form {
+                display:flex;
+                gap:8px;
+            }
+            .otp-confirm-form input {
+                flex:1;
+                padding:11px 14px;
+                border-radius:var(--radius-lg);
+                border:1px solid var(--border-color);
+                background: rgba(255,255,255,.6);
+                font-size:14px;
+                letter-spacing:2px;
+                outline:none;
+            }
+            .otp-confirm-form input:focus {
+                border-color:var(--primary);
+                background:#fff;
+            }
+            .alert-success {
+                background:rgba(5,150,105,.12);
+                color:var(--success);
+                padding:12px;
+                border-radius:var(--radius-lg);
+                margin-bottom:12px;
+                font-size:14px;
+            }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="${pageContext.request.contextPath}/js/sweetAlert.js"></script>
     </head>
     <body>
         <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
@@ -318,9 +355,39 @@
                     </c:if>
 
 
-
                 </div>
             </div>
+            <c:if test="${ticket.state == 'RESUELTO'}">
+                <div class="glass-card">
+                    <p class="comments-title">Confirmar cierre del ticket</p>
+                    <p class="otp-desc">
+                        Por seguridad, para cerrar definitivamente este ticket necesitas un código de confirmación
+                        que te enviaremos a tu correo (válido por 10 minutos).
+                    </p>
+
+                    <c:if test="${param.otpSent == 'true'}">
+                        <div class="alert-success">Código enviado. Revisa tu correo electrónico.</div>
+                    </c:if>
+
+                    <form class="otp-request-form" action="${pageContext.request.contextPath}/OtpServlet" method="post">
+                        <input type="hidden" name="action" value="request"/>
+                        <input type="hidden" name="idTicket" value="${ticket.id}"/>
+                        <button class="btn" type="submit">
+                            <span class="material-symbols-outlined" style="font-size:16px;">mail</span> Solicitar código para cerrar
+                        </button>
+                    </form>
+
+                    <form class="otp-confirm-form" action="${pageContext.request.contextPath}/TicketServlet" method="post">
+                        <input type="hidden" name="action" value="editState"/>
+                        <input type="hidden" name="idTicket" value="${ticket.id}"/>
+                        <input type="hidden" name="stateAction" value="CERRAR"/>
+                        <input type="text" name="otpCode" placeholder="Código de 6 dígitos" maxlength="6"
+                               inputmode="numeric" pattern="[0-9]{6}" required/>
+                        <button class="btn btn-primary" type="submit">Confirmar cierre</button>
+                    </form>
+                </div>
+            </c:if>
+
             <div class="glass-card">
                 <p class="comments-title">Comentarios (${fn:length(ticket.comments)})</p>
 
@@ -336,7 +403,7 @@
                             <div class="comment-item">
                                 <div class="comment-avatar"><span class="material-symbols-outlined">person</span></div>
                                 <div class="comment-body">
-
+                                    <p class="author">${c.nameAuthor}</p>
                                     <p class="date">${c.date}</p>
                                     <p class="text">${c.text}</p>
                                 </div>
@@ -357,6 +424,27 @@
             </form>
 
         </main>
+        <%
+            String error = (String) request.getAttribute("error");
+            String success = (String) request.getAttribute("success");
+            if (error != null && !error.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.error("¡Error!", "<%= error%>");
+            });
+        </script>
+        <%
+        } else if (success != null && !success.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.success("Éxito", "<%= success%>");
+            });
+        </script>
+        <%
+            }
+        %>
     </body>
 </html>
 

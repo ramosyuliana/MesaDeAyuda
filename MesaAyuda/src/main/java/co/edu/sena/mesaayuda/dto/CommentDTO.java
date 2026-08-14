@@ -17,7 +17,13 @@ public class CommentDTO {
     private String Text;
     private LocalDate Date;
     private int IdTicket;
+    private String NameAuthor;
 
+    public CommentDTO() {
+    }
+
+    
+    
     public CommentDTO(int Id, int IdAuthor, String Text, LocalDate Date, int IdTicket) {
         this.Id = Id;
         this.IdAuthor = IdAuthor;
@@ -25,6 +31,17 @@ public class CommentDTO {
         this.Date = Date;
         this.IdTicket = IdTicket;
     }
+
+    
+    public String getNameAuthor() {
+        return NameAuthor;
+    }
+
+    public void setNameAuthor(String NameAuthor) {
+        this.NameAuthor = NameAuthor;
+    }
+
+    
 
     public int getId() {
         return Id;

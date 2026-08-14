@@ -438,7 +438,7 @@
                 <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets&state=ASIGNADO"
                    class="filter-chip ${param.state == 'ASIGNADO' ? 'active' : ''}">Asignado</a>
                 <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets&state=ENPROCESO"
-                   class="filter-chip ${param.state == 'EN_PROCESO' ? 'active' : ''}">En proceso</a>
+                   class="filter-chip ${param.state == 'ENPROCESO' ? 'active' : ''}">En proceso</a>
                 <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets&state=RESUELTO"
                    class="filter-chip ${param.state == 'RESUELTO' ? 'active' : ''}">Resuelto</a>
                 <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets&state=CERRADO"
@@ -494,7 +494,7 @@
                                                         <span class="material-symbols-outlined">person</span>
                                                     </div>
                                                     <div class="mini-comment-body">
-
+                                                        <p class="mini-author">${c.nameAuthor}</p>
                                                         <p class="mini-date">${c.date}</p>
                                                         <p class="mini-text">${c.text}</p>
                                                     </div>
@@ -533,16 +533,6 @@
                                             </form>
                                         </c:if>
 
-                                        <c:if test="${t.state == 'RESUELTO'}">
-                                            <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
-                                                <input type="hidden" name="action" value="editState"/>
-                                                <input type="hidden" name="idTicket" value="${t.id}"/>
-                                                <input type="hidden" name="stateAction" value="CERRAR"/>
-                                                <button class="action-state-btn primary-action" type="submit">
-                                                    <span class="material-symbols-outlined">check_circle</span> Cerrar ticket
-                                                </button>
-                                            </form>
-                                        </c:if>
 
                                         <c:if test="${t.state != 'CERRADO' && t.state != 'CANCELADO' && t.state != 'RESUELTO'}">
                                             <form class="inline-btn" action="${pageContext.request.contextPath}/TicketServlet" method="post" style="grid-column: span 2;">
@@ -557,7 +547,7 @@
 
                                         </c:if>
 
-                                        <c:if test="${t.state == 'CERRADO' || t.state == 'CANCELADO'}">
+                                        <c:if test="${t.state == 'CERRADO' || t.state == 'CANCELADO' || t.state == 'RESUELTO'}">
                                             <span class="tag-badge tag-neutral" style="grid-column: span 2; justify-content:center; padding:10px;">
                                                 Sin acciones disponibles
                                             </span>

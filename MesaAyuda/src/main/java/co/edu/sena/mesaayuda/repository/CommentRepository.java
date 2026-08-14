@@ -4,6 +4,7 @@
  */
 package co.edu.sena.mesaayuda.repository;
 
+import co.edu.sena.mesaayuda.dto.CommentDTO;
 import co.edu.sena.mesaayuda.model.Comment;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,7 +17,7 @@ public interface CommentRepository {
 
     void MtCreate(Comment ocomment);
 
-    List<Comment> MtListByTicket(int id);
+    List<CommentDTO> MtListByTicket(int id);
 
     void MtEdit(Comment ocomment);
 
