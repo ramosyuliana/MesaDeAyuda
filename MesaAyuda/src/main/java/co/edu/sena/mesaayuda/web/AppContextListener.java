@@ -65,7 +65,6 @@ public class AppContextListener implements ServletContextListener {
         CategoryService categoryService = new CategoryServiceImpl(categoryRepository);
         CommentService commentService = new CommentServiceImpl(commentRepository);
         RoleService roleService = new RoleServiceImpl(roleRepository);
-        TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment, strategyAssignmentReassign, strategyPriority, oNotificator);
         TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment,strategyAssignmentReassign, strategyPriority, oNotificator, otpService);
         UserAuthService userAuthService = new UserAuthServiceImpl(userRepository);
         UserService userService = new UserServiceImpl(userRepository);

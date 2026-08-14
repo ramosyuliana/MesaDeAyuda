@@ -8,7 +8,6 @@ import co.edu.sena.mesaayuda.model.Ticket;
 import co.edu.sena.mesaayuda.model.User;
 import co.edu.sena.mesaayuda.service.s.CategoryService;
 import co.edu.sena.mesaayuda.service.s.CommentService;
-import co.edu.sena.mesaayuda.service.s.NotificationService;
 import co.edu.sena.mesaayuda.service.s.TicketService;
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +28,6 @@ public class TicketServlet extends HttpServlet {
         CategoryService categoryService = (CategoryService) getServletContext().getAttribute(AppContextListener.CATEGORY_SERVICE);
         TicketService ticketService = (TicketService) getServletContext().getAttribute(AppContextListener.TICKET_SERVICE);
         CommentService commentService = (CommentService) getServletContext().getAttribute(AppContextListener.COMMENT_SERVICE);
-        NotificationService notificationService = (NotificationService) getServletContext().getAttribute(AppContextListener.NOTIFICATION_SERVICE);
 
         if ("new".equals(action)) {
             try {
@@ -237,10 +235,6 @@ public class TicketServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
                 }
 
-                ticketService.MtEditState(idTicket, stateAction);
-                
-                request.getSession().setAttribute("success", "El estado del ticket se ha actualizado correctamente");
-                response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
             } catch (Exception e) {
                 String msg = (e.getMessage() != null && !e.getMessage().isBlank())
                         ? e.getMessage()
