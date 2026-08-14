@@ -9,6 +9,9 @@
         <title>Gestión de Usuarios - Mesa de Ayuda CIMM</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+
+
         <style>
             :root {
                 --color-primary: #0058be;
@@ -505,7 +508,7 @@
 
                 <div class="table-card glass-panel">
                     <div class="table-scroll">
-                        <table>
+                        <table id="tableUsers">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -572,7 +575,22 @@
                 </form>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
+        <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#tableUsers').DataTable({
+                    "searching": false, 
+                    "lengthChange": false,
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json',
+                    }
+                });
+            });
+        </script>
         <script>
             (function () {
                 'use strict';

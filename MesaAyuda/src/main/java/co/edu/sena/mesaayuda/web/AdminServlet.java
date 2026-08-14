@@ -4,21 +4,20 @@
  */
 package co.edu.sena.mesaayuda.web;
 
-
+import co.edu.sena.mesaayuda.dto.AgentCreateDTO;
+import co.edu.sena.mesaayuda.dto.CategoryDTO;
 import co.edu.sena.mesaayuda.dto.RoleDTO;
 import co.edu.sena.mesaayuda.dto.UserCreateDTO;
 import co.edu.sena.mesaayuda.dto.UserDTO;
 import co.edu.sena.mesaayuda.dto.UserUpdateDTO;
 import co.edu.sena.mesaayuda.model.User;
-import co.edu.sena.mesaayuda.service.s.RoleService;
-import co.edu.sena.mesaayuda.service.s.TicketService;
-import co.edu.sena.mesaayuda.service.s.UserService;
+import co.edu.sena.mesaayuda.service.s.*;
 
-import co.edu.sena.mesaayuda.dto.TicketDTO;
-import co.edu.sena.mesaayuda.model.Ticket;
+import co.edu.sena.mesaayuda.service.s.CategoryService;
 import co.edu.sena.mesaayuda.service.s.TicketService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -37,11 +36,11 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-
         String action = req.getParameter("action");
 
         UserService userService = (UserService) getServletContext().getAttribute(AppContextListener.USER_SERVICE);
         RoleService roleService = (RoleService) getServletContext().getAttribute(AppContextListener.ROLE_SERVICE);
+        CategoryService categoryService = (CategoryService) getServletContext().getAttribute(AppContextListener.CATEGORY_SERVICE);
         TicketService ticketService = (TicketService) getServletContext().getAttribute(AppContextListener.TICKET_SERVICE);
 
         if (action.equals("dashboard")) {
@@ -79,7 +78,20 @@ public class AdminServlet extends HttpServlet {
 
             try {
                 List<RoleDTO> list = roleService.MtListRoles();
+                List<CategoryDTO> listCats = categoryService.MtListCategories();
+
+                Integer idRoleAgent = null;
+                for (RoleDTO r : list) {
+                    if ("Agente".equalsIgnoreCase(r.getName())) { // Cambia "Agente" por el texto exacto que tenga tu BD (ej. "Agente de Soporte")
+                        idRoleAgent = r.getId();
+                        break;
+                    }
+                }
+
                 req.setAttribute("listRoles", list);
+                req.setAttribute("listCategories", listCats);
+                req.setAttribute("idRole", idRoleAgent); // 2. Enviar el ID al JSP para que ${idRole} lo lea
+
             } catch (Exception e) {
                 req.setAttribute("errorMsg", e.getMessage());
             }
@@ -94,6 +106,7 @@ public class AdminServlet extends HttpServlet {
         String action = req.getParameter("action");
 
         UserService userService = (UserService) getServletContext().getAttribute(AppContextListener.USER_SERVICE);
+        AgentService agentService = (AgentService) getServletContext().getAttribute(AppContextListener.AGENT_SERVICE);
 
         try {
             if (action.equals("updateUser")) {
@@ -109,12 +122,48 @@ public class AdminServlet extends HttpServlet {
 
             } else if (action.equals("createUser")) {
 
-                UserCreateDTO oUserCreateDTO = new UserCreateDTO(
-                        req.getParameter("fullName"),
-                        req.getParameter("email"),
-                        Integer.parseInt(req.getParameter("idRole")));
+                int idRole = Integer.parseInt(req.getParameter("idRole"));
+                String fullName = req.getParameter("fullName");
+                String email = req.getParameter("email");
 
-                userService.MtCreate(oUserCreateDTO);
+                // Obtenemos las categorías seleccionadas por el Choices.js
+                String[] idCategories = req.getParameterValues("idCategories");
+
+                System.out.println("--- DEPURANDO CATEGORÍAS ---");
+                if (idCategories == null) {
+                    System.out.println("El arreglo idCategories llegó como: NULL");
+                } else if (idCategories.length == 0) {
+                    System.out.println("El arreglo idCategories llegó VACÍO (longitud 0)");
+                } else {
+                    System.out.println("Se recibieron " + idCategories.length + " categorías:");
+                    for (String cat : idCategories) {
+                        System.out.println(" - ID Categoría: " + cat);
+                    }
+                }
+                System.out.println("----------------------------");
+
+                if (idCategories != null && idCategories.length > 0) {
+                    // Convertir el arreglo de String[] a List<Integer>
+                    List<String> categoryIds = new ArrayList<>();
+                    for (String catId : idCategories) {
+                        categoryIds.add(catId);
+                    }                                                                             
+
+                    AgentCreateDTO oAgentCreateDTO = new AgentCreateDTO(
+                            fullName,
+                            email,
+                            idRole,
+                            categoryIds);
+                    agentService.MtCreate(oAgentCreateDTO);
+                } else {
+                    UserCreateDTO oUserCreateDTO = new UserCreateDTO(
+                            fullName,
+                            email,
+                            idRole);
+                    userService.MtCreate(oUserCreateDTO);
+
+                }
+
                 resp.sendRedirect(req.getContextPath() + "/AdminServlet?action=new&exito=truecreate");
                 return;
 

@@ -626,6 +626,7 @@
             /* ---------- Tabla ---------- */
             .table-scroll {
                 overflow-x: auto;
+                align-items: center;
             }
             table {
                 width: 100%;
@@ -869,77 +870,89 @@
                             <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets" class="link-btn">Ver todos</a>
                         </div>
                         <div class="table-scroll" style="width: 100%;">
-                            <table style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Titulo</th>
-                                        <th>Categoria</th>
-                                        <th>Fecha Creacion</th>
-                                        <th>Fecha Expiracion</th>
-                                        <th>Agente Encargado</th>
-                                        <th>Prioridad</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <c:forEach var="item" items="${list}">
-                                        <tr>
-                                            <td>
-                                                <div class="cell-subject">${item.title}</div    >
-                                                <div class="cell-id">${item.description}</div>
-                                            </td>
-                                            <td>
-                                                <span class="tag-badge tag-blue">${item.categoryName}</span>
-
-                                            </td>
-                                            <td>${item.createDate}</td>
-                                            <td>${item.expirationDate}</td>
-                                            <td>${item.agentName}</td>
-                                            <td>
-                                                <span class="tag-badge tag-violet">
-                                                    <span class="dot"></span>
-                                                    ${item.priorityName}
-                                                </span>
-                                            </td>   
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${item.state == 'ASIGNADO'}">
-                                                        <span class="tag-badge tag-neutral">
-                                                            <span class="dot"></span>
-                                                            Asignado
-                                                        </span>
-                                                    </c:when>
-                                                    <c:when test="${item.state == 'ENPROCESO'}">
-                                                        <span class="tag-badge tag-warning">
-                                                            <span class="dot"></span>
-                                                            En Proceso
-                                                        </span>
-                                                    </c:when>
-                                                    <c:when test="${item.state == 'RESUELTO'}">
-                                                        <span class="tag-badge tag-success">
-                                                            <span class="dot"></span>
-                                                            Resuelto
-                                                        </span>
-                                                    </c:when>
-                                                    <c:when test="${item.state == 'CERRADO'}">
-                                                        <span class="tag-badge tag-neutral">
-                                                            <span class="dot"></span>
-                                                            Cerrado
-                                                        </span>
-                                                    </c:when>
-                                                    <c:when test="${item.state == 'CANCELADO'}">
-                                                        <span class="tag-badge tag-error">
-                                                            <span class="dot"></span>
-                                                            Cancelado
-                                                        </span>
-                                                    </c:when>
-                                                </c:choose>
-                                            </td> 
-                                        </tr>
-                                    </c:forEach>
 
 
-                                </tbody>
+                            <c:choose>
+                                <c:when test="${empty list}">
+                                    <div class="noTickets">
+                                        <p>No hay registros de tickets</p>
+                                    </div>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <table style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>Titulo</th>
+                                                <th>Categoria</th>
+                                                <th>Fecha Creacion</th>
+                                                <th>Fecha Expiracion</th>
+                                                <th>Agente Encargado</th>
+                                                <th>Prioridad</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="item" items="${list}">
+                                                <tr>
+                                                    <td>
+                                                        <div class="cell-subject">${item.title}</div    >
+                                                        <div class="cell-id">${item.description}</div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="tag-badge tag-blue">${item.categoryName}</span>
+
+                                                    </td>
+                                                    <td>${item.createDate}</td>
+                                                    <td>${item.expirationDate}</td>
+                                                    <td>${item.agentName}</td>
+                                                    <td>
+                                                        <span class="tag-badge tag-violet">
+                                                            <span class="dot"></span>
+                                                            ${item.priorityName}
+                                                        </span>
+                                                    </td>   
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${item.state == 'ASIGNADO'}">
+                                                                <span class="tag-badge tag-neutral">
+                                                                    <span class="dot"></span>
+                                                                    Asignado
+                                                                </span>
+                                                            </c:when>
+                                                            <c:when test="${item.state == 'ENPROCESO'}">
+                                                                <span class="tag-badge tag-warning">
+                                                                    <span class="dot"></span>
+                                                                    En Proceso
+                                                                </span>
+                                                            </c:when>
+                                                            <c:when test="${item.state == 'RESUELTO'}">
+                                                                <span class="tag-badge tag-success">
+                                                                    <span class="dot"></span>
+                                                                    Resuelto
+                                                                </span>
+                                                            </c:when>
+                                                            <c:when test="${item.state == 'CERRADO'}">
+                                                                <span class="tag-badge tag-neutral">
+                                                                    <span class="dot"></span>
+                                                                    Cerrado
+                                                                </span>
+                                                            </c:when>
+                                                            <c:when test="${item.state == 'CANCELADO'}">
+                                                                <span class="tag-badge tag-error">
+                                                                    <span class="dot"></span>
+                                                                    Cancelado
+                                                                </span>
+                                                            </c:when>
+                                                        </c:choose>
+                                                    </td> 
+                                                </tr>
+                                            </c:forEach>
+
+                                        </tbody>
+                                    </c:otherwise>
+                                </c:choose>
+
                             </table>
                         </div>
                     </section>

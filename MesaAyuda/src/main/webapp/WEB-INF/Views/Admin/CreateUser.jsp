@@ -8,6 +8,9 @@
         <title>Crear Usuario - Mesa de Ayuda CIMM</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+
         <style>
             :root {
                 --color-primary: #0058be;
@@ -342,6 +345,18 @@
                     <p class="field-error" data-error-for="role"></p>
                 </div>
 
+
+                <div class="field" id="categoriesField" style="display:none;">
+                    <label for="categories">Categorías</label>
+                    <select id="categories" name="idCategories" multiple>
+                        <c:forEach var="cat" items="${listCategories}">
+                            <option value="${cat.id}">${cat.name}</option>
+                        </c:forEach>
+                    </select>
+                    <p class="field-error" data-error-for="categories"></p>
+                </div>
+
+
                 <div class="form-actions">
                     <button class="btn-outline" type="button" onclick="window.location.href = '${pageContext.request.contextPath}/AdminServlet?action=manageUsers'">Cancelar</button>
                     <button id="submitBtn" class="btn-gradient" type="submit">Crear Usuario</button>
@@ -349,6 +364,55 @@
             </form>
         </div>
 
+
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+        <!-- DataTables JS -->
+        <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var oRoleSelect = document.getElementById('role');
+                var oCategoriesField = document.getElementById('categoriesField');
+                var oCategoriesSelect = document.getElementById('categories');
+                var oChoicesInstance = null;
+
+                var ID_ROLE_AGENTE = "${idRole}";
+
+                function toggleCategories() {
+                    if (!oRoleSelect)
+                        return;
+
+                    // Comparamos si el valor seleccionado es el ID del agente
+                    if (oRoleSelect.value === ID_ROLE_AGENTE) {
+                        oCategoriesField.style.display = 'block'; // Mostrar contenedor
+
+                        if (!oChoicesInstance && oCategoriesSelect) {
+                            oChoicesInstance = new Choices(oCategoriesSelect, {
+                                removeItemButton: true,
+                                searchEnabled: true,
+                                placeholderValue: 'Selecciona categorías',
+                                noResultsText: 'Sin resultados',
+                                noChoicesText: 'No hay más opciones'
+                            });
+                        }
+                    } else {
+                        oCategoriesField.style.display = 'none';
+
+                        if (oChoicesInstance) {
+                            oChoicesInstance.destroy();
+                            oChoicesInstance = null;
+                        }
+                    }
+                }
+
+                if (oRoleSelect) {
+                    oRoleSelect.addEventListener('change', toggleCategories);
+                    toggleCategories();
+                }
+            });
+        </script>
         <script>
             (function () {
                 'use strict';
@@ -368,52 +432,6 @@
                     }
                     oInput.classList.toggle('invalid', !!message);
                 }
-
-                function validateField(oInput) {
-                    var validate = oValidators[oInput.name];
-                    if (!validate)
-                        return true;
-                    var message = validate(oInput);
-                    showError(oInput, message);
-                    return message === '';
-                }
-
-                Object.keys(oValidators).forEach(function (fieldName) {
-                    var oInput = oForm.elements[fieldName];
-                    if (!oInput)
-                        return;
-
-                    oInput.addEventListener('blur', function () {
-                        validateField(oInput);
-                    });
-
-                    oInput.addEventListener('input', function () {
-                        if (oInput.classList.contains('invalid')) {
-                            validateField(oInput);
-                        }
-                    });
-                });
-
-                oForm.addEventListener('submit', function (e) {
-                    var isFormValid = Object.keys(oValidators).reduce(function (valid, fieldName) {
-                        var oInput = oForm.elements[fieldName];
-                        return oInput ? validateField(oInput) && valid : valid;
-                    }, true);
-
-                    if (!isFormValid) {
-                        e.preventDefault();
-                        // Efecto de enfoque visual al primer elemento con error
-                        var firstInvalid = oForm.querySelector('.invalid');
-                        if (firstInvalid) {
-                            firstInvalid.focus();
-                        }
-                        return;
-                    }
-
-                    oSubmitBtn.disabled = true;
-                    oSubmitBtn.style.opacity = '0.8';
-                    oSubmitBtn.innerHTML = '<span style="display:inline-block; animation: rotation 1s infinite linear;">⏳</span> Creando...';
-                });
             })();
         </script>
 

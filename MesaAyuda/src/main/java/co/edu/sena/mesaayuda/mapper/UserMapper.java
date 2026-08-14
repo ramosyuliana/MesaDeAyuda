@@ -4,9 +4,13 @@
  */
 package co.edu.sena.mesaayuda.mapper;
 
+import co.edu.sena.mesaayuda.dto.AgentCreateDTO;
+import co.edu.sena.mesaayuda.dto.AgentUpdateDTO;
 import co.edu.sena.mesaayuda.dto.UserCreateDTO;
 import co.edu.sena.mesaayuda.dto.UserDTO;
 import co.edu.sena.mesaayuda.dto.UserUpdateDTO;
+import co.edu.sena.mesaayuda.model.Agent;
+import co.edu.sena.mesaayuda.model.Category;
 import co.edu.sena.mesaayuda.model.Role;
 import co.edu.sena.mesaayuda.model.User;
 import java.util.List;
@@ -36,6 +40,40 @@ public class UserMapper {
 
     }
 
+    public static Agent toEntityFromCreateAgent(AgentCreateDTO oAgentDTO) {
+        if (oAgentDTO == null) {
+            return null;
+        }
+
+        Agent oAgent = new Agent();
+        oAgent.setName(oAgentDTO.getName());
+        oAgent.setEmail(oAgentDTO.getEmail());
+
+        Role oRole = new Role();
+        oRole.setId(oAgentDTO.getIdRole());
+
+        oAgent.setRole(oRole);
+
+
+        return oAgent;
+
+    }
+
+    public static Agent toEntityFromUpdateAgent(AgentUpdateDTO oAgentDTO) {
+        if (oAgentDTO == null) {
+            return null;
+        }
+
+        Agent oAgent = new Agent();
+        oAgent.setId(oAgentDTO.getId());
+        oAgent.setName(oAgentDTO.getName());
+        oAgent.setEmail(oAgentDTO.getEmail());
+
+
+        return oAgent;
+
+    }
+
     public static User toEntityFromUpdate(UserUpdateDTO oUserDto) {
 
         if (oUserDto == null) {
@@ -50,8 +88,8 @@ public class UserMapper {
 
         return oUser;
     }
-    
-    public static UserDTO aDTO(User oUser){
+
+    public static UserDTO aDTO(User oUser) {
         return new UserDTO(
                 oUser.getId(),
                 oUser.getName(),
@@ -59,10 +97,9 @@ public class UserMapper {
                 oUser.getRole().getName()
         );
     }
-    
-    public static List<UserDTO> aDTO(List<User> users){
+
+    public static List<UserDTO> aDTO(List<User> users) {
         return users.stream().map(UserMapper::aDTO).collect(Collectors.toList());
     }
-    
-    
+
 }
