@@ -38,8 +38,9 @@ public class TicketServiceImpl implements TicketService {
     private final StrategyAssignment strategyAssignmentReassign;
     private final StrategyPriority strategyPriority;
     private final Notificator notificator;
+    private final OtpService otpService;
 
-    public TicketServiceImpl(TicketRepository ticketRepository, UserRepository userRepository, CategoryRepository categoryRepository, StrategySLA strategySla, StrategyAssignment strategyAssignment, StrategyAssignment strategyAssignmentReassign, StrategyPriority strategyPriority, Notificator notificator) {
+    public TicketServiceImpl(TicketRepository ticketRepository, UserRepository userRepository, CategoryRepository categoryRepository, StrategySLA strategySla, StrategyAssignment strategyAssignment, StrategyAssignment strategyAssignmentReassign, StrategyPriority strategyPriority, Notificator notificator, co.edu.sena.mesaayuda.service.s.OtpService otpService) {
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -48,9 +49,9 @@ public class TicketServiceImpl implements TicketService {
         this.strategyAssignmentReassign = strategyAssignmentReassign;
         this.strategyPriority = strategyPriority;
         this.notificator = notificator;
+        this.otpService = otpService;
     }
 
-    
     @Override
     public void MtCreateTicket(TicketCreateDTO oTicket) {
         validar(oTicket.getTitle(), oTicket.getDescription(), oTicket.getIdCategory());
@@ -91,10 +92,15 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void MtEditState(int idTicket, String action) {
+    public void MtEditState(int idTicket, String action, String otpCode) {
         Ticket ticket = ticketRepository.MtFindById(idTicket);
         if (ticket == null) {
             throw new IllegalArgumentException("Ticket no encontrado");
+        }
+        if ("CERRAR".equals(action)) {
+            if (otpCode == null || !otpService.MtValidate(idTicket, otpCode)) {
+                throw new IllegalArgumentException("Código de confirmación inválido o expirado");
+            }
         }
 
         TicketState currentState = TicketStateFactory.fromName(ticket.getState());
@@ -150,16 +156,16 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.MtListAll();
 
     }
+
     @Override
-    public TicketDTO MtFindTicket(int id){
+    public TicketDTO MtFindTicket(int id) {
         return ticketRepository.MtFindTicket(id);
     }
-    
+
     @Override
-    public Ticket MtFindById(int id){
+    public Ticket MtFindById(int id) {
         return ticketRepository.MtFindById(id);
     }
-    
 
     private void validar(String Title, String Description, int idCategory) {
         if (Title == null || Title.trim().isEmpty()) {

@@ -35,6 +35,7 @@ public class AppContextListener implements ServletContextListener {
     public static final String USER_SERVICE = "userService";
     public static final String AGENT_SERVICE = "agentService";
     public static final String NOTIFICATION_SERVICE = "notificatioService";
+    public static final String OTP_SERVICE = "otpService";
 
     @Override
     public void contextInitialized(ServletContextEvent oEvent) {
@@ -59,11 +60,12 @@ public class AppContextListener implements ServletContextListener {
                 new NotificationByEmail("julilo09123452@gmail.com"),
                 new NotificationBySms()
         ));
+        OtpService otpService = new OtpServiceImpl(oNotificator, userRepository);
 
         CategoryService categoryService = new CategoryServiceImpl(categoryRepository);
         CommentService commentService = new CommentServiceImpl(commentRepository);
         RoleService roleService = new RoleServiceImpl(roleRepository);
-        TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment,strategyAssignmentReassign, strategyPriority, oNotificator);
+        TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment,strategyAssignmentReassign, strategyPriority, oNotificator, otpService);
         UserAuthService userAuthService = new UserAuthServiceImpl(userRepository);
         UserService userService = new UserServiceImpl(userRepository);
         AgentService agentService = new AgentServiceImpl(agentRepository);
@@ -75,6 +77,7 @@ public class AppContextListener implements ServletContextListener {
         oContext.setAttribute(USERAUTH_SERVICE, userAuthService);
         oContext.setAttribute(USER_SERVICE, userService);
         oContext.setAttribute(AGENT_SERVICE, agentService);
+        oContext.setAttribute(OTP_SERVICE, otpService);
 
     }
 
