@@ -21,7 +21,7 @@ public interface TicketService {
 
     void MtEditTicket(TicketDTO oTicket);
 
-    void MtEditState(int idTicket, String action);
+    void MtEditState(int idTicket, String action,String otpCode);
 
     void MtReassignAgent(int idTicket);
 

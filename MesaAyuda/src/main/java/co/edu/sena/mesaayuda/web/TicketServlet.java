@@ -133,6 +133,17 @@ public class TicketServlet extends HttpServlet {
                 ticket.setComments(listComments);
 
                 request.setAttribute("ticket", ticket);
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    if (session.getAttribute("success") != null) {
+                        request.setAttribute("success", session.getAttribute("success"));
+                        session.removeAttribute("success");
+                    }
+                    if (session.getAttribute("error") != null) {
+                        request.setAttribute("error", session.getAttribute("error"));
+                        session.removeAttribute("error");
+                    }
+                }
                 request.getRequestDispatcher("/WEB-INF/Views/Applicant/ViewTicket.jsp").forward(request, response);
             } catch (Exception e) {
                 request.setAttribute("error", "No se pudieron cargar los datos del ticket");
@@ -204,17 +215,45 @@ public class TicketServlet extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/Views/Applicant/CreateTicket.jsp").forward(request, response);
             }
         } else if ("editState".equals(action)) {
+            int idTicket = -1;
+            String stateAction = null;
             try {
-                int idTicket = Integer.parseInt(request.getParameter("idTicket"));
-                String stateAction = request.getParameter("stateAction");
+                idTicket = Integer.parseInt(request.getParameter("idTicket"));
+                stateAction = request.getParameter("stateAction");
+                String otpCode = request.getParameter("otpCode");
+
+                ticketService.MtEditState(idTicket, stateAction, otpCode);
+
+                String successMsg = "CERRAR".equals(stateAction)
+                        ? "Ticket cerrado correctamente."
+                        : "El estado del ticket se ha actualizado correctamente.";
+                request.getSession().setAttribute("success", successMsg);
+
+                if ("CERRAR".equals(stateAction)) {
+
+                    response.sendRedirect(request.getContextPath() + "/TicketServlet?action=view&id=" + idTicket);
+                } else {
+
+                    response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
+                }
 
                 ticketService.MtEditState(idTicket, stateAction);
                 
                 request.getSession().setAttribute("success", "El estado del ticket se ha actualizado correctamente");
                 response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
             } catch (Exception e) {
-                request.getSession().setAttribute("error", e.getMessage());
-                response.sendRedirect(request.getContextPath() + "/TicketServlet?action=tickets");
+                String msg = (e.getMessage() != null && !e.getMessage().isBlank())
+                        ? e.getMessage()
+                        : "No se pudo actualizar el estado del ticket.";
+                msg = msg.replace("\n", " ")
+                        .replace("\r", " ")
+                        .replace("\"", "\\\"");
+                request.getSession().setAttribute("error", msg);
+                String redirectUrl = request.getContextPath() + "/TicketServlet?action=tickets";
+                if (idTicket != -1 && ("CERRAR".equals(stateAction))) {
+                    redirectUrl = request.getContextPath() + "/TicketServlet?action=view&id=" + idTicket;
+                }
+                response.sendRedirect(redirectUrl);
             }
         } else if ("editTicket".equals(action)) {
             int idTicket = Integer.parseInt(request.getParameter("idTicket"));

@@ -27,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDTO> MtListComment(int idTicket) {
-        return CommentMapper.aDTO(commentRepository.MtListByTicket(idTicket));
+        return commentRepository.MtListByTicket(idTicket);
     }
 
     @Override

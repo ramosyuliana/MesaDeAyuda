@@ -4,6 +4,7 @@
  */
 package co.edu.sena.mesaayuda.repository;
 
+import co.edu.sena.mesaayuda.dto.CommentDTO;
 import co.edu.sena.mesaayuda.model.Comment;
 import java.sql.Connection;
 import java.sql.Date;
@@ -37,21 +38,15 @@ public class CommentRepositoryJdbc implements CommentRepository {
     }
 
     @Override
-    public List<Comment> MtListByTicket(int id) {
-        String consulta = "Select * from \"Comment\"  where \"IdTicket\"= ?";
-        List<Comment> list = new ArrayList<Comment>();
+    public List<CommentDTO> MtListByTicket(int id) {
+        
+        String consulta = "Select c.*,u.\"Name\" from \"Comment\" c inner join \"User\" u on u.\"Id\" = c.\"IdAuthor\" where \"IdTicket\"= ?";
+        List<CommentDTO> list = new ArrayList<CommentDTO>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta);) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Comment ocomment = new Comment();
-                    ocomment.setId(rs.getInt("Id"));
-                    ocomment.setIdAuthor(rs.getInt("IdAuthor"));
-                    ocomment.setText(rs.getString("Text"));
-                    ocomment.setDate(rs.getObject("Date", LocalDate.class));
-                    ocomment.setIdTicket(rs.getInt("IdTicket"));
-
-                    list.add(ocomment);
+                    list.add(mapearCommentDTO(rs));
                 }
             }
 
@@ -59,8 +54,22 @@ public class CommentRepositoryJdbc implements CommentRepository {
         } catch (SQLException e) {
 
             throw new RuntimeException("No se pudieron listar los comentarios asociados al ticket", e);
+
         }
 
+    }
+
+    private CommentDTO mapearCommentDTO(ResultSet rs) throws SQLException {
+
+        CommentDTO dto = new CommentDTO();
+        dto.setId(rs.getInt("Id"));
+        dto.setIdAuthor(rs.getInt("IdAuthor"));
+        dto.setText(rs.getString("Text"));
+        dto.setDate(rs.getObject("Date", LocalDate.class));
+        dto.setIdTicket(rs.getInt("IdTicket"));
+        dto.setNameAuthor(rs.getString("Name"));
+
+        return dto;
     }
 
     @Override
