@@ -33,6 +33,8 @@ public interface TicketService {
     void MtNotifyStateChange(Ticket oTicket, TicketState oPreviousState);
     
     TicketDTO MtFindTicket(int id);
+    
+    Ticket MtFindById(int id);
 
     double MtCanceledTicketRate();
 

@@ -312,7 +312,7 @@
                 <div class="actions-row">
 
                     <c:if test="${ticket.state == 'NUEVO' || ticket.state == 'ASIGNADO'}">
-                        <a class="btn" href="${pageContext.request.contextPath}/TicketServlet?action=editForm&id=${ticket.id}">
+                        <a class="btn" href="${pageContext.request.contextPath}/TicketServlet?action=edit&id=${ticket.id}">
                             <span class="material-symbols-outlined" style="font-size:16px;">edit</span> Editar ticket
                         </a>
                     </c:if>

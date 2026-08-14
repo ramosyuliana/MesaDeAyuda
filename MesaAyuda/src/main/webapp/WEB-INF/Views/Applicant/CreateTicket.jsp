@@ -280,6 +280,8 @@
                 transform: translateY(1px);
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="${pageContext.request.contextPath}/js/sweetAlert.js"></script>
     </head>
     <body>
         <c:if test="${not empty errorMsg}">
@@ -347,5 +349,26 @@
                 document.body.style.transform = "translateY(0)";
             });
         </script>
+        <%
+            String error = (String) request.getAttribute("error");
+            String success = (String) request.getAttribute("success");
+            if (error != null && !error.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.error("¡Error!", "<%= error%>");
+            });
+        </script>
+        <%
+        } else if (success != null && !success.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.success("Éxito", "<%= success%>");
+            });
+        </script>
+        <%
+            }
+        %>
     </body>
 </html>

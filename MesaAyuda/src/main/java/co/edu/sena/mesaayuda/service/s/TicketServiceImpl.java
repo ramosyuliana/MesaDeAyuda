@@ -35,19 +35,22 @@ public class TicketServiceImpl implements TicketService {
     private final CategoryRepository categoryRepository;
     private final StrategySLA strategySla;
     private final StrategyAssignment strategyAssignment;
+    private final StrategyAssignment strategyAssignmentReassign;
     private final StrategyPriority strategyPriority;
     private final Notificator notificator;
 
-    public TicketServiceImpl(TicketRepository ticketRepository, UserRepository userRepository, CategoryRepository categoryRepository, StrategySLA strategySla, StrategyAssignment strategyAssignment, StrategyPriority strategyPriority, Notificator notificator) {
+    public TicketServiceImpl(TicketRepository ticketRepository, UserRepository userRepository, CategoryRepository categoryRepository, StrategySLA strategySla, StrategyAssignment strategyAssignment, StrategyAssignment strategyAssignmentReassign, StrategyPriority strategyPriority, Notificator notificator) {
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.strategySla = strategySla;
         this.strategyAssignment = strategyAssignment;
+        this.strategyAssignmentReassign = strategyAssignmentReassign;
         this.strategyPriority = strategyPriority;
         this.notificator = notificator;
     }
 
+    
     @Override
     public void MtCreateTicket(TicketCreateDTO oTicket) {
         validar(oTicket.getTitle(), oTicket.getDescription(), oTicket.getIdCategory());
@@ -127,7 +130,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         List<User> availableAgents = userRepository.MtListAgents();
-        User newAgent = strategyAssignment.MtAssigmentAgent(ticket, availableAgents);
+        User newAgent = strategyAssignmentReassign.MtAssigmentAgent(ticket, availableAgents);
 
         ticketRepository.MtEditAgent(newAgent.getId(), ticket);
     }
@@ -151,6 +154,12 @@ public class TicketServiceImpl implements TicketService {
     public TicketDTO MtFindTicket(int id){
         return ticketRepository.MtFindTicket(id);
     }
+    
+    @Override
+    public Ticket MtFindById(int id){
+        return ticketRepository.MtFindById(id);
+    }
+    
 
     private void validar(String Title, String Description, int idCategory) {
         if (Title == null || Title.trim().isEmpty()) {
