@@ -14,7 +14,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -177,22 +179,26 @@ public class TicketRepositoryJdbc implements TicketRepository {
     }
 
     @Override
-    public int MtCountAssignments() {
+    public Map<Integer, Integer> MtCountAgentWithoutAssignments() {
 
-        String sql = "Select Count(*) From \"Ticket\" Where \"IdAgent\" IS NOT NULL ";
+        String sql = "SELECT "
+                + "(SELECT COUNT(*) FROM \"Ticket\" t RIGHT JOIN \"User\" u ON t.\"IdAgent\" = u.\"Id\" INNER JOIN \"Role\" r ON u.\"IdRole\" = r.\"Id\" WHERE r.\"Name\" = 'Agente' AND t.\"IdAgent\" IS NULL) AS \"SinAsignar\", "
+                + "(SELECT COUNT(*) FROM \"User\" u INNER JOIN \"Role\" r ON u.\"IdRole\" = r.\"Id\" WHERE r.\"Name\" = 'Agente') AS \"Total\"";
+
+        Map<Integer, Integer> list = new HashMap<>();
 
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return rs.getInt(1);
+                list.put(rs.getInt("SinAsignar"), rs.getInt("Total"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("No se pudo contar los tickets sin agente asignado ", e);
+            throw new RuntimeException("No se pudo contar los tickets sin agente asignado ni totales ", e);
         }
 
-        return 0;
+        return list;
     }
 
     @Override
@@ -220,10 +226,10 @@ public class TicketRepositoryJdbc implements TicketRepository {
             throw new RuntimeException("No se pudo buscar el ticket por id", e);
         }
     }
-    
-     @Override
+
+    @Override
     public TicketDTO MtFindTicket(int id) {
-        String consulta = SELECT_WITH_DETAILS +"Where t.\"Id\" = ?";
+        String consulta = SELECT_WITH_DETAILS + "Where t.\"Id\" = ?";
         TicketDTO ticket;
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(consulta)) {
             ps.setInt(1, id);
@@ -231,7 +237,7 @@ public class TicketRepositoryJdbc implements TicketRepository {
                 if (rs.next()) {
                     return mapearTicketDTO(rs);
                 }
-                return null; 
+                return null;
             }
         } catch (SQLException e) {
             throw new RuntimeException("No se pudo buscar el ticket por id", e);
@@ -343,6 +349,8 @@ public class TicketRepositoryJdbc implements TicketRepository {
     public int MtCountAsignedTickets(int idApplicant) {
         String sql = "Select COUNT(*) From \"Ticket\" where \"IdApplicant\" = ? AND \"State\" = 'ASIGNADO' ";
 
+        Map<String, Integer> list = new HashMap<>();
+
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, idApplicant);
@@ -392,6 +400,52 @@ public class TicketRepositoryJdbc implements TicketRepository {
             throw new RuntimeException("No se pudo listar los tickets ", e);
         }
 
+    }
+
+    @Override
+    public Map<String, Integer> MtCountTicketsForState() {
+
+        String sql = "Select "
+                + "\"State\", "
+                + "Count(*) AS \"Total\""
+                + "from \"Ticket\" "
+                + "group by \"State\" ;";
+
+        Map<String, Integer> list = new HashMap<>();
+
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql);) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.put(rs.getString("State"), rs.getInt("Total"));
+
+                }
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudieron listar los tickets por estado");
+        }
+        return list;
+
+    }
+
+    @Override
+    public int MtCountAssignments() {
+
+        String sql = "Select Count(*) From \"Ticket\" Where \"IdAgent\" IS NOT NULL ";
+
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudo contar los tickets sin agente asignado ", e);
+        }
+
+        return 0;
     }
 
 }

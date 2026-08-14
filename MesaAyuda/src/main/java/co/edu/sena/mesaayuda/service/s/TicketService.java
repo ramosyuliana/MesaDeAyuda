@@ -9,6 +9,7 @@ import co.edu.sena.mesaayuda.dto.TicketDTO;
 import co.edu.sena.mesaayuda.model.Ticket;
 import co.edu.sena.mesaayuda.model.state.TicketState;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -31,9 +32,9 @@ public interface TicketService {
     List<TicketDTO> MtListAll();
 
     void MtNotifyStateChange(Ticket oTicket, TicketState oPreviousState);
-    
+
     TicketDTO MtFindTicket(int id);
-    
+
     Ticket MtFindById(int id);
 
     double MtCanceledTicketRate();
@@ -47,5 +48,11 @@ public interface TicketService {
     int MtCountAsignedTickets(int idApplicant);
 
     List<TicketDTO> MtListTop5ByApplicant(int idApplicant);
+
+    Map<String, Integer> MtCountTicketsForState();
+
+    Map<Integer, Integer> MtCountAgentWithoutAssignments();
+    
+    int MtCountAssignments();
 
 }

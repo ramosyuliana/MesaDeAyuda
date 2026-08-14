@@ -418,11 +418,14 @@
             <!-- Separador vertical sutil -->
             <div style="width: 1px; height: 24px; background-color: var(--hairline); margin: 0 4px;"></div>
 
-            <!-- Botón de notificaciones -->
-            <button class="icon-btn" aria-label="Notificaciones">
-                <span class="material-symbols-outlined">notifications</span>
-                <span class="dot-badge"></span>
-            </button>
+            <c:if test="${user.role.name == 'Solicitante'}">
+
+                <!-- Botón de notificaciones -->
+                <button class="icon-btn" aria-label="Notificaciones">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="dot-badge"></span>
+                </button>
+            </c:if>
         </div>
     </div>
 

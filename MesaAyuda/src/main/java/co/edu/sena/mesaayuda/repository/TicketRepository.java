@@ -8,6 +8,7 @@ import co.edu.sena.mesaayuda.dto.TicketDTO;
 import co.edu.sena.mesaayuda.model.Ticket;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -29,9 +30,11 @@ public interface TicketRepository {
 
     void MtEditState(String estado, Ticket oticket);
 
-    int MtCountAssignments();
+    Map<Integer, Integer> MtCountAgentWithoutAssignments();
 
-    Ticket MtFindById(int id);    
+    Map<String, Integer> MtCountTicketsForState();
+
+    Ticket MtFindById(int id);
 
     TicketDTO MtFindTicket(int id);
 
@@ -46,4 +49,6 @@ public interface TicketRepository {
     int MtCountAsignedTickets(int idApplicant);
 
     List<TicketDTO> MtListTop5ByApplicant(int idApplicant);
+    
+    int MtCountAssignments();
 }

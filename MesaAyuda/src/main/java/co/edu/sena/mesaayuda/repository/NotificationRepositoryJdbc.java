@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  *
@@ -24,7 +25,7 @@ public class NotificationRepositoryJdbc implements NotificationRepository {
     @Override
     public Notification MtSave(Notification oNotification) {
 
-        String sql = "Insert into \"Notification\" (\"IdTicket\", \"Addressee\", \"Subject\", \"Message\", "
+        String sql = "Insert into \"Notification\" (\"IdTicket\", \"IdAddressee\", \"Subject\", \"Message\", "
                 + "\"Channel\" ) "
                 + "Values(?, ?, ?, ?, ?) RETURNING \"Id\",\"SendDate\" ";
 
@@ -47,6 +48,7 @@ public class NotificationRepositoryJdbc implements NotificationRepository {
 
         } catch (SQLException e) {
 
+            e.printStackTrace();
             throw new RuntimeException("No se pudo guardar la notificacion del ticket " + oNotification.getIdTicket(), e);
         }
     }
