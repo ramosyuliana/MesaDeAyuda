@@ -5,9 +5,10 @@
 package co.edu.sena.mesaayuda.web;
 
 import co.edu.sena.mesaayuda.repository.*;
+import co.edu.sena.mesaayuda.service.assignment.*;
 import co.edu.sena.mesaayuda.service.s.*;
 import co.edu.sena.mesaayuda.service.sla.*;
-import co.edu.sena.mesaayuda.service.assignment.*;
+
 import co.edu.sena.mesaayuda.service.notification.NotificationByEmail;
 import co.edu.sena.mesaayuda.service.notification.NotificationBySms;
 import co.edu.sena.mesaayuda.service.notification.NotificationInApp;
@@ -51,6 +52,7 @@ public class AppContextListener implements ServletContextListener {
         StrategySLA strategySla = new StrategySLAStandard(priorityRepository);
         StrategyPriority strategyPriority = new StrategyPriorityByCategory(categoryRepository);
         StrategyAssignment strategyAssignment = new StrategyAssignmentByCategority(userRepository);
+        StrategyAssignment strategyAssignmentReassign = new StrategyAssignmentForLessLoad(userRepository);
 
         Notificator oNotificator = new NotificatorComposite(Arrays.asList(
                 new NotificationInApp(notificationRepository),
@@ -61,7 +63,7 @@ public class AppContextListener implements ServletContextListener {
         CategoryService categoryService = new CategoryServiceImpl(categoryRepository);
         CommentService commentService = new CommentServiceImpl(commentRepository);
         RoleService roleService = new RoleServiceImpl(roleRepository);
-        TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment, strategyPriority, oNotificator);
+        TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment,strategyAssignmentReassign, strategyPriority, oNotificator);
         UserAuthService userAuthService = new UserAuthServiceImpl(userRepository);
         UserService userService = new UserServiceImpl(userRepository);
         AgentService agentService = new AgentServiceImpl(agentRepository);

@@ -31,7 +31,9 @@ public interface TicketRepository {
 
     int MtCountAssignments();
 
-    Ticket MtFindById(int id);
+    Ticket MtFindById(int id);    
+
+    TicketDTO MtFindTicket(int id);
 
     double MtCanceledTicketRate();
 

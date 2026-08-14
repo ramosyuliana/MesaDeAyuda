@@ -396,7 +396,7 @@
             <c:if test="${user.role.name == 'Administrador'}">
                 <nav class="topbar-nav">
                     <a href="${pageContext.request.contextPath}/AdminServlet?action=dashboard">Dashboard</a>
-                    <a href="${pageContext.request.contextPath}/AdminServlet?action=manage">Todos Los Tickets</a>
+                    <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets">Todos Los Tickets</a>
                     <a href="${pageContext.request.contextPath}/AdminServlet?action=manageUsers">Usuarios</a>
                 </nav>
             </c:if>

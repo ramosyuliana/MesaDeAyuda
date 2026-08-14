@@ -1,9 +1,11 @@
 <%-- 
     Document   : ManagementTickets
-    Created on : 12/08/2026, 4:58:13 p. m.
+    Created on : 12/08/2026, 4:58:13 p. m.
     Author     : julil
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -215,11 +217,7 @@
                 align-items: center;
                 gap: var(--sp-md);
             }
-            @media (min-width: 1024px) {
-                .nav-left {
-                    margin-left: var(--sidenav-w);
-                }
-            }
+            /* Sin sidenav en esta vista: el nav-left no necesita margen extra */
 
             .nav-search {
                 display: flex;
@@ -470,20 +468,20 @@
 
             /* ---------- Main ---------- */
             main.content {
-                padding: 88px var(--sp-md) var(--sp-lg);
+                padding: 72px var(--sp-md) var(--sp-lg);
                 max-width: var(--container-max);
                 margin: 0 auto;
                 min-height: 100vh;
             }
             @media (min-width: 768px) {
                 main.content {
-                    padding-left: calc(var(--sidenav-w) + var(--sp-lg));
+                    padding-left: var(--sp-lg);
                     padding-right: var(--sp-lg);
                 }
             }
 
             .page-head {
-                margin-bottom: var(--sp-lg);
+                margin-bottom: 24px;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
@@ -513,6 +511,17 @@
                 flex-wrap: wrap;
             }
 
+            /* ---------- Alerta de error ---------- */
+            .alert-error {
+                background: rgba(220,38,38,.1);
+                color: var(--color-error);
+                border: 1px solid rgba(220,38,38,.25);
+                padding: var(--sp-sm) var(--sp-md);
+                border-radius: var(--radius-sm);
+                margin-bottom: var(--sp-md);
+                font-size: 14px;
+            }
+
             /* ---------- Tabla ---------- */
             .table-card {
                 border-radius: var(--radius-xl);
@@ -536,6 +545,7 @@
                 width: 100%;
                 text-align: left;
                 border-collapse: collapse;
+                min-width: 980px;
             }
 
             thead tr {
@@ -543,13 +553,16 @@
                 background: rgba(233,238,245,.5);
             }
             th {
-                padding: var(--sp-sm) var(--sp-md);
+                padding: var(--sp-sm) var(--sp-sm);
                 font-size: 14px;
                 font-weight: 600;
                 color: var(--text-label);
             }
             th.align-right {
                 text-align: right;
+            }
+            th.align-center {
+                text-align: center;
             }
 
             tbody tr {
@@ -566,7 +579,7 @@
                 background: rgba(59,130,246,.1);
             }
             td {
-                padding: var(--sp-md);
+                padding: var(--sp-sm);
                 font-size: 16px;
                 vertical-align: middle;
             }
@@ -583,9 +596,43 @@
             }
             .cell-meta {
                 font-size: 12px;
-                line-height: 1.4;
+                line-height: 1.5;
                 color: var(--text-muted);
                 margin-top: var(--sp-xs);
+            }
+            .cell-meta span.sep {
+                margin: 0 4px;
+                color: var(--card-border);
+            }
+            .cell-applicant {
+                font-size: 14px;
+                color: var(--text-label);
+            }
+            .cell-applicant .cell-sub {
+                font-size: 12px;
+                color: var(--text-muted);
+                margin-top: 2px;
+            }
+            .cell-plain {
+                font-size: 14px;
+                color: var(--text-secondary);
+            }
+            .cell-due {
+                font-size: 13px;
+                color: var(--text-secondary);
+                white-space: nowrap;
+            }
+            .priority-badge {
+                display: inline-flex;
+                align-items: center;
+                padding: 2px 10px;
+                border-radius: var(--radius-full);
+                font-size: 11px;
+                font-weight: 600;
+                background: rgba(99,102,241,.1);
+                color: var(--secondary);
+                border: 1px solid rgba(99,102,241,.2);
+                white-space: nowrap;
             }
 
             .status {
@@ -635,6 +682,14 @@
             .status-review .dot {
                 background: var(--tertiary);
             }
+            .status-success {
+                background: rgba(5,150,105,.1);
+                color: var(--color-success);
+                border: 1px solid rgba(5,150,105,.2);
+            }
+            .status-success .dot {
+                background: var(--color-success);
+            }
 
             .row-actions {
                 display: flex;
@@ -649,6 +704,10 @@
             tbody tr:focus-within .row-actions {
                 opacity: 1;
                 transform: none;
+            }
+            form.inline-action {
+                margin: 0;
+                display: inline-flex;
             }
 
             .btn-cancel {
@@ -696,6 +755,18 @@
             }
             .btn-reassign:active {
                 transform: scale(.96);
+            }
+
+            .no-actions-tag {
+                font-size: 11px;
+                color: var(--text-muted);
+                font-style: italic;
+            }
+
+            .empty-state {
+                padding: var(--sp-lg) var(--sp-md);
+                text-align: center;
+                color: var(--text-muted);
             }
 
             /* ---------- Paginación ---------- */
@@ -790,6 +861,8 @@
                 }
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="${pageContext.request.contextPath}/js/sweetAlert.js"></script>
     </head>
     <body>
         <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
@@ -804,16 +877,20 @@
                 </div>
                 <!-- Contextual Filters/Actions for the table -->
                 <div class="head-actions">
-                    <button class="btn-ghost">
+                    <button class="btn-ghost" type="button">
                         <span class="material-symbols-outlined ico-16">filter_list</span>
                         Filtrar
                     </button>
-                    <button class="btn-ghost">
+                    <button class="btn-ghost" type="button">
                         <span class="material-symbols-outlined ico-16">sort</span>
                         Ordenar
                     </button>
                 </div>
             </div>
+
+            <c:if test="${not empty errorMsg}">
+                <div class="alert-error fade-in-element">${errorMsg}</div>
+            </c:if>
 
             <!-- Glassmorphic Table Container -->
             <div class="glass-panel table-card fade-in-element">
@@ -823,130 +900,105 @@
                             <tr>
                                 <th>ID Ticket</th>
                                 <th>Asunto</th>
+                                <th>Solicitante</th>
+                                <th>Agente</th>
+                                <th>Categoría</th>
+                                <th>Prioridad</th>
                                 <th>Estado</th>
-                                <th class="align-right">Acciones</th>
+                                <th>Vence</th>
+                                <th class="align-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Row 1 -->
-                            <tr>
-                                <td class="cell-id">#TK-8492</td>
-                                <td>
-                                    <div class="cell-subject">Problema de acceso al portal</div>
-                                    <div class="cell-meta">Usuario: m.gomez@empresa.com</div>
-                                </td>
-                                <td>
-                                    <span class="status status-progress">
-                                        <span class="dot"></span>
-                                        En Progreso
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="row-actions">
-                                        <button class="btn-cancel">
-                                            <span class="material-symbols-outlined ico-16">cancel</span>
-                                            Cancelar
-                                        </button>
-                                        <button class="btn-reassign">
-                                            <span class="material-symbols-outlined ico-16">move_up</span>
-                                            Reasignar
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 2 -->
-                            <tr>
-                                <td class="cell-id">#TK-8491</td>
-                                <td>
-                                    <div class="cell-subject">Actualización de facturación fallida</div>
-                                    <div class="cell-meta">Usuario: finanzas@cliente.com</div>
-                                </td>
-                                <td>
-                                    <span class="status status-urgent">
-                                        <span class="dot"></span>
-                                        Urgente
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="row-actions">
-                                        <button class="btn-cancel">
-                                            <span class="material-symbols-outlined ico-16">cancel</span>
-                                            Cancelar
-                                        </button>
-                                        <button class="btn-reassign">
-                                            <span class="material-symbols-outlined ico-16">move_up</span>
-                                            Reasignar
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 3 -->
-                            <tr>
-                                <td class="cell-id">#TK-8488</td>
-                                <td>
-                                    <div class="cell-subject">Solicitud de nueva licencia</div>
-                                    <div class="cell-meta">Usuario: r.lopez@startup.io</div>
-                                </td>
-                                <td>
-                                    <span class="status status-pending">
-                                        <span class="dot"></span>
-                                        Pendiente
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="row-actions">
-                                        <button class="btn-cancel">
-                                            <span class="material-symbols-outlined ico-16">cancel</span>
-                                            Cancelar
-                                        </button>
-                                        <button class="btn-reassign">
-                                            <span class="material-symbols-outlined ico-16">move_up</span>
-                                            Reasignar
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Row 4 -->
-                            <tr>
-                                <td class="cell-id">#TK-8475</td>
-                                <td>
-                                    <div class="cell-subject">Error de sincronización API</div>
-                                    <div class="cell-meta">Sistema Automatizado</div>
-                                </td>
-                                <td>
-                                    <span class="status status-review">
-                                        <span class="dot"></span>
-                                        En Revisión
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="row-actions">
-                                        <button class="btn-cancel">
-                                            <span class="material-symbols-outlined ico-16">cancel</span>
-                                            Cancelar
-                                        </button>
-                                        <button class="btn-reassign">
-                                            <span class="material-symbols-outlined ico-16">move_up</span>
-                                            Reasignar
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <c:forEach var="t" items="${tickets}">
+                                <tr>
+                                    <td class="cell-id">TCK-${t.id}</td>
+                                    <td>
+                                        <div class="cell-subject">${t.title}</div>
+                                        <div class="cell-meta">${t.description}</div>
+                                    </td>
+                                    <td>
+                                        <div class="cell-applicant">${t.applicantName}</div>
+
+                                    </td>
+                                    <td>
+                                        <div class="cell-applicant">${t.agentName}</div>
+
+                                    </td>
+                                    <td><span class="cell-plain">${t.categoryName}</span></td>
+                                    <td><span class="priority-badge">${t.priorityName}</span></td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${t.state == 'NUEVO'}">
+                                                <span class="status status-pending"><span class="dot"></span>NUEVO</span>
+                                            </c:when>
+                                            <c:when test="${t.state == 'ASIGNADO'}">
+                                                <span class="status status-review"><span class="dot"></span>ASIGNADO</span>
+                                            </c:when>
+                                            <c:when test="${t.state == 'EN_PROCESO'}">
+                                                <span class="status status-progress"><span class="dot"></span>EN_PROCESO</span>
+                                            </c:when>
+                                            <c:when test="${t.state == 'RESUELTO'}">
+                                                <span class="status status-success"><span class="dot"></span>RESUELTO</span>
+                                            </c:when>
+                                            <c:when test="${t.state == 'CERRADO'}">
+                                                <span class="status status-pending"><span class="dot"></span>CERRADO</span>
+                                            </c:when>
+                                            <c:when test="${t.state == 'CANCELADO'}">
+                                                <span class="status status-urgent"><span class="dot"></span>CANCELADO</span>
+                                            </c:when>
+                                        </c:choose>
+                                    </td>
+                                    <td><span class="cell-due">${t.expirationDate}</span></td>
+                                    <td>
+                                        <div class="row-actions">
+                                            <c:choose>
+                                                <c:when test="${t.state != 'CERRADO' && t.state != 'CANCELADO' && t.state != 'RESUELTO'}">
+                                                    <form class="inline-action" action="${pageContext.request.contextPath}/TicketServlet?action=editState" method="post">
+                                                        <input type="hidden" name="action" value="editState"/>
+                                                        <input type="hidden" name="idTicket" value="${t.id}"/>
+                                                        <input type="hidden" name="stateAction" value="CANCELAR"/>
+                                                        <button class="btn-cancel" type="submit">
+                                                            <span class="material-symbols-outlined ico-16">cancel</span>
+                                                            Cancelar
+                                                        </button>
+                                                    </form>
+                                                    <form class="inline-action" action="${pageContext.request.contextPath}/TicketServlet?action=editAgent" method="post">
+                                                        <input type="hidden" name="action" value="reassign"/>
+                                                        <input type="hidden" name="idTicket" value="${t.id}"/>
+                                                        <button class="btn-reassign" type="submit">
+                                                            <span class="material-symbols-outlined ico-16">move_up</span>
+                                                            Reasignar
+                                                        </button>
+                                                    </form>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="no-actions-tag">Sin acciones disponibles</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+
+                            <c:if test="${empty tickets}">
+                                <tr>
+                                    <td colspan="9" class="empty-state">No hay tickets registrados.</td>
+                                </tr>
+                            </c:if>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Pagination Footer -->
                 <div class="pagination">
-                    <span class="pagination-info">Mostrando 1 a 4 de 24 tickets</span>
+                    <span class="pagination-info">Mostrando ${fn:length(tickets)} de ${fn:length(tickets)} tickets</span>
                     <div class="pagination-controls">
                         <button class="page-arrow" disabled="" aria-label="Anterior">
                             <span class="material-symbols-outlined ico-20">chevron_left</span>
                         </button>
                         <button class="page-num active">1</button>
-                        <button class="page-num">2</button>
-                        <button class="page-num">3</button>
-                        <button class="page-arrow" aria-label="Siguiente">
+                        <button class="page-arrow" aria-label="Siguiente" disabled="">
                             <span class="material-symbols-outlined ico-20">chevron_right</span>
                         </button>
                     </div>
@@ -1003,7 +1055,7 @@
                         card.classList.add('is-liftable');
                 }
 
-                /* ---------- 3. Ripple en botones con degradado ---------- */
+
                 function setupRipple() {
                     if (reduced)
                         return;
@@ -1025,7 +1077,7 @@
                     });
                 }
 
-                /* ---------- 4. Selección de fila (ignora los botones de acción) ---------- */
+
                 function setupRowSelection() {
                     var rows = document.querySelectorAll('tbody tr');
                     Array.prototype.forEach.call(rows, function (row) {
@@ -1040,7 +1092,7 @@
                     });
                 }
 
-                /* ---------- 5. Paginación: marca la página activa ---------- */
+
                 function setupPagination() {
                     var nums = document.querySelectorAll('.page-num');
                     Array.prototype.forEach.call(nums, function (btn) {
@@ -1053,7 +1105,7 @@
                     });
                 }
 
-                /* ---------- 6. Sombra del header al hacer scroll ---------- */
+
                 function setupNavScroll() {
                     var nav = document.querySelector('.top-nav');
                     if (!nav)
@@ -1083,6 +1135,26 @@
                 }
             })();
         </script>
-
+        <%
+            String error = (String) request.getAttribute("error");
+            String success = (String) request.getAttribute("success");
+            if (error != null && !error.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.error("¡Error!", "<%= error%>");
+            });
+        </script>
+        <%
+        } else if (success != null && !success.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.success("Éxito", "<%= success%>");
+            });
+        </script>
+        <%
+            }
+        %>
     </body>
 </html>
