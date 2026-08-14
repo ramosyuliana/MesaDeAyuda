@@ -15,11 +15,11 @@ import java.util.List;
  *
  * @author Admin
  */
-public class StartegyAssignmentForLessLoad implements StrategyAssignment{
+public class StrategyAssignmentForLessLoad implements StrategyAssignment{
 
      private final UserRepository userRepository;
 
-    public StartegyAssignmentForLessLoad(UserRepository userRepository) {
+    public StrategyAssignmentForLessLoad(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

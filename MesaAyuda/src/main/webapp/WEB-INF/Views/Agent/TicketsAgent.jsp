@@ -415,6 +415,8 @@
                 box-shadow: var(--shadow-rest);
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="${pageContext.request.contextPath}/js/sweetAlert.js"></script>
     </head>
     <body>
         <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
@@ -580,5 +582,27 @@
             </div>
 
         </main>
+        <%
+            String error = (String) request.getAttribute("error");
+            String success = (String) request.getAttribute("success");
+            if (error != null && !error.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.error("¡Error!", "<%= error%>");
+            });
+        </script>
+        <%
+        } else if (success != null && !success.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.success("Éxito", "<%= success%>");
+            });
+        </script>
+        <%
+            }
+        %>
     </body>
+
 </html>
