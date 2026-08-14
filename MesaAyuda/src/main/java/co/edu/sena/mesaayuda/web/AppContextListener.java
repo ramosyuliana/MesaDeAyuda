@@ -33,6 +33,7 @@ public class AppContextListener implements ServletContextListener {
     public static final String TICKET_SERVICE = "ticketService";
     public static final String USERAUTH_SERVICE = "userAuthService";
     public static final String USER_SERVICE = "userService";
+    public static final String AGENT_SERVICE = "agentService";
     public static final String NOTIFICATION_SERVICE = "notificatioService";
 
     @Override
@@ -46,6 +47,7 @@ public class AppContextListener implements ServletContextListener {
         RoleRepository roleRepository = new RoleRepositoryJdbc();
         TicketRepository ticketRepository = new TicketRepositoryJdbc();
         UserRepository userRepository = new UserRepositoryJdbc();
+        AgentRepository agentRepository = new AgentRepositoryJdbc();
 
         StrategySLA strategySla = new StrategySLAStandard(priorityRepository);
         StrategyPriority strategyPriority = new StrategyPriorityByCategory(categoryRepository);
@@ -64,6 +66,7 @@ public class AppContextListener implements ServletContextListener {
         TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment,strategyAssignmentReassign, strategyPriority, oNotificator);
         UserAuthService userAuthService = new UserAuthServiceImpl(userRepository);
         UserService userService = new UserServiceImpl(userRepository);
+        AgentService agentService = new AgentServiceImpl(agentRepository);
 
         oContext.setAttribute(CATEGORY_SERVICE, categoryService);
         oContext.setAttribute(COMMENT_SERVICE, commentService);
@@ -71,6 +74,7 @@ public class AppContextListener implements ServletContextListener {
         oContext.setAttribute(TICKET_SERVICE, ticketService);
         oContext.setAttribute(USERAUTH_SERVICE, userAuthService);
         oContext.setAttribute(USER_SERVICE, userService);
+        oContext.setAttribute(AGENT_SERVICE, agentService);
 
     }
 

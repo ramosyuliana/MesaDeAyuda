@@ -58,7 +58,7 @@ public class UserRepositoryJdbc implements UserRepository {
         String sql = "Select u.\"Id\", u.\"Name\", u.\"Email\", r.\"Name\" as \"RoleName\" From \"User\" u "
                 + "Inner Join \"Role\" r "
                 + "ON "
-                + "u.\"IdRole\" = r.\"Id\"";
+                + "u.\"IdRole\" = r.\"Id\" ";
 
         List<User> list = new ArrayList<>();
 

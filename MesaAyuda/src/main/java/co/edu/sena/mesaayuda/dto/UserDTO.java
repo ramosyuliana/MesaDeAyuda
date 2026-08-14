@@ -9,13 +9,13 @@ package co.edu.sena.mesaayuda.dto;
  * @author julil
  */
 public class UserDTO {
-    
-     private int Id;
-    
+
+    private int Id;
+
     private String Name;
-    
+
     private String Email;
-    
+
     private String Role;
 
     public UserDTO(int Id, String Name, String Email, String Role) {
@@ -40,9 +40,5 @@ public class UserDTO {
     public String getRole() {
         return Role;
     }
-    
-    
-    
-    
-    
+
 }

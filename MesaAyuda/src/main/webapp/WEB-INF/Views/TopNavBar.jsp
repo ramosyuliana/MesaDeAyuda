@@ -1,6 +1,6 @@
 <%-- 
     Document   : TopNavBar
-    Created on : 11/08/2026, 8:44:24 p. m.
+    Created on : 11/08/2026, 8:44:24 p. m.
     Author     : julil
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -42,9 +42,9 @@
         --gradient-accent: linear-gradient(90deg, #38bdf8, #6366f1);
 
         /* ---- Superficies glass ---- */
-        --card-bg: rgba(255,255,255,.6);
+        --card-bg: rgba(255,255,255,.8);
         --card-border: rgba(148,163,184,.25);
-        --card-blur: blur(10px);
+        --card-blur: blur(12px);
         --input-bg: rgba(255,255,255,.5);
         --input-border: #d7dfec;
         --input-focus-bg: rgba(255,255,255,.9);
@@ -86,7 +86,6 @@
         line-height: 1.6;
         min-height: 100vh;
         -webkit-font-smoothing: antialiased;
-        /* Deja espacio para la barra fija */
         padding-top: 64px;
     }
 
@@ -111,9 +110,6 @@
     .material-symbols-outlined {
         font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         user-select: none;
-    }
-    .icon-filled {
-        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
 
     /* ---------- Panel glass ---------- */
@@ -199,6 +195,7 @@
         color: transparent;
     }
 
+    /* ---------- Navegación de Escritorio ---------- */
     .topbar-nav {
         display: none;
         gap: var(--sp-md);
@@ -247,57 +244,16 @@
     .topbar-right {
         display: flex;
         align-items: center;
-        gap: var(--sp-md);
+        gap: 12px;
     }
 
-    /* ---------- Buscador ---------- */
-    .topbar-search {
-        position: relative;
-        display: none;
-    }
-    @media (min-width: 640px) {
-        .topbar-search {
-            display: block;
-        }
-    }
-
-    .topbar-search .material-symbols-outlined {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--on-surface-muted);
-        transition: color var(--t-fast);
-    }
-    .topbar-search:focus-within .material-symbols-outlined {
-        color: var(--input-focus-border);
-    }
-    .topbar-search input {
-        padding: 8px 16px 8px 40px;
-        border-radius: var(--radius-full);
-        background: var(--input-bg);
-        border: 1px solid var(--input-border);
-        font-size: 14px;
-        width: 256px;
-        outline: none;
-        color: var(--on-surface);
-        transition: border-color var(--t-fast), box-shadow var(--t-fast), background var(--t-fast), width var(--t-slow);
-    }
-    .topbar-search input::placeholder {
-        color: var(--on-surface-faint);
-    }
-    .topbar-search input:focus {
-        border-color: var(--input-focus-border);
-        background: var(--input-focus-bg);
-        box-shadow: var(--input-focus-glow);
-        width: 288px;
-    }
-
-    /* ---------- Botones de icono ---------- */
+    /* ---------- Botones de icono y Menú Hamburguesa ---------- */
     .icon-btn {
         position: relative;
         color: var(--on-surface-muted);
         display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 6px;
         border-radius: var(--radius-full);
         transition: color var(--t-fast), background var(--t-fast), transform var(--t-fast);
@@ -308,6 +264,16 @@
     }
     .icon-btn:active {
         transform: scale(0.94);
+    }
+
+    /* Botón hamburguesa visible solo en móviles */
+    .hamburger-btn {
+        display: flex;
+    }
+    @media (min-width: 768px) {
+        .hamburger-btn {
+            display: none;
+        }
     }
 
     /* Punto rojo de notificaciones sin leer */
@@ -321,65 +287,57 @@
         border-radius: 50%;
         box-shadow: 0 0 0 2px rgba(255,255,255,.7);
     }
-    .dot-badge::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 50%;
-        background: var(--error);
-        animation: pulse-dot 2.4s ease-out infinite;
-    }
-    @keyframes pulse-dot {
-        0%   {
-            transform: scale(1);
-            opacity: .6;
-        }
-        70%  {
-            transform: scale(2.6);
-            opacity: 0;
-        }
-        100% {
-            transform: scale(2.6);
-            opacity: 0;
-        }
-    }
 
-    /* Contador numerico de notificaciones */
-    .count-badge {
+    /* ---------- Menú Desplegable Móvil ---------- */
+    .mobile-menu {
         position: absolute;
-        top: 0;
-        right: 0;
-        min-width: 18px;
-        height: 18px;
-        padding: 0 5px;
-        background: var(--error);
-        color: #fff;
-        border-radius: var(--radius-full);
-        font-size: 11px;
-        font-weight: 600;
-        line-height: 18px;
-        text-align: center;
-        box-shadow: 0 0 0 2px rgba(255,255,255,.7);
-    }
-
-    /* ---------- Avatar con iniciales ---------- */
-    .avatar {
-        height: 32px;
-        width: 32px;
-        border-radius: 50%;
+        top: 64px;
+        left: 0;
+        width: 100%;
+        background-color: var(--card-bg);
+        backdrop-filter: var(--card-blur);
+        -webkit-backdrop-filter: var(--card-blur);
+        border-bottom: 1px solid var(--card-border);
+        box-shadow: var(--shadow-hover);
         display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid var(--card-border);
-        background: var(--surface-container-high);
+        flex-direction: column;
+        padding: 16px 24px;
+        gap: 16px;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height var(--t-slow), opacity var(--t-fast), padding var(--t-fast);
+    }
+    .mobile-menu.open {
+        max-height: 300px;
+        opacity: 1;
+        padding: 20px 24px;
+    }
+    .mobile-menu nav {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .mobile-menu nav a {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--on-surface-variant);
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: background var(--t-fast), color var(--t-fast);
+    }
+    .mobile-menu nav a:hover,
+    .mobile-menu nav a.active {
+        background: var(--icon-circle-bg);
         color: var(--primary);
         font-weight: 600;
-        font-size: 13px;
-        transition: transform var(--t-base), box-shadow var(--t-base);
     }
-    .avatar:hover {
-        transform: scale(1.06);
-        box-shadow: var(--shadow-hover);
+
+    /* Ocultar menú móvil en escritorio */
+    @media (min-width: 768px) {
+        .mobile-menu {
+            display: none !important;
+        }
     }
 
     .user-name {
@@ -407,13 +365,21 @@
         }
     }
 </style>
+
 <header class="topbar glass-panel">
     <div class="topbar-inner">
         <div class="topbar-left">
+            <!-- Botón Hamburguesa -->
+            <button class="icon-btn hamburger-btn" id="hamburgerToggle" aria-label="Abrir menú de navegación">
+                <span class="material-symbols-outlined" id="hamburgerIcon">menu</span>
+            </button>
+
             <div class="brand">
                 <a href="${pageContext.request.contextPath}/AuthServlet?action=logout"><span class="material-symbols-outlined">support_agent</span></a>
                 <span class="name">TableHelp</span>
             </div>
+
+            <!-- Enlaces de navegación para Escritorio -->
             <c:if test="${user.role.name == 'Agente'}">
                 <nav class="topbar-nav">
                     <a href="${pageContext.request.contextPath}/AgentServlet?action=dashboard">Dashboard</a>
@@ -429,13 +395,13 @@
             </c:if>
             <c:if test="${user.role.name == 'Administrador'}">
                 <nav class="topbar-nav">
-
                     <a href="${pageContext.request.contextPath}/AdminServlet?action=dashboard">Dashboard</a>
                     <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets">Todos Los Tickets</a>
                     <a href="${pageContext.request.contextPath}/AdminServlet?action=manageUsers">Usuarios</a>
                 </nav>
             </c:if>
         </div>
+
         <div class="topbar-right">
             <!-- Información y Avatar del usuario -->
             <div class="user-info-container" style="display: flex; align-items: center; gap: 12px;">
@@ -447,7 +413,6 @@
                         <c:out value="${user.role.name}" />
                     </span>
                 </div>
-
             </div>
 
             <!-- Separador vertical sutil -->
@@ -460,7 +425,32 @@
             </button>
         </div>
     </div>
+
+    <!-- Panel del Menú Desplegable Móvil -->
+    <div class="mobile-menu" id="mobileMenu">
+        <c:if test="${user.role.name == 'Agente'}">
+            <nav>
+                <a href="${pageContext.request.contextPath}/AgentServlet?action=dashboard">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets">Tickets</a>
+            </nav>
+        </c:if>
+        <c:if test="${user.role.name == 'Solicitante'}">
+            <nav>
+                <a href="${pageContext.request.contextPath}/ApplicantServlet?action=dashboard">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/TicketServlet?action=new">Crear Ticket</a>
+                <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets">Mis Tickets</a>
+            </nav>
+        </c:if>
+        <c:if test="${user.role.name == 'Administrador'}">
+            <nav>
+                <a href="${pageContext.request.contextPath}/AdminServlet?action=dashboard">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/AdminServlet?action=manage">Todos Los Tickets</a>
+                <a href="${pageContext.request.contextPath}/AdminServlet?action=manageUsers">Usuarios</a>
+            </nav>
+        </c:if>
+    </div>
 </header>
+
 <script>
     (function () {
         'use strict';
@@ -486,9 +476,9 @@
             });
         }
 
-        /* Marca como activo el enlace que corresponde a la pagina actual */
+        /* Marca como activo el enlace que corresponde a la pagina actual tanto en desktop como en mobile */
         function setupActiveLink() {
-            var links = document.querySelectorAll('.topbar-nav a');
+            var links = document.querySelectorAll('.topbar-nav a, .mobile-menu nav a');
             var path = window.location.pathname;
 
             Array.prototype.forEach.call(links, function (link) {
@@ -499,9 +489,34 @@
             });
         }
 
+        /* Control de apertura y cierre del menú hamburguesa */
+        function setupMobileMenu() {
+            var toggleBtn = document.getElementById('hamburgerToggle');
+            var mobileMenu = document.getElementById('mobileMenu');
+            var hamburgerIcon = document.getElementById('hamburgerIcon');
+
+            if (!toggleBtn || !mobileMenu)
+                return;
+
+            toggleBtn.addEventListener('click', function () {
+                var isOpen = mobileMenu.classList.toggle('open');
+                hamburgerIcon.textContent = isOpen ? 'close' : 'menu';
+            });
+
+            // Cerrar menú al hacer clic en cualquier enlace del menú móvil
+            var mobileLinks = mobileMenu.querySelectorAll('a');
+            Array.prototype.forEach.call(mobileLinks, function (link) {
+                link.addEventListener('click', function () {
+                    mobileMenu.classList.remove('open');
+                    hamburgerIcon.textContent = 'menu';
+                });
+            });
+        }
+
         function init() {
             setupReveal();
             setupActiveLink();
+            setupMobileMenu();
         }
 
         if (document.readyState === 'loading') {
