@@ -637,56 +637,53 @@
             }
 
             .bar-chart {
-                flex: 1;
-                width: 100%;
-                position: relative;
-                border-radius: var(--radius-lg);
-                overflow: hidden;
-                background: var(--input-bg);
+                height: 280px;              /* altura fija — sin esto el % no tiene referencia */
                 display: flex;
-                align-items: flex-end;
-                justify-content: space-between;
-                padding: 48px var(--sp-lg) var(--sp-xl);
-                gap: 8px;
+                align-items: flex-end;      /* las barras crecen desde abajo, no desde arriba */
+                gap: 16px;
+                padding: 0 16px;
             }
 
             .bar {
-                width: 100%;
-                background: rgba(59, 130, 246, 0.25);
-                border-radius: 2px 2px 0 0;
+                flex: 1;
+                background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+                border-radius: 6px 6px 0 0;
+                min-height: 4px;            /* para que un valor de 0 siga siendo visible como línea */
                 position: relative;
-                height: 0;
-                transition: background-color 0.2s ease, box-shadow 0.2s ease;
-            }
-
-            .bar:hover {
-                background: rgba(59, 130, 246, 0.5);
-            }
-
-            .bar.peak {
-                background: var(--gradient-accent);
-                box-shadow: 0 0 18px rgba(56, 189, 248, 0.4);
+                transition: height 0.4s ease;
             }
 
             .bar-label {
                 position: absolute;
-                top: -28px;
+                bottom: -24px;
                 left: 50%;
                 transform: translateX(-50%);
                 font-size: 12px;
-                opacity: 0;
-                transition: opacity 0.2s ease;
+                color: var(--color-on-surface-variant);
                 white-space: nowrap;
             }
 
-            .bar:hover .bar-label,
-            .bar.peak .bar-label {
-                opacity: 1;
+            .bar::after {
+                content: attr(data-height);
+                position: absolute;
+                top: -28px;
+                left: 50%;
+                transform: translateX(-50%) translateY(4px);
+                background: var(--color-on-surface);
+                color: #fff;
+                font-size: 12px;
+                font-weight: 600;
+                padding: 4px 8px;
+                border-radius: 4px;
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.15s ease, transform 0.15s ease;
             }
 
-            .bar.peak .bar-label {
-                color: var(--primary);
-                font-weight: 700;
+            .bar:hover::after {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
             }
 
             .donut-wrap {
@@ -967,25 +964,20 @@
                 <div class="charts-grid">
                     <div class="panel">
                         <div class="panel-header">
-                            <h2>Ingresos mensuales</h2>
-                            <button class="icon-btn"><span class="material-symbols-outlined">more_horiz</span></button>
+                            <h2>Tickets por Estado</h2>
                         </div>
                         <div class="bar-chart" id="barChart">
-                            <div class="bar" data-height="30"><span class="bar-label">Ene</span></div>
-                            <div class="bar" data-height="45"><span class="bar-label">Feb</span></div>
-                            <div class="bar" data-height="40"><span class="bar-label">Mar</span></div>
-                            <div class="bar" data-height="65"><span class="bar-label">Abr</span></div>
-                            <div class="bar" data-height="55"><span class="bar-label">May</span></div>
-                            <div class="bar" data-height="85"><span class="bar-label">Jun</span></div>
-                            <div class="bar" data-height="75"><span class="bar-label">Jul</span></div>
-                            <div class="bar peak" data-height="95"><span class="bar-label">Ago</span></div>
+                            <c:forEach var="entry" items="${stateTickets}">
+                                <div class="bar" data-height="${entry.value}" title="${entry.value}" style="height: ${entry.value}%;">
+                                    <span class="bar-label">${entry.key}</span>
+                                </div>
+                            </c:forEach>
                         </div>
                     </div>
 
                     <div class="panel">
                         <div class="panel-header">
                             <h2>Segmentos de usuarios</h2>
-                            <button class="icon-btn"><span class="material-symbols-outlined">more_horiz</span></button>
                         </div>
                         <div class="donut-wrap">
                             <div class="donut" id="donutChart">
@@ -1012,68 +1004,11 @@
                     </div>
                 </div>
 
-                <!-- Tabla de actividad reciente -->
-                <div class="table-panel">
-                    <div class="table-panel-header">
-                        <h2>Actividad reciente</h2>
-                        <a href="${pageContext.request.contextPath}/TicketServlet?action=tickets">Ver todo</a>
-                    </div>
-                    <div style="overflow-x:auto">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Usuario</th>
-                                    <th>Acción</th>
-                                    <th>Fecha</th>
-                                    <th class="col-right">Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="user-cell">
-                                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYVNH-XcL7kWhQPuYdQvTGVMfdyVu5sXPFtIuV8prdI2oBSDWgPJf76ixYBBhEtxI0XXHzPk0iup_B9_4hgLu2vTJtVnrPm0p1JZ3qIRi0Yr1hDfONON2AQgxfNlSnuSRpbbi4wn-ELfNmMWo7OMSCaTRb9WGVK36t2K4YpEHrZMhi7dhv2sPOWUbf_tFe7gEhRH-1TikqdDz2GIQOkHCWcxdOgd5ZJROpD_h-ZbWK21ngoQ3xg_OPcQ"
-                                             alt="Sarah Jenkins">
-                                        <span class="user-name">Sarah Jenkins</span>
-                                    </td>
-                                    <td class="cell-muted">Actualizó a plan Enterprise</td>
-                                    <td class="cell-muted">24 oct 2023</td>
-                                    <td class="col-right"><span class="status-badge status-completed">Completado</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="user-cell">
-                                        <div class="user-avatar-fallback">MC</div>
-                                        <span class="user-name">Michael Chen</span>
-                                    </td>
-                                    <td class="cell-muted">Generó API Key</td>
-                                    <td class="cell-muted">23 oct 2023</td>
-                                    <td class="col-right"><span class="status-badge status-completed">Completado</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="user-cell">
-                                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNeWOaCQMxetqNWTU2l_yrHv8M3N_lJ2MmrU-KP7BK8IubjUoPP48VvsbA03-hT1-EzN9s7Fpy-0tPLTkLmLOV1o7cH4s7cIXogl6_n8YXRwjZRa9CQjwz6-WpQBmmEUH2E70hEWgNM5jxb0TBVJy-E7F1uF4Ub0UT76lQhXri6KwPWpnw3Yc0TzlETNS-PS6Hcr4LT1xvO2oCooxAK8LCxR3QgGaGrmRU2U7WDpRAnK5gEvKwuIDoxA"
-                                             alt="Alex Rivera">
-                                        <span class="user-name">Alex Rivera</span>
-                                    </td>
-                                    <td class="cell-muted">Fallo en método de pago</td>
-                                    <td class="cell-muted">23 oct 2023</td>
-                                    <td class="col-right"><span class="status-badge status-failed">Fallido</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="user-cell">
-                                        <div class="user-avatar-fallback">EW</div>
-                                        <span class="user-name">Emma Watson</span>
-                                    </td>
-                                    <td class="cell-muted">Solicitó exportación de datos</td>
-                                    <td class="cell-muted">22 oct 2023</td>
-                                    <td class="col-right"><span class="status-badge status-pending">Pendiente</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+
             </main>
         </div>
 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             // 1. Contador animado para las tarjetas KPI
             function animateCount(el) {

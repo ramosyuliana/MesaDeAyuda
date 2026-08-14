@@ -34,7 +34,7 @@ public class AppContextListener implements ServletContextListener {
     public static final String USERAUTH_SERVICE = "userAuthService";
     public static final String USER_SERVICE = "userService";
     public static final String AGENT_SERVICE = "agentService";
-    public static final String NOTIFICATION_SERVICE = "notificatioService";
+    public static final String NOTIFICATION_SERVICE = "notificationService";
     public static final String OTP_SERVICE = "otpService";
 
     @Override
@@ -65,10 +65,12 @@ public class AppContextListener implements ServletContextListener {
         CategoryService categoryService = new CategoryServiceImpl(categoryRepository);
         CommentService commentService = new CommentServiceImpl(commentRepository);
         RoleService roleService = new RoleServiceImpl(roleRepository);
+        TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment, strategyAssignmentReassign, strategyPriority, oNotificator);
         TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment,strategyAssignmentReassign, strategyPriority, oNotificator, otpService);
         UserAuthService userAuthService = new UserAuthServiceImpl(userRepository);
         UserService userService = new UserServiceImpl(userRepository);
         AgentService agentService = new AgentServiceImpl(agentRepository);
+        NotificationService notificationService = new NotificationServiceImpl(notificationRepository);
 
         oContext.setAttribute(CATEGORY_SERVICE, categoryService);
         oContext.setAttribute(COMMENT_SERVICE, commentService);
@@ -77,6 +79,7 @@ public class AppContextListener implements ServletContextListener {
         oContext.setAttribute(USERAUTH_SERVICE, userAuthService);
         oContext.setAttribute(USER_SERVICE, userService);
         oContext.setAttribute(AGENT_SERVICE, agentService);
+        oContext.setAttribute(NOTIFICATION_SERVICE, notificationService);
         oContext.setAttribute(OTP_SERVICE, otpService);
 
     }

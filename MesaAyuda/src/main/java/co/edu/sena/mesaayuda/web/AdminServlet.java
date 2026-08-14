@@ -19,6 +19,7 @@ import co.edu.sena.mesaayuda.service.s.TicketService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -54,9 +55,13 @@ public class AdminServlet extends HttpServlet {
 
             double cancelado = ticketService.MtCanceledTicketRate();
             double resuelto = ticketService.MtResolvedTicketRate();
+            Map<String, Integer> stateTickets = ticketService.MtCountTicketsForState();
+            Map<Integer, Integer> assigned = ticketService.MtCountAgentWithoutAssignments();
 
             req.setAttribute("cancelledTickets", cancelado);
             req.setAttribute("resolvedTickets", resuelto);
+            req.setAttribute("stateTickets", stateTickets);
+            req.setAttribute("agents", assigned);
 
             req.getRequestDispatcher("/WEB-INF/Views/Admin/Dashboard.jsp").forward(req, resp);
 
@@ -147,7 +152,7 @@ public class AdminServlet extends HttpServlet {
                     List<String> categoryIds = new ArrayList<>();
                     for (String catId : idCategories) {
                         categoryIds.add(catId);
-                    }                                                                             
+                    }
 
                     AgentCreateDTO oAgentCreateDTO = new AgentCreateDTO(
                             fullName,

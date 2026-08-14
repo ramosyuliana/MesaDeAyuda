@@ -23,6 +23,7 @@ import co.edu.sena.mesaayuda.service.sla.StrategyPriority;
 import co.edu.sena.mesaayuda.service.sla.StrategySLA;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -125,7 +126,11 @@ public class TicketServiceImpl implements TicketService {
                 throw new IllegalArgumentException("Acción no reconocida: " + action);
         };
 
+        ticket.setState(newState.Name());
         ticketRepository.MtEditState(newState.Name(), ticket);
+
+        MtNotifyStateChange(ticket, currentState);
+
     }
 
     @Override
@@ -192,6 +197,10 @@ public class TicketServiceImpl implements TicketService {
                 + oPreviousState.Name() + " a " + oTicket.getState() + ".";
 
         User oApplicant = userRepository.MtFindById(oTicket.getIdApplicant());
+
+        if (oApplicant == null) {
+            throw new IllegalArgumentException("No hay datos del usuario para enviar la notificacion");
+        }
         Notification oNotification = new Notification(
                 oTicket.getId(),
                 oApplicant,
@@ -234,4 +243,21 @@ public class TicketServiceImpl implements TicketService {
     public List<TicketDTO> MtListTop5ByApplicant(int idApplicant) {
         return ticketRepository.MtListTop5ByApplicant(idApplicant);
     }
+
+    @Override
+    public Map<String, Integer> MtCountTicketsForState() {
+
+        return ticketRepository.MtCountTicketsForState();
+    }
+
+    @Override
+    public Map<Integer, Integer> MtCountAgentWithoutAssignments() {
+        return ticketRepository.MtCountAgentWithoutAssignments();
+    }
+
+    @Override
+    public int MtCountAssignments() {
+        return ticketRepository.MtCountAssignments();
+    }
+
 }
