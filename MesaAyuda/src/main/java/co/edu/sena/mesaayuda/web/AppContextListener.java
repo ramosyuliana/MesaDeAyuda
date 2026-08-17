@@ -57,7 +57,12 @@ public class AppContextListener implements ServletContextListener {
 
         Notificator oNotificator = new NotificatorComposite(Arrays.asList(
                 new NotificationInApp(notificationRepository),
-                new NotificationByEmail("julilo09123452@gmail.com"),
+                new NotificationByEmail(
+                        "julilo09123452@gmail.com",
+                        "smtp.gmail.com", 
+                        "587", // port
+                        "julilo09123452@gmail.com", 
+                        "fxdv sizq dxtl kyah"),
                 new NotificationBySms()
         ));
         OtpService otpService = new OtpServiceImpl(oNotificator, userRepository);
@@ -65,7 +70,7 @@ public class AppContextListener implements ServletContextListener {
         CategoryService categoryService = new CategoryServiceImpl(categoryRepository);
         CommentService commentService = new CommentServiceImpl(commentRepository);
         RoleService roleService = new RoleServiceImpl(roleRepository);
-        TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment,strategyAssignmentReassign, strategyPriority, oNotificator, otpService);
+        TicketService ticketService = new TicketServiceImpl(ticketRepository, userRepository, categoryRepository, strategySla, strategyAssignment, strategyAssignmentReassign, strategyPriority, oNotificator, otpService);
         UserAuthService userAuthService = new UserAuthServiceImpl(userRepository);
         UserService userService = new UserServiceImpl(userRepository);
         AgentService agentService = new AgentServiceImpl(agentRepository);

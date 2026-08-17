@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SaaSify Dashboard</title>
+        <title>Dashboard Admin | Mesa Ayuda CIMM</title>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
               rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
@@ -597,7 +597,7 @@
 
             /* ---------- Charts ---------- */
             .charts-grid {
-                display: grid;
+                width: 100%;
                 grid-template-columns: 1fr;
                 gap: var(--sp-lg);
             }
@@ -916,27 +916,15 @@
 
                 <!-- KPI cards -->
                 <div class="kpi-grid">
-                    <div class="kpi-card" style="animation-delay:0.05s">
-                        <div class="kpi-top">
-                            <span class="kpi-label">Ingresos totales</span>
-                            <div class="kpi-icon"><span class="material-symbols-outlined">attach_money</span></div>
-                        </div>
-                        <div class="kpi-bottom">
-                            <span class="kpi-value" data-count="45231" data-prefix="$">$0</span>
-                            <div class="kpi-trend trend-up"><span
-                                    class="material-symbols-outlined">trending_up</span><span>+12.5%</span></div>
-                        </div>
-                    </div>
                     <div class="kpi-card" style="animation-delay:0.15s">
                         <div class="kpi-top">
-                            <span class="kpi-label">Usuarios activos</span>
+                            <span class="kpi-label">Agentes sin Asignar</span>
                             <div class="kpi-icon"><span class="material-symbols-outlined">group</span></div>
                         </div>
                         <div class="kpi-bottom">
-                            <span class="kpi-value" data-count="2405">0</span>
-                            <div class="kpi-trend trend-up"><span
-                                    class="material-symbols-outlined">trending_up</span><span>+3.0%</span></div>
-                        </div>
+                            <span class="kpi-value" data-count="${agents.sinAsignar}">0</span>
+                            <span style="font-size:16px; color:var(--on-surface-muted); margin: 0 4px;">de</span>
+                            <span class="kpi-value" data-count="${agents.total}">0</span>                        </div>
                     </div>
                     <div class="kpi-card" style="animation-delay:0.25s">
                         <div class="kpi-top">
@@ -966,42 +954,12 @@
                         <div class="panel-header">
                             <h2>Tickets por Estado</h2>
                         </div>
-                        <div class="bar-chart" id="barChart">
-                            <c:forEach var="entry" items="${stateTickets}">
-                                <div class="bar" data-height="${entry.value}" title="${entry.value}" style="height: ${entry.value}%;">
-                                    <span class="bar-label">${entry.key}</span>
-                                </div>
-                            </c:forEach>
+                        <div style="position: relative; height: 280px;">
+                            <canvas id="stateTicketsChart"></canvas>
                         </div>
                     </div>
 
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h2>Segmentos de usuarios</h2>
-                        </div>
-                        <div class="donut-wrap">
-                            <div class="donut" id="donutChart">
-                                <div class="donut-inner"><strong>2.4k</strong><span>Total</span></div>
-                            </div>
-                            <div class="legend">
-                                <div class="legend-row">
-                                    <div class="legend-key"><span class="legend-dot"
-                                                                  style="background:#4F46E5"></span><span>Enterprise</span></div>
-                                    <span>45%</span>
-                                </div>
-                                <div class="legend-row">
-                                    <div class="legend-key"><span class="legend-dot"
-                                                                  style="background:#818CF8"></span><span>Pro</span></div>
-                                    <span>30%</span>
-                                </div>
-                                <div class="legend-row">
-                                    <div class="legend-key"><span class="legend-dot"
-                                                                  style="background:#C7D2FE"></span><span>Starter</span></div>
-                                    <span>25%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
 
 
@@ -1034,22 +992,49 @@
                 setTimeout(() => animateCount(el), 300);
             });
 
-            // 2. Barras del gráfico crecen al cargar
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    document.querySelectorAll('#barChart .bar').forEach(bar => {
-                        bar.style.height = bar.dataset.height + '%';
-                    });
-                }, 200);
-            });
 
-            // 3. Donut chart se dibuja de forma animada
-            const donut = document.getElementById('donutChart');
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    donut.style.background = 'conic-gradient(#4F46E5 0% 45%, #818CF8 45% 75%, #C7D2FE 75% 100%)';
-                }, 400);
-            });
+            const stateLabels = [
+            <c:forEach var="entry" items="${stateTickets}" varStatus="loop">"${entry.key}"<c:if test="${!loop.last}">,</c:if></c:forEach>
+            ];
+            const stateData = [
+            <c:forEach var="entry" items="${stateTickets}" varStatus="loop">${entry.value}<c:if test="${!loop.last}">,</c:if></c:forEach>
+            ];
+
+            const ctxState = document.getElementById('stateTicketsChart');
+            if (ctxState) {
+                new Chart(ctxState, {
+                    type: 'bar',
+                    data: {
+                        labels: stateLabels,
+                        datasets: [{
+                                label: 'Tickets',
+                                data: stateData,
+                                backgroundColor: 'rgba(59,130,246,0.85)',
+                                hoverBackgroundColor: '#2563eb',
+                                borderRadius: 6,
+                                maxBarThickness: 48
+                            }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {duration: 900, easing: 'easeOutCubic'},
+                        plugins: {
+                            legend: {display: false},
+                            tooltip: {
+                                backgroundColor: '#1e293b',
+                                padding: 10,
+                                cornerRadius: 6,
+                                callbacks: {label: (ctx) => ctx.parsed.y + ' tickets'}
+                            }
+                        },
+                        scales: {
+                            y: {beginAtZero: true, ticks: {precision: 0}, grid: {color: 'rgba(148,163,184,0.15)'}},
+                            x: {grid: {display: false}}
+                        }
+                    }
+                });
+            }
 
             // 4. Selector de rango de fechas (7 días / 30 días / personalizado)
             document.querySelectorAll('.range-toggle button').forEach(btn => {

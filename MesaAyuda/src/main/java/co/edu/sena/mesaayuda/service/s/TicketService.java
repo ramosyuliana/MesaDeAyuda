@@ -51,7 +51,7 @@ public interface TicketService {
 
     Map<String, Integer> MtCountTicketsForState();
 
-    Map<Integer, Integer> MtCountAgentWithoutAssignments();
+    Map<String, Integer> MtCountAgentWithoutAssignments();
     
     int MtCountAssignments();
 

@@ -6,10 +6,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Gestión de Usuarios - Mesa de Ayuda CIMM</title>
+        <title>Gestión de Usuarios | Mesa de Ayuda CIMM</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 
 
         <style>
@@ -473,6 +475,7 @@
             }
         </style>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="${pageContext.request.contextPath}/js/sweetAlert.js"></script>
     </head>
     <body>
         <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
@@ -560,6 +563,7 @@
                 <form id="editUserForm" action="${pageContext.request.contextPath}/AdminServlet" method="post">
                     <input type="hidden" name="action" value="updateUser">
                     <input type="hidden" id="editUserId" name="id">
+                    <input type="hidden" id="editUserRole" name="role">
                     <div class="field">
                         <label for="editName">Nombre</label>
                         <input type="text" id="editName" name="name" required>
@@ -567,6 +571,14 @@
                     <div class="field">
                         <label for="editEmail">Correo Electrónico</label>
                         <input type="email" id="editEmail" name="email" required>
+                    </div>
+                    <div class="field" id="categoryField" style="display:none;">
+                        <label for="editCategories">Categorías asignadas</label>
+                        <select id="editCategories" name="categoryIds" multiple>
+                            <c:forEach var="cat" items="${categories}">
+                                <option value="${cat.id}">${cat.name}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                     <div class="modal-actions">
                         <button id="editCancelBtn" class="btn-outline" type="button">Cancelar</button>
@@ -583,10 +595,10 @@
         <script>
             $(document).ready(function () {
                 $('#tableUsers').DataTable({
-                    "searching": false, 
+                    "searching": false,
                     "lengthChange": false,
                     language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json',
+                        url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json',
                     }
                 });
             });
@@ -605,6 +617,10 @@
                 var oEditUserIdInput = document.getElementById('editUserId');
                 var oEditNameInput = document.getElementById('editName');
                 var oEditEmailInput = document.getElementById('editEmail');
+
+                var oCategoryField = document.getElementById('categoryField');
+                var oCategoriesSelect = document.getElementById('editCategories');
+                var oChoicesInstance = null;
 
                 var currentRole = 'all';
                 var currentTerm = '';
@@ -659,11 +675,44 @@
                     });
                 }
 
-                function openEditModal(id, name, email) {
+                function openEditModal(id, name, email, role) {
                     oEditUserIdInput.value = id;
                     oEditNameInput.value = name;
                     oEditEmailInput.value = email;
-                    oEditModal.hidden = false;
+                    document.getElementById('editUserRole').value = role; // <- nuevo
+
+
+                    var isAgent = role === 'Agente';
+                    oCategoryField.style.display = isAgent ? 'block' : 'none';
+
+                    if (oChoicesInstance) {
+                        oChoicesInstance.destroy();
+                        oChoicesInstance = null;
+                    }
+
+                    if (!isAgent) {
+                        oEditModal.hidden = false;
+                        return;
+                    }
+
+                    fetch('${pageContext.request.contextPath}/AdminServlet?action=agentCategories&id=' + id)
+                            .then(function (response) {
+                                return response.json();
+                            })
+                            .then(function (selectedIds) {
+                                Array.from(oCategoriesSelect.options).forEach(function (oOption) {
+                                    oOption.selected = selectedIds.includes(parseInt(oOption.value, 10));
+                                });
+                                oChoicesInstance = new Choices(oCategoriesSelect, {
+                                    removeItemButton: true,
+                                    placeholderValue: 'Selecciona categorías...',
+                                    searchPlaceholderValue: 'Buscar categoría...'
+                                });
+                                oEditModal.hidden = false;
+                            })
+                            .catch(function () {
+                                oEditModal.hidden = false;
+                            });
                 }
 
                 function closeEditModal() {
@@ -675,7 +724,8 @@
                         var oEditBtn = e.target.closest('[data-action="edit"]');
                         if (!oEditBtn)
                             return;
-                        openEditModal(oEditBtn.dataset.id, oEditBtn.dataset.name, oEditBtn.dataset.email);
+                        var oRow = oEditBtn.closest('tr');
+                        openEditModal(oEditBtn.dataset.id, oEditBtn.dataset.name, oEditBtn.dataset.email, oRow.dataset.role);
                     });
                 }
 

@@ -125,7 +125,7 @@ public class TicketServiceImpl implements TicketService {
             default ->
                 throw new IllegalArgumentException("Acción no reconocida: " + action);
         };
-
+        String previousStateName = currentState.Name();
         ticket.setState(newState.Name());
         ticketRepository.MtEditState(newState.Name(), ticket);
 
@@ -251,7 +251,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Map<Integer, Integer> MtCountAgentWithoutAssignments() {
+    public Map<String, Integer> MtCountAgentWithoutAssignments() {
         return ticketRepository.MtCountAgentWithoutAssignments();
     }
 

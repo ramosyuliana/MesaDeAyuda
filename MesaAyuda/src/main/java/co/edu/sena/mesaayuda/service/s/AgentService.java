@@ -19,4 +19,7 @@ public interface AgentService {
     
     void MtEdit(AgentUpdateDTO oAgentDTO);
     
+    List<Integer> MtFindIdCategories(int idAgent);
+
+    
 }

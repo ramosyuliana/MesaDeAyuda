@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -121,6 +122,27 @@ public class AgentRepositoryJdbc implements AgentRepository {
                 }
             }
         }
+    }
+
+    @Override
+    public List<Integer> MtFindIdCategories(int idAgent) {
+        String sql = "SELECT \"IdCategory\" FROM \"AgentCategory\" WHERE \"IdAgent\" = ?";
+
+        List<Integer> idCategories = new ArrayList<>();
+
+        try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setInt(1, idAgent);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    idCategories.add(rs.getInt("IdCategory"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("No se pudieron obtener las categorías del agente " + idAgent, e);
+        }
+
+        return idCategories;
     }
 
 }

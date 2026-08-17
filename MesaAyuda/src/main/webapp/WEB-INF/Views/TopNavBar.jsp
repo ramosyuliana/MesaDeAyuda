@@ -422,8 +422,7 @@
 
                 <!-- Botón de notificaciones -->
                 <button class="icon-btn" aria-label="Notificaciones">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="dot-badge"></span>
+                    <a href="${pageContext.request.contextPath}/NotificationServlet?action=notifications"><span class="material-symbols-outlined">notifications</span></a>
                 </button>
             </c:if>
         </div>

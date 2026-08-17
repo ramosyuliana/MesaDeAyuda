@@ -5,6 +5,7 @@
 package co.edu.sena.mesaayuda.web;
 
 import co.edu.sena.mesaayuda.dto.AgentCreateDTO;
+import co.edu.sena.mesaayuda.dto.AgentUpdateDTO;
 import co.edu.sena.mesaayuda.dto.CategoryDTO;
 import co.edu.sena.mesaayuda.dto.RoleDTO;
 import co.edu.sena.mesaayuda.dto.UserCreateDTO;
@@ -40,6 +41,7 @@ public class AdminServlet extends HttpServlet {
         String action = req.getParameter("action");
 
         UserService userService = (UserService) getServletContext().getAttribute(AppContextListener.USER_SERVICE);
+        AgentService agentService = (AgentService) getServletContext().getAttribute(AppContextListener.AGENT_SERVICE);
         RoleService roleService = (RoleService) getServletContext().getAttribute(AppContextListener.ROLE_SERVICE);
         CategoryService categoryService = (CategoryService) getServletContext().getAttribute(AppContextListener.CATEGORY_SERVICE);
         TicketService ticketService = (TicketService) getServletContext().getAttribute(AppContextListener.TICKET_SERVICE);
@@ -56,7 +58,7 @@ public class AdminServlet extends HttpServlet {
             double cancelado = ticketService.MtCanceledTicketRate();
             double resuelto = ticketService.MtResolvedTicketRate();
             Map<String, Integer> stateTickets = ticketService.MtCountTicketsForState();
-            Map<Integer, Integer> assigned = ticketService.MtCountAgentWithoutAssignments();
+            Map<String, Integer> assigned = ticketService.MtCountAgentWithoutAssignments();
 
             req.setAttribute("cancelledTickets", cancelado);
             req.setAttribute("resolvedTickets", resuelto);
@@ -69,7 +71,9 @@ public class AdminServlet extends HttpServlet {
 
             try {
                 List<UserDTO> list = userService.MtList();
+                List<CategoryDTO> categories = categoryService.MtListCategories();
                 req.setAttribute("listUsers", list);
+                req.setAttribute("categories", categories);
 
             } catch (Exception e) {
                 req.setAttribute("errorMsg", e.getMessage());
@@ -102,6 +106,16 @@ public class AdminServlet extends HttpServlet {
             }
             req.getRequestDispatcher("/WEB-INF/Views/Admin/CreateUser.jsp").forward(req, resp);
 
+        } else if ("agentCategories".equals(action)) {
+            resp.setContentType("application/json;charset=UTF-8");
+            try {
+                int idAgent = Integer.parseInt(req.getParameter("id"));
+                List<Integer> categoryIds = agentService.MtFindIdCategories(idAgent);
+                System.out.println("Cats del agente: " + idAgent + categoryIds);
+                resp.getWriter().write(categoryIds.toString());
+            } catch (Exception e) {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
         }
     }
 
@@ -114,41 +128,45 @@ public class AdminServlet extends HttpServlet {
         AgentService agentService = (AgentService) getServletContext().getAttribute(AppContextListener.AGENT_SERVICE);
 
         try {
-            if (action.equals("updateUser")) {
+            if ("updateUser".equals(action)) {
+                int id = Integer.parseInt(req.getParameter("id"));
 
-                UserUpdateDTO oUserUpdateDTO = new UserUpdateDTO(
-                        Integer.parseInt(req.getParameter("id")),
-                        req.getParameter("name"),
-                        req.getParameter("email"));
-                userService.MtEdit(oUserUpdateDTO);
+                String role = req.getParameter("role");
+                if (role.equals("Agente")) {
+                    String[] categoryIdsParam = req.getParameterValues("categoryIds");
+                    List<String> categoryIds = new ArrayList<>();
+                    if (categoryIdsParam != null) {
+                        for (String catId : categoryIdsParam) {
+                            categoryIds.add(catId);
+                        }
+                    }
+                    AgentUpdateDTO oAgentUpdateDTO = new AgentUpdateDTO(
+                            id,
+                            req.getParameter("name"),
+                            req.getParameter("email"),
+                            categoryIds);
+
+                    agentService.MtEdit(oAgentUpdateDTO);
+
+                } else {
+                    UserUpdateDTO oUserUpdateDTO = new UserUpdateDTO(
+                            id,
+                            req.getParameter("name"),
+                            req.getParameter("email"));
+                    userService.MtEdit(oUserUpdateDTO);
+                }
+
                 resp.sendRedirect(req.getContextPath() + "/AdminServlet?action=manageUsers&exito=trueupdate");
-
                 return;
-
             } else if (action.equals("createUser")) {
 
                 int idRole = Integer.parseInt(req.getParameter("idRole"));
                 String fullName = req.getParameter("fullName");
                 String email = req.getParameter("email");
 
-                // Obtenemos las categorías seleccionadas por el Choices.js
                 String[] idCategories = req.getParameterValues("idCategories");
 
-                System.out.println("--- DEPURANDO CATEGORÍAS ---");
-                if (idCategories == null) {
-                    System.out.println("El arreglo idCategories llegó como: NULL");
-                } else if (idCategories.length == 0) {
-                    System.out.println("El arreglo idCategories llegó VACÍO (longitud 0)");
-                } else {
-                    System.out.println("Se recibieron " + idCategories.length + " categorías:");
-                    for (String cat : idCategories) {
-                        System.out.println(" - ID Categoría: " + cat);
-                    }
-                }
-                System.out.println("----------------------------");
-
                 if (idCategories != null && idCategories.length > 0) {
-                    // Convertir el arreglo de String[] a List<Integer>
                     List<String> categoryIds = new ArrayList<>();
                     for (String catId : idCategories) {
                         categoryIds.add(catId);

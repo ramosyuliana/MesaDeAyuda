@@ -120,7 +120,7 @@ public class UserRepositoryJdbc implements UserRepository {
     @Override
     public User MtFindById(int id) {
 
-        String sql = "Select u.\"Id\", u.\"Name\" From \"User\" u "
+        String sql = "Select u.\"Id\", u.\"Name\", u.\"Email\" From \"User\" u "
                 + "Where u.\"Id\" = ? ";
 
         User oUser = null;
@@ -132,6 +132,7 @@ public class UserRepositoryJdbc implements UserRepository {
                     oUser = new User();
                     oUser.setId(rs.getInt("Id"));
                     oUser.setName(rs.getString("Name"));
+                    oUser.setEmail(rs.getString("Email"));
 
                 }
             }

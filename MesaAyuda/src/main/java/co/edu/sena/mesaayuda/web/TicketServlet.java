@@ -28,6 +28,7 @@ public class TicketServlet extends HttpServlet {
         CategoryService categoryService = (CategoryService) getServletContext().getAttribute(AppContextListener.CATEGORY_SERVICE);
         TicketService ticketService = (TicketService) getServletContext().getAttribute(AppContextListener.TICKET_SERVICE);
         CommentService commentService = (CommentService) getServletContext().getAttribute(AppContextListener.COMMENT_SERVICE);
+        
 
         if ("new".equals(action)) {
             try {

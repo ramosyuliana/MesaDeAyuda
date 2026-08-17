@@ -30,7 +30,7 @@ public interface TicketRepository {
 
     void MtEditState(String estado, Ticket oticket);
 
-    Map<Integer, Integer> MtCountAgentWithoutAssignments();
+    Map<String, Integer> MtCountAgentWithoutAssignments();
 
     Map<String, Integer> MtCountTicketsForState();
 

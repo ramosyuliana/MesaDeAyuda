@@ -42,4 +42,9 @@ public class AgentServiceImpl implements AgentService {
         agentRepository.MtUpdateAgent(oAgent, oAgentDTO.getIdCategories());
     }
 
+    @Override
+    public List<Integer> MtFindIdCategories(int idAgent) {
+        return agentRepository.MtFindIdCategories(idAgent);
+    }
+
 }
