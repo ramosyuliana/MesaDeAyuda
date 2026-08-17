@@ -1,9 +1,10 @@
 <%-- 
     Document   : Notificator
-    Created on : 14/08/2026, 2:11:02 p. m.
+    Created on : 14/08/2026, 2:11:02 p. m.
     Author     : julil
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -30,6 +31,7 @@
                 --primary:#3b82f6;
                 --primary-container:#3b82f6;
                 --error:#dc2626;
+                --success:#059669;
                 --gradient-button: linear-gradient(135deg,#3b82f6,#2563eb);
                 --gradient-button-hover: linear-gradient(135deg,#2563eb,#1d4ed8);
                 --radius-lg:10px;
@@ -61,7 +63,6 @@
                 vertical-align: middle;
             }
 
-            /* --- Topbar simplificada solo para el preview --- */
             header.topbar {
                 position: fixed;
                 top:0;
@@ -96,7 +97,7 @@
                 color:#3b82f6;
                 font-size:28px;
             }
-            .brand span {
+            .brand span.name {
                 font-family:'Manrope', sans-serif;
                 font-weight:700;
                 font-size:18px;
@@ -120,6 +121,7 @@
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 8px;
+                animation: fadeInUp .4s ease both;
             }
             .page-head h1 {
                 font-family: 'Manrope', sans-serif;
@@ -142,6 +144,11 @@
                 font-size: 13px;
                 font-weight: 600;
                 white-space: nowrap;
+                transition: background .2s ease, color .2s ease;
+            }
+            .unread-badge.all-caught-up {
+                background: rgba(5,150,105,.12);
+                color: var(--success);
             }
 
             .list-panel {
@@ -152,6 +159,7 @@
                 border-radius: var(--radius-xl);
                 box-shadow: 0 10px 30px -5px rgba(30,41,59,.06);
                 overflow: hidden;
+                animation: fadeInUp .4s ease .05s both;
             }
 
             .notification-item {
@@ -160,7 +168,9 @@
                 padding: 18px 24px;
                 border-bottom: 1px solid var(--hairline);
                 position: relative;
-                transition: background .15s ease;
+                transition: background .2s ease, opacity .3s ease;
+                opacity: 0;
+                animation: fadeInUp .35s ease forwards;
             }
             .notification-item:last-child {
                 border-bottom: none;
@@ -170,6 +180,10 @@
             }
             .notification-item:hover {
                 background: rgba(59,130,246,.08);
+            }
+            .notification-item.marking-read {
+                opacity: .5;
+                pointer-events: none;
             }
 
             .notif-icon {
@@ -228,9 +242,6 @@
             .notif-link:hover {
                 text-decoration: underline;
             }
-            form.inline-mark {
-                margin: 0;
-            }
             .btn-mark-read {
                 font-size: 12px;
                 font-weight: 500;
@@ -245,6 +256,10 @@
                 border-color: var(--primary);
                 color: var(--primary);
             }
+            .btn-mark-read:disabled {
+                opacity: .6;
+                cursor: default;
+            }
 
             .unread-dot {
                 position: absolute;
@@ -254,12 +269,14 @@
                 height: 8px;
                 border-radius: 50%;
                 background: var(--error);
+                transition: opacity .25s ease, transform .25s ease;
             }
 
             .empty-state {
                 padding: 60px 24px;
                 text-align: center;
                 color: var(--on-surface-muted);
+                animation: fadeInUp .4s ease .05s both;
             }
             .empty-state .material-symbols-outlined {
                 font-size: 40px;
@@ -276,21 +293,40 @@
                 font-size: 14px;
                 font-weight: 500;
                 margin-bottom: 8px;
+                transition: color .15s ease, transform .15s ease;
+                animation: fadeInUp .35s ease both;
+            }
+            .back-link:hover {
+                color: var(--primary);
+                transform: translateX(-2px);
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                *, *::before, *::after {
+                    animation-duration: .001ms !important;
+                }
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="${pageContext.request.contextPath}/js/sweetAlert.js"></script>
     </head>
     <body>
-
-        <header class="topbar">
-            <div class="brand">
-                <span class="material-symbols-outlined">support_agent</span>
-                <span>TableHelp</span>
-            </div>
-        </header>
+        <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
 
         <main class="page-container">
 
-            <a class="back-link" href="#">
+            <a class="back-link" href="${pageContext.request.contextPath}/ApplicantServlet?action=dashboard">
                 <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Volver
             </a>
 
@@ -299,89 +335,73 @@
                     <h1>Notificaciones</h1>
                     <p>Actualizaciones sobre tus tickets</p>
                 </div>
-                <span class="unread-badge">3 sin leer</span>
+
+                <c:choose>
+                    <c:when test="${unread > 0}">
+                        <span class="unread-badge">${unread} sin leer</span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="unread-badge all-caught-up">Todo al día wey</span>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
-            <div class="list-panel">
-
-                <div class="notification-item unread">
-                    <div class="notif-icon">
-                        <span class="material-symbols-outlined" style="font-size:20px;">confirmation_number</span>
-                    </div>
-                    <div class="notif-body">
-                        <p class="notif-subject">Ticket #4091 - EN_PROCESO</p>
-                        <p class="notif-message">Su ticket "Falla en conexión Red Laboratorio 3" pasó de ASIGNADO a EN_PROCESO.</p>
-                        <div class="notif-footer">
-                            <span class="notif-date">Hace 10 minutos</span>
-                            <div class="notif-actions">
-                                <a class="notif-link" href="#">Ver ticket</a>
-                                <form class="inline-mark">
-                                    <button class="btn-mark-read" type="button">Marcar como leída</button>
-                                </form>
-                            </div>
+            <c:choose>
+                <c:when test="${empty notifications}">
+                    <div class="list-panel">
+                        <div class="empty-state">
+                            <span class="material-symbols-outlined">notifications_off</span>
+                            <p>No tienes notificaciones todavía.</p>
                         </div>
                     </div>
-                    <span class="unread-dot"></span>
-                </div>
-
-                <div class="notification-item unread">
-                    <div class="notif-icon">
-                        <span class="material-symbols-outlined" style="font-size:20px;">confirmation_number</span>
-                    </div>
-                    <div class="notif-body">
-                        <p class="notif-subject">Ticket #4090 - ASIGNADO</p>
-                        <p class="notif-message">Su ticket "Mantenimiento preventivo videobeam" fue asignado al agente Ana Torres.</p>
-                        <div class="notif-footer">
-                            <span class="notif-date">Hace 2 horas</span>
-                            <div class="notif-actions">
-                                <a class="notif-link" href="#">Ver ticket</a>
-                                <form class="inline-mark">
-                                    <button class="btn-mark-read" type="button">Marcar como leída</button>
-                                </form>
+                </c:when>
+                <c:otherwise>
+                    <div class="list-panel">
+                        <c:forEach var="item" items="${notifications}" varStatus="loop">
+                            <div class="notification-item ${item.read ? '' : 'unread'}"
+                                 id="notif-${item.id}"
+                                 style="animation-delay: ${loop.index * 0.05}s;">
+                                <div class="notif-icon">
+                                    <span class="material-symbols-outlined" style="font-size:20px;">confirmation_number</span>
+                                </div>
+                                <div class="notif-body">
+                                    <p class="notif-subject">${item.subject}</p>
+                                    <p class="notif-message">${item.message}</p>
+                                    <div class="notif-footer">
+                                        <span class="notif-date">${item.sendDate}</span>
+                                        <div class="notif-actions">
+                                            <a class="notif-link" href="${pageContext.request.contextPath}/TicketServlet?action=view&id=${item.idTicket}">Ver ticket</a>
+                                            <form action="NotificationServlet" method="POST">
+                                                <input type="hidden" name="id" value="${item.id}">
+                                                <c:if test="${not item.read}">
+                                                    <input type="hidden" name="action" value="markAsRead">
+                                                    <button class="btn-mark-read" type="submit">Marcar como leída</button>
+                                                </c:if>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <c:if test="${not item.read}">
+                                    <span class="unread-dot"></span>
+                                </c:if>
                             </div>
-                        </div>
+                        </c:forEach>
                     </div>
-                    <span class="unread-dot"></span>
-                </div>
-
-                <div class="notification-item unread">
-                    <div class="notif-icon">
-                        <span class="material-symbols-outlined" style="font-size:20px;">confirmation_number</span>
-                    </div>
-                    <div class="notif-body">
-                        <p class="notif-subject">Ticket #4083 - RESUELTO</p>
-                        <p class="notif-message">Su ticket "Instalación Git y GitHub Desktop" fue marcado como resuelto.</p>
-                        <div class="notif-footer">
-                            <span class="notif-date">Hace 1 día</span>
-                            <div class="notif-actions">
-                                <a class="notif-link" href="#">Ver ticket</a>
-                                <form class="inline-mark">
-                                    <button class="btn-mark-read" type="button">Marcar como leída</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="unread-dot"></span>
-                </div>
-
-                <div class="notification-item">
-                    <div class="notif-icon">
-                        <span class="material-symbols-outlined" style="font-size:20px;">confirmation_number</span>
-                    </div>
-                    <div class="notif-body">
-                        <p class="notif-subject">Ticket #4080 - CANCELADO</p>
-                        <p class="notif-message">Su ticket "Solicitud de acceso a laboratorio de redes" fue cancelado por el administrador.</p>
-                        <div class="notif-footer">
-                            <span class="notif-date">Hace 3 días</span>
-                            <div class="notif-actions">
-                                <a class="notif-link" href="#">Ver ticket</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+                </c:otherwise>
+            </c:choose>
 
         </main>
+
+
+        <%
+            String error = (String) request.getAttribute("errorMsg");
+            if (error != null && !error.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.error("¡Error!", "<%= error%>");
+            });
+        </script>
+        <%}%>
     </body>
 </html>

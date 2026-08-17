@@ -179,20 +179,21 @@ public class TicketRepositoryJdbc implements TicketRepository {
     }
 
     @Override
-    public Map<Integer, Integer> MtCountAgentWithoutAssignments() {
+    public Map<String, Integer> MtCountAgentWithoutAssignments() {
 
         String sql = "SELECT "
                 + "(SELECT COUNT(*) FROM \"Ticket\" t RIGHT JOIN \"User\" u ON t.\"IdAgent\" = u.\"Id\" INNER JOIN \"Role\" r ON u.\"IdRole\" = r.\"Id\" WHERE r.\"Name\" = 'Agente' AND t.\"IdAgent\" IS NULL) AS \"SinAsignar\", "
                 + "(SELECT COUNT(*) FROM \"User\" u INNER JOIN \"Role\" r ON u.\"IdRole\" = r.\"Id\" WHERE r.\"Name\" = 'Agente') AS \"Total\"";
 
-        Map<Integer, Integer> list = new HashMap<>();
+        Map<String, Integer> list = new HashMap<>();
 
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                list.put(rs.getInt("SinAsignar"), rs.getInt("Total"));
+                list.put("sinAsignar", rs.getInt("SinAsignar"));
+                list.put("total", rs.getInt("Total"));
             }
         } catch (SQLException e) {
             throw new RuntimeException("No se pudo contar los tickets sin agente asignado ni totales ", e);

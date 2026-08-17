@@ -4,10 +4,11 @@
  */
 package co.edu.sena.mesaayuda.web;
 
+import co.edu.sena.mesaayuda.dto.NotificationDTO;
 import co.edu.sena.mesaayuda.dto.TicketDTO;
 import co.edu.sena.mesaayuda.model.User;
+import co.edu.sena.mesaayuda.service.s.NotificationService;
 import co.edu.sena.mesaayuda.service.s.TicketService;
-import co.edu.sena.mesaayuda.service.s.UserService;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -30,6 +31,7 @@ public class ApplicantServlet extends HttpServlet {
         String action = req.getParameter("action");
 
         TicketService ticketService = (TicketService) getServletContext().getAttribute(AppContextListener.TICKET_SERVICE);
+        NotificationService notificationService = (NotificationService) getServletContext().getAttribute(AppContextListener.NOTIFICATION_SERVICE);
 
         if (action.equals("dashboard")) {
 
@@ -38,6 +40,9 @@ public class ApplicantServlet extends HttpServlet {
             if (session != null) {
                 User oUser = (User) session.getAttribute("user");
                 req.setAttribute("name", oUser.getName());
+                int unread = notificationService.MtCountUnread(oUser.getId());
+
+                List<NotificationDTO> notifications = notificationService.MtListForAddresse(oUser.getId());
 
                 int newTickets = ticketService.MtCountAsignedTickets(oUser.getId());
 
@@ -49,6 +54,8 @@ public class ApplicantServlet extends HttpServlet {
                 req.setAttribute("ticketsAsigned", newTickets);
                 req.setAttribute("ticketsUnresolved", unresolvedTicket);
                 req.setAttribute("ticketsClosed", closedTicket);
+                req.setAttribute("unread", unread);
+                req.setAttribute("notifications", notifications);
                 req.setAttribute("list", list);
 
             }

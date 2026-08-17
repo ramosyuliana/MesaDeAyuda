@@ -17,4 +17,7 @@ public interface AgentRepository {
 
     void MtUpdateAgent(Agent oAgent, List<String> idCategories);
 
-    }
+    List<Integer> MtFindIdCategories(int idAgent);
+    
+
+}

@@ -56,14 +56,16 @@ public class NotificationRepositoryJdbc implements NotificationRepository {
     @Override
     public List<Notification> MtFindByAddressee(Integer idUser) {
 
-        String sql = "Select n.\"Id\", n.\"IdTicket\", n.\"Channel\", n.\"Subject\", "
-                + "       n.\"Message\", n.\"SendDate\", n.\"Read\", "
-                + "       u.\"Id\" as \"UserId\", u.\"Name\", u.\"Email\",r.\"Id\" as \"IdRole\", r.\"Name\" as \"RoleName\" "
-                + "From \"Notification\" n "
-                + "Inner Join \"User\" u ON u.\"Id\" = n.\"IdRecipient\" "
-                + "Inner Join \"Role\" r ON r.\"Id\" = u.\"IdRol\" "
-                + "Where n.\"IdRecipient\" = ? "
-                + "Order By n.\"SendDate\" DESC";
+        String sql = "SELECT "
+                + "    n.\"Id\", n.\"IdTicket\", n.\"Channel\", n.\"Subject\", "
+                + "    n.\"Message\", n.\"SendDate\", n.\"Read\", "
+                + "    u.\"Id\" AS \"UserId\", u.\"Name\", u.\"Email\", "
+                + "    r.\"Id\" AS \"IdRole\", r.\"Name\" AS \"RoleName\" "
+                + "FROM \"Notification\" n "
+                + "INNER JOIN \"User\" u ON u.\"Id\" = n.\"IdAddressee\" "
+                + "INNER JOIN \"Role\" r ON r.\"Id\" = u.\"IdRole\" "
+                + "WHERE n.\"IdAddressee\" = ? "
+                + "ORDER BY n.\"SendDate\" DESC";
 
         List<Notification> list = new ArrayList<>();
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement ps = cn.prepareStatement(sql)) {
@@ -79,6 +81,8 @@ public class NotificationRepositoryJdbc implements NotificationRepository {
             return list;
 
         } catch (SQLException e) {
+            
+            e.printStackTrace();
             throw new RuntimeException("No se pudieron consultar las notificaciones del usuario " + idUser, e);
         }
 
@@ -88,7 +92,7 @@ public class NotificationRepositoryJdbc implements NotificationRepository {
     public int MtCountUnread(Integer idUser) {
 
         String sql = "Select Count(*) From \"Notification\" "
-                + "Where \"IdRecipient\" = ? and \"Read\" = false";
+                + "Where \"IdAddressee\" = ? and \"Read\" = false";
 
         try (Connection oConnection = ConexionDB.getConnection(); PreparedStatement oStatement = oConnection.prepareStatement(sql)) {
 
@@ -102,6 +106,7 @@ public class NotificationRepositoryJdbc implements NotificationRepository {
             }
 
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException("No se pudieron contar las notificaciones sin leer del usuario " + idUser, e);
         }
     }

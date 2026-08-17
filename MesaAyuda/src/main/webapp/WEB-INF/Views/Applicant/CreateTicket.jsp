@@ -5,7 +5,7 @@
     <head>
         <meta charset="utf-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-        <title>Submit a Ticket | Luminous Ether Help Desk</title>
+        <title>Crear Ticket | Mesa Ayuda CIMM</title>
         <link href="https://fonts.googleapis.com" rel="preconnect"/>
         <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet"/>
@@ -296,23 +296,23 @@
                 <div class="card-glow"></div>
 
                 <div style="margin-bottom: 32px;">
-                    <h1 class="form-title">Create a New Ticket</h1>
-                    <p class="form-desc">Describe your issue and our team will get back to you shortly.</p>
+                    <h1 class="form-title">Crea un Nuevo Ticket</h1>
+                    <p class="form-desc">Describe tu situación y te ayudaremos lo mas pronto posible.</p>
                 </div>
 
                 <form style="display: flex; flex-direction: column; gap: 24px;"    action="${pageContext.request.contextPath}/TicketServlet?action=register" method="POST">
                     <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label" for="subject">Ticket Subject</label>
+                        <label class="form-label" for="subject">Titulo del Ticket</label>
                         <div>
                             <input class="form-input" id="subject" name="Title" placeholder="Brief summary of the issue" type="text"/>
                         </div>
                     </div>
 
                     <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label" for="category">Category</label>
+                        <label class="form-label" for="category">Categoria</label>
                         <div class="select-wrapper">
                             <select class="form-select" id="category" name="Category">
-                                <option disabled="" selected="" value="">Select a category...</option>
+                                <option disabled="" selected="" value="">Selecciona una categoria...</option>
                                 <c:forEach var="c"  items="${categories}">
                                     <option value="${c.id}">${c.name}</option>
                                 </c:forEach>
@@ -324,16 +324,16 @@
                     </div>
 
                     <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label" for="description">Problem Description</label>
+                        <label class="form-label" for="description">Descripcion del Problema</label>
                         <div>
                             <textarea class="form-textarea" id="description" name="Description" placeholder="Please provide detailed information about the issue..." rows="5"></textarea>
                         </div>
                     </div>
 
                     <div class="form-actions">
-                        <button class="btn-cancel" type="button">
+                        <a class="btn-cancel" href="${pageContext.request.contextPath}/TicketServlet?action=tickets">
                             Cancel
-                        </button>
+                        </a>
                         <button class="btn-submit" type="submit">
                             <span class="material-symbols-outlined" style="font-size: 18px;">send</span>
                             Submit Ticket
