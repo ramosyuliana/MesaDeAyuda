@@ -935,7 +935,7 @@
                                             <c:when test="${t.state == 'ASIGNADO'}">
                                                 <span class="status status-review"><span class="dot"></span>ASIGNADO</span>
                                             </c:when>
-                                            <c:when test="${t.state == 'EN_PROCESO'}">
+                                            <c:when test="${t.state == 'ENPROCESO'}">
                                                 <span class="status status-progress"><span class="dot"></span>EN_PROCESO</span>
                                             </c:when>
                                             <c:when test="${t.state == 'RESUELTO'}">
