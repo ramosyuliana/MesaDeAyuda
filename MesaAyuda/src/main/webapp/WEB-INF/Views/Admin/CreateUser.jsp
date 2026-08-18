@@ -310,9 +310,10 @@
         <script src="${pageContext.request.contextPath}/js/sweetAlert.js"></script>
     </head>
     <body>
+                    <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
+
         <div class="form-card">
 
-            <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
 
             <div class="form-header">
                 <h2>Crear Usuario</h2>
