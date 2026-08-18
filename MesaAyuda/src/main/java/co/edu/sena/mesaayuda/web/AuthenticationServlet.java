@@ -48,7 +48,7 @@ public class AuthenticationServlet extends HttpServlet {
         try {
             oUser = userAuthService.MtAuthenticate(email);
         } catch (Exception e) {
-            req.setAttribute("errorMsg", "Correo o contrasena incorrectos");
+            req.setAttribute("errorMsg", "Correo incorrecto");
             req.getRequestDispatcher("/index.jsp").forward(req, resp);
             return;
         }
