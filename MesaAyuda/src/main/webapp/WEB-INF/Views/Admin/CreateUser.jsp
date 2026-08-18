@@ -311,6 +311,9 @@
     </head>
     <body>
         <div class="form-card">
+
+            <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
+
             <div class="form-header">
                 <h2>Crear Usuario</h2>
                 <p>Agrega un nuevo miembro al sistema y asígnale un rol.</p>
@@ -372,46 +375,46 @@
         <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var oRoleSelect = document.getElementById('role');
-                var oCategoriesField = document.getElementById('categoriesField');
-                var oCategoriesSelect = document.getElementById('categories');
-                var oChoicesInstance = null;
+                        document.addEventListener('DOMContentLoaded', function () {
+                            var oRoleSelect = document.getElementById('role');
+                            var oCategoriesField = document.getElementById('categoriesField');
+                            var oCategoriesSelect = document.getElementById('categories');
+                            var oChoicesInstance = null;
 
-                var ID_ROLE_AGENTE = "${idRole}";
+                            var ID_ROLE_AGENTE = "${idRole}";
 
-                function toggleCategories() {
-                    if (!oRoleSelect)
-                        return;
+                            function toggleCategories() {
+                                if (!oRoleSelect)
+                                    return;
 
-                    // Comparamos si el valor seleccionado es el ID del agente
-                    if (oRoleSelect.value === ID_ROLE_AGENTE) {
-                        oCategoriesField.style.display = 'block'; // Mostrar contenedor
+                                // Comparamos si el valor seleccionado es el ID del agente
+                                if (oRoleSelect.value === ID_ROLE_AGENTE) {
+                                    oCategoriesField.style.display = 'block'; // Mostrar contenedor
 
-                        if (!oChoicesInstance && oCategoriesSelect) {
-                            oChoicesInstance = new Choices(oCategoriesSelect, {
-                                removeItemButton: true,
-                                searchEnabled: true,
-                                placeholderValue: 'Selecciona categorías',
-                                noResultsText: 'Sin resultados',
-                                noChoicesText: 'No hay más opciones'
-                            });
-                        }
-                    } else {
-                        oCategoriesField.style.display = 'none';
+                                    if (!oChoicesInstance && oCategoriesSelect) {
+                                        oChoicesInstance = new Choices(oCategoriesSelect, {
+                                            removeItemButton: true,
+                                            searchEnabled: true,
+                                            placeholderValue: 'Selecciona categorías',
+                                            noResultsText: 'Sin resultados',
+                                            noChoicesText: 'No hay más opciones'
+                                        });
+                                    }
+                                } else {
+                                    oCategoriesField.style.display = 'none';
 
-                        if (oChoicesInstance) {
-                            oChoicesInstance.destroy();
-                            oChoicesInstance = null;
-                        }
-                    }
-                }
+                                    if (oChoicesInstance) {
+                                        oChoicesInstance.destroy();
+                                        oChoicesInstance = null;
+                                    }
+                                }
+                            }
 
-                if (oRoleSelect) {
-                    oRoleSelect.addEventListener('change', toggleCategories);
-                    toggleCategories();
-                }
-            });
+                            if (oRoleSelect) {
+                                oRoleSelect.addEventListener('change', toggleCategories);
+                                toggleCategories();
+                            }
+                        });
         </script>
         <script>
             (function () {

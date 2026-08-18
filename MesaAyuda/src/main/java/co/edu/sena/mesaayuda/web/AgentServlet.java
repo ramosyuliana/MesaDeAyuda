@@ -4,9 +4,11 @@
  */
 package co.edu.sena.mesaayuda.web;
 
+import co.edu.sena.mesaayuda.dto.TicketDTO;
 import co.edu.sena.mesaayuda.model.User;
-import co.edu.sena.mesaayuda.service.s.UserService;
+import co.edu.sena.mesaayuda.service.s.TicketService;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,15 +28,17 @@ public class AgentServlet extends HttpServlet {
 
         String action = req.getParameter("action");
 
-        UserService userService = (UserService) getServletContext().getAttribute(AppContextListener.USER_SERVICE);
-
+        TicketService ticketService = (TicketService) getServletContext().getAttribute(AppContextListener.TICKET_SERVICE);
         if (action.equals("dashboard")) {
 
             HttpSession session = req.getSession(false);
 
             if (session != null) {
                 User oUser = (User) session.getAttribute("user");
+
+                List<TicketDTO> list = ticketService.MtListByAgent(oUser.getId());
                 req.setAttribute("name", oUser.getName());
+                req.setAttribute("myTickets", list);
                 req.getRequestDispatcher("/WEB-INF/Views/Agent/Dashboard.jsp").forward(req, resp);
 
             }

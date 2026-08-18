@@ -390,46 +390,61 @@
             }
         </style>
     </head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="${pageContext.request.contextPath}/js/sweetAlert.js"></script>
     <body>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Fondo con imagen y overlay claro -->
-        <div class="bg-photo" aria-hidden="true">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIKobOXIeN8nbtV02UgQ2IlFuCSdgL2palJtK2Puxh_ymGovFcwV0gaAkVQv9_wPPwXfadZ5mZfFPNTxcD2GPKQx1OBxsKEjmu-r33Tsg99fVXxfiYRUWFp9bvu6GJ4gHMTZFaF6zyvlpkFMFc59NxN-wME_SeOsK_Sf-kwt0ip_Vv4_ghH4tCXqNtKRoiJGQALLq0sueImOCVcOAd4Gif-JpKZsfUsRPumIi07cR-si6DrtYpRmxO" alt="">
-        </div>
-
-        <!-- Tarjeta de login -->
-        <div class="login-card">
-            <div class="accent-line"></div>
-
-            <div class="login-header">
-                <div class="login-icon">
-                    <span class="material-symbols-outlined" aria-hidden="true">support_agent</span>
-                </div>
-                <h1 style="font-size: 19px;">Mesa de Ayuda</h1>
-                <p style="font-size: 12px;">Portal de Soporte Técnico</p>
+        <!-- Main Content -->
+        <main>
+            <!-- Fondo con imagen y overlay claro -->
+            <div class="bg-photo" aria-hidden="true">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIKobOXIeN8nbtV02UgQ2IlFuCSdgL2palJtK2Puxh_ymGovFcwV0gaAkVQv9_wPPwXfadZ5mZfFPNTxcD2GPKQx1OBxsKEjmu-r33Tsg99fVXxfiYRUWFp9bvu6GJ4gHMTZFaF6zyvlpkFMFc59NxN-wME_SeOsK_Sf-kwt0ip_Vv4_ghH4tCXqNtKRoiJGQALLq0sueImOCVcOAd4Gif-JpKZsfUsRPumIi07cR-si6DrtYpRmxO" alt="">
             </div>
 
-            <!-- Formulario apuntando a tu Servlet o controlador -->
-            <form action="${pageContext.request.contextPath}/AuthServlet" method="POST">
-                <input type="hidden" name="action" value="ingresar">
-                <div class="field">
-                    <label for="email">Correo Electrónico</label>
-                    <div class="field-input-wrap">
-                        <span class="material-symbols-outlined">mail</span>
-                        <input type="email" id="email" name="email" placeholder="Ingresa tu correo corporativo" required>
+            <!-- Tarjeta de login -->
+            <div class="login-card">
+                <div class="accent-line"></div>
+
+                <div class="login-header">
+                    <div class="login-icon">
+                        <span class="material-symbols-outlined" aria-hidden="true">support_agent</span>
                     </div>
+                    <h1 style="font-size: 19px;">Mesa de Ayuda</h1>
+                    <p style="font-size: 12px;">Portal de Soporte Técnico</p>
                 </div>
 
-                <button type="submit" class="btn-submit">
-                    Iniciar Sesión
-                    <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
-                </button>
-            </form>
+                <!-- Formulario apuntando a tu Servlet o controlador -->
+                <form action="${pageContext.request.contextPath}/AuthServlet" method="POST">
+                    <input type="hidden" name="action" value="ingresar">
+                    <div class="field">
+                        <label for="email">Correo Electrónico</label>
+                        <div class="field-input-wrap">
+                            <span class="material-symbols-outlined">mail</span>
+                            <input type="email" id="email" name="email" placeholder="Ingresa tu correo corporativo" required>
+                        </div>
+                    </div>
 
-        </div>
-    </main>
+                    <button type="submit" class="btn-submit">
+                        Iniciar Sesión
+                        <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                    </button>
+                </form>
 
-</body>
+            </div>
+        </main>
+
+        <%
+            String error = (String) request.getAttribute("errorMsg");
+
+            if (error != null && !error.isEmpty()) {
+        %>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                sweetAlert.error("¡Error!", "<%= error%>");
+            });
+        </script>
+        <%}%>
+
+
+    </body>
 </html>

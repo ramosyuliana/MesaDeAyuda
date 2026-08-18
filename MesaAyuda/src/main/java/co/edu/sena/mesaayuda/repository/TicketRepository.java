@@ -49,6 +49,6 @@ public interface TicketRepository {
     int MtCountAsignedTickets(int idApplicant);
 
     List<TicketDTO> MtListTop5ByApplicant(int idApplicant);
-    
+
     int MtCountAssignments();
 }

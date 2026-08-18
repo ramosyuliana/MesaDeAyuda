@@ -700,14 +700,30 @@
                                 return response.json();
                             })
                             .then(function (selectedIds) {
-                                Array.from(oCategoriesSelect.options).forEach(function (oOption) {
-                                    oOption.selected = selectedIds.includes(parseInt(oOption.value, 10));
+                                var selectedValues = selectedIds.map(function (idNum) {
+                                    return String(idNum);
                                 });
+
+                                Array.from(oCategoriesSelect.options).forEach(function (oOption) {
+                                    oOption.selected = false;
+                                    oOption.removeAttribute('selected');
+                                });
+
+                                // Marca solo las del agente que se está abriendo, como atributo real
+                                selectedValues.forEach(function (val) {
+                                    var oOption = oCategoriesSelect.querySelector('option[value="' + val + '"]');
+                                    if (oOption) {
+                                        oOption.selected = true;
+                                        oOption.setAttribute('selected', 'selected');
+                                    }
+                                });
+
                                 oChoicesInstance = new Choices(oCategoriesSelect, {
                                     removeItemButton: true,
                                     placeholderValue: 'Selecciona categorías...',
                                     searchPlaceholderValue: 'Buscar categoría...'
                                 });
+
                                 oEditModal.hidden = false;
                             })
                             .catch(function () {
