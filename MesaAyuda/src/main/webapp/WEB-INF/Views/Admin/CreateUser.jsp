@@ -310,7 +310,7 @@
         <script src="${pageContext.request.contextPath}/js/sweetAlert.js"></script>
     </head>
     <body>
-                    <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
+        <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
 
         <div class="form-card">
 
