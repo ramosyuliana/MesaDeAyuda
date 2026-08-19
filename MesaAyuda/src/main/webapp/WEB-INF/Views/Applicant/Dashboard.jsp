@@ -6,8 +6,8 @@
         <meta charset="utf-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <title>Dashboard Solicitante | Mesa Ayuda CIMM</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
         <style>
             :root {
                 --bg-page: #eef2f7;
@@ -799,6 +799,25 @@
                     max-width: none;
                 }
             }
+
+            .page-head-meta {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 13px;
+                color: var(--on-surface-muted);
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                padding: 8px 14px;
+                border-radius: var(--radius-full);
+                backdrop-filter: var(--card-blur);
+                -webkit-backdrop-filter: var(--card-blur);
+                white-space: nowrap;
+            }
+            .page-head-meta .material-symbols-outlined {
+                font-size: 16px;
+                color: var(--primary);
+            }
         </style>
     </head>
     <body>
@@ -810,6 +829,10 @@
                 <section class="hero">
                     <h1>¡Hola, ${name}!</h1>
                     <p>¿En qué podemos ayudarte hoy?</p>
+                    <div class="page-head-meta">
+                        <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+                        <span id="todayLabel">&nbsp;</span>
+                    </div>
                 </section>
 
                 <section class="kpi-grid">
@@ -939,6 +962,22 @@
         </div>
 
         <script>
+
+            (function () {
+                const todayLabel = document.getElementById('todayLabel');
+                const lastSyncLabel = document.getElementById('lastSyncLabel');
+                const now = new Date();
+                const options = {weekday: 'long', day: 'numeric', month: 'long'};
+                if (todayLabel) {
+                    let text = now.toLocaleDateString('es-ES', options);
+                    todayLabel.textContent = text.charAt(0).toUpperCase() + text.slice(1);
+                }
+                if (lastSyncLabel) {
+                    const hh = String(now.getHours()).padStart(2, '0');
+                    const mm = String(now.getMinutes()).padStart(2, '0');
+                    lastSyncLabel.textContent = hh + ':' + mm;
+                }
+            })();
             (function () {
                 'use strict';
 

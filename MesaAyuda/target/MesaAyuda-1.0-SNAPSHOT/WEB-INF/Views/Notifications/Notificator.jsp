@@ -110,7 +110,6 @@
             .page-container {
                 max-width: 760px;
                 margin: 0 auto;
-                padding: 100px 24px 48px;
                 display: flex;
                 flex-direction: column;
                 gap: 16px;
@@ -325,10 +324,6 @@
         <jsp:include page="/WEB-INF/Views/TopNavBar.jsp" />
 
         <main class="page-container">
-
-            <a class="back-link" href="${pageContext.request.contextPath}/ApplicantServlet?action=dashboard">
-                <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Volver
-            </a>
 
             <div class="page-head">
                 <div>

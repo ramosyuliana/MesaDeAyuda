@@ -7,9 +7,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard Admin | Mesa Ayuda CIMM</title>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-              rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
         <style>
             :root {
                 /* ---- Fondos y superficies (MODO CLARO por defecto, con cuerpo) ---- */
@@ -889,6 +889,25 @@
                 text-align: right;
             }
 
+            .page-head-meta {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 13px;
+                color: var(--on-surface-muted);
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                padding: 8px 14px;
+                border-radius: var(--radius-full);
+                backdrop-filter: var(--card-blur);
+                -webkit-backdrop-filter: var(--card-blur);
+                white-space: nowrap;
+            }
+            .page-head-meta .material-symbols-outlined {
+                font-size: 16px;
+                color: var(--primary);
+            }
+
         </style>
     </head>
 
@@ -911,6 +930,11 @@
                     <div>
                         <h1>👋🏻 Hola ${name}, Resumen del Dashboard</h1>
                         <p>Esto es lo que está pasando con tus tickets hoy.</p>
+                    </div>
+
+                    <div class="page-head-meta">
+                        <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+                        <span id="todayLabel">&nbsp;</span>
                     </div>
                 </div>
 
@@ -968,6 +992,22 @@
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
+
+            (function () {
+                const todayLabel = document.getElementById('todayLabel');
+                const lastSyncLabel = document.getElementById('lastSyncLabel');
+                const now = new Date();
+                const options = {weekday: 'long', day: 'numeric', month: 'long'};
+                if (todayLabel) {
+                    let text = now.toLocaleDateString('es-ES', options);
+                    todayLabel.textContent = text.charAt(0).toUpperCase() + text.slice(1);
+                }
+                if (lastSyncLabel) {
+                    const hh = String(now.getHours()).padStart(2, '0');
+                    const mm = String(now.getMinutes()).padStart(2, '0');
+                    lastSyncLabel.textContent = hh + ':' + mm;
+                }
+            })();
             // 1. Contador animado para las tarjetas KPI
             function animateCount(el) {
                 const target = parseFloat(el.dataset.count);
@@ -976,7 +1016,6 @@
                 const isDecimal = String(target).includes(".");
                 const duration = 1200;
                 const start = performance.now();
-
                 function tick(now) {
                     const progress = Math.min((now - start) / duration, 1);
                     const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
@@ -991,15 +1030,12 @@
             document.querySelectorAll('.kpi-value[data-count]').forEach(el => {
                 setTimeout(() => animateCount(el), 300);
             });
-
-
             const stateLabels = [
             <c:forEach var="entry" items="${stateTickets}" varStatus="loop">"${entry.key}"<c:if test="${!loop.last}">,</c:if></c:forEach>
             ];
             const stateData = [
             <c:forEach var="entry" items="${stateTickets}" varStatus="loop">${entry.value}<c:if test="${!loop.last}">,</c:if></c:forEach>
             ];
-
             const ctxState = document.getElementById('stateTicketsChart');
             if (ctxState) {
                 new Chart(ctxState, {
