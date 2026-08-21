@@ -276,7 +276,7 @@ public class TicketRepositoryJdbc implements TicketRepository {
 
         double tasaResuelto = 0.0;
         String sql = "SELECT "
-                + "  (SELECT COUNT(*) FROM \"Ticket\" WHERE \"State\" = 'RESUELTO') AS \"Resueltos\", "
+                + "  (SELECT COUNT(*) FROM \"Ticket\" WHERE \"State\" = 'CERRADO') AS \"Resueltos\", "
                 + "  (SELECT COUNT(*) FROM \"Ticket\") AS \"Total\"";
 
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {

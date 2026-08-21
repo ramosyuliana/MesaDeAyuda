@@ -27,7 +27,6 @@ public class NotificationByEmail implements Notificator {
     private final String username;
     private final String password;
 
-    // Constructor que recibe credenciales y servidor SMTP
     public NotificationByEmail(String sender, String host, String port, String username, String password) {
         this.sender = sender;
         this.host = host;
@@ -44,20 +43,8 @@ public class NotificationByEmail implements Notificator {
                 return;
             }
 
-            // 1. Validar destinatario de forma segura
-            if (oNotification.getAddressee() == null || oNotification.getAddressee().getEmail() == null) {
-                logger.log(Level.SEVERE, "El destinatario o su correo electrónico es nulo");
-                return;
-            }
             String destination = oNotification.getAddressee().getEmail();
 
-            // 2. Obtener asunto y mensaje con valores por defecto si son nulos
-            String subject = oNotification.getSubject() != null ? oNotification.getSubject() : "Notificación Mesa de Ayuda";
-            String content = oNotification.getMessage() != null ? oNotification.getMessage() : "Sin contenido";
-
-            logger.log(Level.INFO, "Enviando correo real a: {0} con asunto: {1}", new Object[]{destination, subject});
-
-            // 3. Configuración de propiedades SMTP
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
@@ -97,7 +84,6 @@ public class NotificationByEmail implements Notificator {
             logger.log(Level.INFO, "Correo enviado exitosamente | De: {0} | Para: {1}", new Object[]{sender, destination});
 
         } catch (Exception e) {
-            // Esto atrapará exactamente dónde ocurre el NullPointerException interno si volviera a pasar
             logger.log(Level.SEVERE, "Excepción atrapada al enviar correo: " + e.getClass().getName() + " - " + e.getMessage(), e);
             throw new RuntimeException("Error al enviar notificación por correo", e);
         }

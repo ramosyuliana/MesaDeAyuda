@@ -353,6 +353,15 @@
                             <span class="material-symbols-outlined" style="font-size:16px;">edit</span> Editar ticket
                         </a>
                     </c:if>
+                    <c:if test="${ticket.state == 'CERRADO'}">
+                        <form class="otp-confirm-form" action="${pageContext.request.contextPath}/TicketServlet" method="post">
+                            <input type="hidden" name="action" value="editState"/>
+                            <input type="hidden" name="idTicket" value="${ticket.id}"/>
+                            <input type="hidden" name="stateAction" value="REABRIR"/>
+              
+                            <button class="btn btn-primary" type="submit">Reabrir</button>
+                        </form>
+                    </c:if>
 
 
                 </div>
