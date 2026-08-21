@@ -325,7 +325,7 @@ public class TicketRepositoryJdbc implements TicketRepository {
 
     @Override
     public int MtCountUnresolvedTickets(int idApplicant) {
-        String sql = "Select COUNT(*) From \"Ticket\" where \"IdApplicant\" = ? AND \"State\" IN ('NUEVO', 'ASIGNADO', 'EN_PROCESO') ";
+        String sql = "Select COUNT(*) From \"Ticket\" where \"IdApplicant\" = ? AND \"State\" IN ('NUEVO', 'ASIGNADO', 'ENPROCESO') ";
 
         try (Connection con = ConexionDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
