@@ -35,7 +35,7 @@ public class ClosedState implements TicketState {
 
     @Override
     public TicketState MtReOpen() {
-        throw new InvalidTransitionException(Name, "asignar", Motivo);
+        return new InProcessState();
     }
 
     @Override

@@ -875,17 +875,6 @@
                     <h2>Gestión de Tickets</h2>
                     <p>Administra y reasigna solicitudes pendientes</p>
                 </div>
-                <!-- Contextual Filters/Actions for the table -->
-                <div class="head-actions">
-                    <button class="btn-ghost" type="button">
-                        <span class="material-symbols-outlined ico-16">filter_list</span>
-                        Filtrar
-                    </button>
-                    <button class="btn-ghost" type="button">
-                        <span class="material-symbols-outlined ico-16">sort</span>
-                        Ordenar
-                    </button>
-                </div>
             </div>
 
             <c:if test="${not empty errorMsg}">

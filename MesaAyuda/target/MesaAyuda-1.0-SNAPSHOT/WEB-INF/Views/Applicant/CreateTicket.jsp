@@ -304,7 +304,7 @@
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label" for="subject">Titulo del Ticket</label>
                         <div>
-                            <input class="form-input" id="subject" name="Title" placeholder="Brief summary of the issue" type="text"/>
+                            <input class="form-input" id="subject" name="Title" placeholder="Resume tu problema" type="text"/>
                         </div>
                     </div>
 
@@ -326,17 +326,17 @@
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label" for="description">Descripcion del Problema</label>
                         <div>
-                            <textarea class="form-textarea" id="description" name="Description" placeholder="Please provide detailed information about the issue..." rows="5"></textarea>
+                            <textarea class="form-textarea" id="description" name="Description" placeholder="Describe detalladamente la situacion..." rows="5"></textarea>
                         </div>
                     </div>
 
                     <div class="form-actions">
                         <a class="btn-cancel" href="${pageContext.request.contextPath}/TicketServlet?action=tickets">
-                            Cancel
+                            Cancelar
                         </a>
                         <button class="btn-submit" type="submit">
                             <span class="material-symbols-outlined" style="font-size: 18px;">send</span>
-                            Submit Ticket
+                            Crear Ticket
                         </button>
                     </div>
                 </form>
