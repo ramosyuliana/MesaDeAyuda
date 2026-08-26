@@ -470,6 +470,10 @@
                                         <h4 class="detail-title">${t.title}</h4>
                                     </div>
                                     <span class="tag-badge tag-blue">${t.state}</span>
+                                    <a class="tag-badge tag-blue" href="${pageContext.request.contextPath}/TicketServlet?action=view&id=${t.id}">
+                                        <span class="material-symbols-outlined" style="font-size:14px;">chat</span>  Chat
+                                        
+                                    </a>
                                 </div>
 
                                 <p class="detail-desc">${t.description}</p>

@@ -358,7 +358,7 @@
                             <input type="hidden" name="action" value="editState"/>
                             <input type="hidden" name="idTicket" value="${ticket.id}"/>
                             <input type="hidden" name="stateAction" value="REABRIR"/>
-              
+
                             <button class="btn btn-primary" type="submit">Reabrir</button>
                         </form>
                     </c:if>
@@ -431,8 +431,83 @@
                     <span class="material-symbols-outlined">send</span>
                 </button>
             </form>
+            <div class="glass-card">
+                <p class="comments-title">Chat en vivo</p>
+
+                <div id="chatMessages" style="max-height: 300px; overflow-y: auto; margin-bottom: 12px;">
+                    <c:forEach var="m" items="${chatHistory}">
+                        <div class="comment-item">
+                            <div class="comment-avatar">${fn:substring(m.authorName, 0, 1)}</div>
+                            <div class="comment-body">
+                                <p class="author">${m.authorName}</p>
+                                <p class="date">${m.date}</p>
+                                <p class="text">${m.text}</p>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+                <div class="comment-form">
+                    <input type="text" id="chatInput" placeholder="Escribe un mensaje..."/>
+                    <button id="chatSendBtn" title="Enviar" type="button">
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </div>   
 
         </main>
+        <script>
+            (function () {
+                const idTicket = ${ticket.id};
+                const idUser = ${sessionScope.user.id};
+
+                const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+                const socket = new WebSocket(protocol + "//" + window.location.host + "${pageContext.request.contextPath}/chat/" + idTicket);
+
+                const chatBox = document.getElementById("chatMessages");
+                const input = document.getElementById("chatInput");
+                const sendBtn = document.getElementById("chatSendBtn");
+
+                socket.onopen = () => console.log("Conectado al chat del ticket " + idTicket);
+                socket.onerror = (err) => console.error("Error WebSocket:", err);
+
+                socket.onmessage = function (event) {
+                    const msg = JSON.parse(event.data);
+                    appendMessage(msg.authorName, msg.date, msg.text);
+                };
+
+                function appendMessage(author, date, text) {
+                    const div = document.createElement("div");
+                    div.className = "comment-item";
+                    div.innerHTML = `
+                    <div class="comment-avatar"></div>
+                    <div class="comment-body">
+                        <p class="author">"author"</p>
+                        <p class="date">"date"</p>
+                        <p class="text">"text"</p>
+                    </div>`;
+                    div.querySelector(".comment-avatar").textContent = author.charAt(0);
+                    div.querySelector(".author").textContent = author;
+                    div.querySelector(".date").textContent = date;
+                    div.querySelector(".text").textContent = text;
+                    chatBox.appendChild(div);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+
+                function sendMessage() {
+                    const text = input.value.trim();
+                    if (text === "")
+                        return;
+                    socket.send(JSON.stringify({idAuthor: idUser, text: text}));
+                    input.value = "";
+                }
+
+                sendBtn.addEventListener("click", sendMessage);
+                input.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter")
+                        sendMessage();
+                });
+            })();
+        </script>
         <%
             String error = (String) request.getAttribute("error");
             String success = (String) request.getAttribute("success");

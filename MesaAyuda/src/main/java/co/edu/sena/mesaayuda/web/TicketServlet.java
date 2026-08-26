@@ -1,12 +1,14 @@
 package co.edu.sena.mesaayuda.web;
 
 import co.edu.sena.mesaayuda.dto.CategoryDTO;
+import co.edu.sena.mesaayuda.dto.ChatRealTimeDTO;
 import co.edu.sena.mesaayuda.dto.CommentDTO;
 import co.edu.sena.mesaayuda.dto.TicketCreateDTO;
 import co.edu.sena.mesaayuda.dto.TicketDTO;
 import co.edu.sena.mesaayuda.model.Ticket;
 import co.edu.sena.mesaayuda.model.User;
 import co.edu.sena.mesaayuda.service.s.CategoryService;
+import co.edu.sena.mesaayuda.service.s.ChatRealTimeService;
 import co.edu.sena.mesaayuda.service.s.CommentService;
 import co.edu.sena.mesaayuda.service.s.TicketService;
 import java.io.IOException;
@@ -28,7 +30,7 @@ public class TicketServlet extends HttpServlet {
         CategoryService categoryService = (CategoryService) getServletContext().getAttribute(AppContextListener.CATEGORY_SERVICE);
         TicketService ticketService = (TicketService) getServletContext().getAttribute(AppContextListener.TICKET_SERVICE);
         CommentService commentService = (CommentService) getServletContext().getAttribute(AppContextListener.COMMENT_SERVICE);
-        
+        ChatRealTimeService chatService = (ChatRealTimeService) getServletContext().getAttribute(AppContextListener.CHAT_SERVICE);
 
         if ("new".equals(action)) {
             try {
@@ -130,9 +132,12 @@ public class TicketServlet extends HttpServlet {
 
                 List<CommentDTO> listComments = commentService.MtListComment(ticket.getId());
                 ticket.setComments(listComments);
+                List<ChatRealTimeDTO> chatHistory = chatService.MtListByTicket(idTicket);
+                request.setAttribute("chatHistory", chatHistory);
 
                 request.setAttribute("ticket", ticket);
                 HttpSession session = request.getSession(false);
+                User usuarioActual = (User) session.getAttribute("user");
                 if (session != null) {
                     if (session.getAttribute("success") != null) {
                         request.setAttribute("success", session.getAttribute("success"));
@@ -143,7 +148,13 @@ public class TicketServlet extends HttpServlet {
                         session.removeAttribute("error");
                     }
                 }
-                request.getRequestDispatcher("/WEB-INF/Views/Applicant/ViewTicket.jsp").forward(request, response);
+                if(usuarioActual.getRole().getName().equals("Agente")){
+                    request.getRequestDispatcher("/WEB-INF/Views/Agent/ViewTicket.jsp").forward(request, response);
+                }
+                else{
+                    request.getRequestDispatcher("/WEB-INF/Views/Applicant/ViewTicket.jsp").forward(request, response);
+                }
+            
             } catch (Exception e) {
                 request.setAttribute("error", "No se pudieron cargar los datos del ticket");
                 request.getRequestDispatcher("/WEB-INF/Views/Applicant/ViewTicket.jsp").forward(request, response);
