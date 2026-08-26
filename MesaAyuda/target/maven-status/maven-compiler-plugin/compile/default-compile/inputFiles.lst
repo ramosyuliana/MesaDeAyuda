@@ -1,6 +1,7 @@
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\dto\AgentCreateDTO.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\dto\AgentUpdateDTO.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\dto\CategoryDTO.java
+C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\dto\ChatRealTimeDTO.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\dto\CommentCreateDTO.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\dto\CommentDTO.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\dto\NotificationDTO.java
@@ -18,6 +19,7 @@ C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesa
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\mapper\UserMapper.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\model\Agent.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\model\Category.java
+C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\model\ChatRealTime.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\model\Comment.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\model\Notification.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\model\Priority.java
@@ -37,6 +39,8 @@ C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesa
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\repository\AgentRepositoryJdbc.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\repository\CategoryRepository.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\repository\CategoryRepositoryJdbc.java
+C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\repository\ChatRealTimeRepository.java
+C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\repository\ChatRealTimeRepositoryJdbc.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\repository\CommentRepository.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\repository\CommentRepositoryJdbc.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\repository\NotificationRepository.java
@@ -62,6 +66,8 @@ C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesa
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\service\s\AgentServiceImpl.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\service\s\CategoryService.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\service\s\CategoryServiceImpl.java
+C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\service\s\ChatRealTimeService.java
+C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\service\s\ChatRealTimeServiceImpl.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\service\s\CommentService.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\service\s\CommentServiceImpl.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\service\s\NotificationService.java
@@ -89,4 +95,5 @@ C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesa
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\web\CommentServlet.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\web\NotificationServlet.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\web\OtpServlet.java
+C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\web\TicketChatEndpoint.java
 C:\Users\Admin\Desktop\Java\MesaDeAyuda\MesaAyuda\src\main\java\co\edu\sena\mesaayuda\web\TicketServlet.java

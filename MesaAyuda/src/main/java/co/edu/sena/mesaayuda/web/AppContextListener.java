@@ -36,6 +36,7 @@ public class AppContextListener implements ServletContextListener {
     public static final String AGENT_SERVICE = "agentService";
     public static final String NOTIFICATION_SERVICE = "notificationService";
     public static final String OTP_SERVICE = "otpService";
+    public static final String CHAT_SERVICE = "chatService";
 
     @Override
     public void contextInitialized(ServletContextEvent oEvent) {
@@ -49,6 +50,7 @@ public class AppContextListener implements ServletContextListener {
         TicketRepository ticketRepository = new TicketRepositoryJdbc();
         UserRepository userRepository = new UserRepositoryJdbc();
         AgentRepository agentRepository = new AgentRepositoryJdbc();
+        ChatRealTimeRepository chatMessageRepository = new ChatRealTimeRepositoryJdbc();
 
         StrategySLA strategySla = new StrategySLAStandard(priorityRepository);
         StrategyPriority strategyPriority = new StrategyPriorityByCategory(categoryRepository);
@@ -75,6 +77,7 @@ public class AppContextListener implements ServletContextListener {
         UserService userService = new UserServiceImpl(userRepository);
         AgentService agentService = new AgentServiceImpl(agentRepository);
         NotificationService notificationService = new NotificationServiceImpl(notificationRepository);
+        ChatRealTimeService chatService = new ChatRealTimeServiceImpl(chatMessageRepository, userRepository);
 
         oContext.setAttribute(CATEGORY_SERVICE, categoryService);
         oContext.setAttribute(COMMENT_SERVICE, commentService);
@@ -85,6 +88,7 @@ public class AppContextListener implements ServletContextListener {
         oContext.setAttribute(AGENT_SERVICE, agentService);
         oContext.setAttribute(NOTIFICATION_SERVICE, notificationService);
         oContext.setAttribute(OTP_SERVICE, otpService);
+        oContext.setAttribute(CHAT_SERVICE, chatService);
 
     }
 

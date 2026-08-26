@@ -345,92 +345,10 @@
                     <div class="meta-item"><span class="label">Agente</span><span class="value">${ticket.agentName}</span></div>
                     <div class="meta-item"><span class="label">Vence</span><span class="value">${ticket.expirationDate}</span></div>
                 </div>
-
-                <div class="actions-row">
-
-                    <c:if test="${ticket.state == 'NUEVO' || ticket.state == 'ASIGNADO'}">
-                        <a class="btn" href="${pageContext.request.contextPath}/TicketServlet?action=edit&id=${ticket.id}">
-                            <span class="material-symbols-outlined" style="font-size:16px;">edit</span> Editar ticket
-                        </a>
-                    </c:if>
-                    <c:if test="${ticket.state == 'CERRADO'}">
-                        <form class="otp-confirm-form" action="${pageContext.request.contextPath}/TicketServlet" method="post">
-                            <input type="hidden" name="action" value="editState"/>
-                            <input type="hidden" name="idTicket" value="${ticket.id}"/>
-                            <input type="hidden" name="stateAction" value="REABRIR"/>
-
-                            <button class="btn btn-primary" type="submit">Reabrir</button>
-                        </form>
-                    </c:if>
-
-
-                </div>
             </div>
-            <c:if test="${ticket.state == 'RESUELTO'}">
-                <div class="glass-card">
-                    <p class="comments-title">Confirmar cierre del ticket</p>
-                    <p class="otp-desc">
-                        Por seguridad, para cerrar definitivamente este ticket necesitas un código de confirmación
-                        que te enviaremos a tu correo (válido por 10 minutos).
-                    </p>
+           
 
-                    <c:if test="${param.otpSent == 'true'}">
-                        <div class="alert-success">Código enviado. Revisa tu correo electrónico.</div>
-                    </c:if>
-
-                    <form class="otp-request-form" action="${pageContext.request.contextPath}/OtpServlet" method="post">
-                        <input type="hidden" name="action" value="request"/>
-                        <input type="hidden" name="idTicket" value="${ticket.id}"/>
-                        <button class="btn" type="submit">
-                            <span class="material-symbols-outlined" style="font-size:16px;">mail</span> Solicitar código para cerrar
-                        </button>
-                    </form>
-
-                    <form class="otp-confirm-form" action="${pageContext.request.contextPath}/TicketServlet" method="post">
-                        <input type="hidden" name="action" value="editState"/>
-                        <input type="hidden" name="idTicket" value="${ticket.id}"/>
-                        <input type="hidden" name="stateAction" value="CERRAR"/>
-                        <input type="text" name="otpCode" placeholder="Código de 6 dígitos" maxlength="6"
-                               inputmode="numeric" pattern="[0-9]{6}" required/>
-                        <button class="btn btn-primary" type="submit">Confirmar cierre</button>
-                    </form>
-                </div>
-            </c:if>
-
-            <div class="glass-card">
-                <p class="comments-title">Comentarios (${fn:length(ticket.comments)})</p>
-
-
-                <c:choose>
-                    <c:when test="${empty ticket.comments}">
-                        <div class="comment-item">
-                            <p class="empty-comments">Aún no hay comentarios en este ticket.</p>
-                        </div>
-                    </c:when>
-                    <c:otherwise>
-                        <c:forEach var="c" items="${ticket.comments}">
-                            <div class="comment-item">
-                                <div class="comment-avatar"><span class="material-symbols-outlined">person</span></div>
-                                <div class="comment-body">
-                                    <p class="author">${c.nameAuthor}</p>
-                                    <p class="date">${c.date}</p>
-                                    <p class="text">${c.text}</p>
-                                </div>
-                            </div>
-                        </c:forEach>
-
-                    </c:otherwise>
-                </c:choose>
-
-            </div>
-
-            <form class="comment-form" action="${pageContext.request.contextPath}/CommentServlet?action=create" method="post">
-                <input type="hidden" name="idTicket" value="${ticket.id}"/>
-                <input type="text" name="text" placeholder="Escribe un comentario..." required/>
-                <button title="Enviar comentario" type="submit">
-                    <span class="material-symbols-outlined">send</span>
-                </button>
-            </form>
+         
             <div class="glass-card">
                 <p class="comments-title">Chat en vivo</p>
 
