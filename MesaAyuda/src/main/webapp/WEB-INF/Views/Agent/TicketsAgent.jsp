@@ -471,7 +471,7 @@
                                     </div>
                                     <span class="tag-badge tag-blue">${t.state}</span>
                                     <a class="tag-badge tag-blue" href="${pageContext.request.contextPath}/TicketServlet?action=view&id=${t.id}">
-                                        <span class="material-symbols-outlined" style="font-size:14px;">chat</span>  Chat
+                                        <span class="material-symbols-outlined" style="font-size:14px;">visibility</span>  Detalles
                                         
                                     </a>
                                 </div>
@@ -483,32 +483,6 @@
                                     <div class="detail-meta-row"><span>Prioridad / SLA</span><span>${t.priorityName} — vence ${t.expirationDate}</span></div>
                                     <div class="detail-meta-row"><span>Solicitante</span><span>${t.applicantName}</span></div>
                                     <div class="detail-meta-row"><span>Creado</span><span>${t.createDate}</span></div>
-                                </div>
-
-                                <div class="comments-box">
-                                    <p class="comments-heading">Comentarios (${fn:length(t.comments)})</p>
-                                    <c:choose>
-                                        <c:when test="${empty t.comments}">
-                                            <p class="no-comments">Aún no hay comentarios en este ticket.</p>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:forEach var="c" items="${t.comments}">
-                                                <div class="mini-comment">
-                                                    <div class="mini-avatar-icon">
-                                                        <span class="material-symbols-outlined">person</span>
-                                                    </div>
-                                                    <div class="mini-comment-body">
-                                                        <p class="mini-author">${c.nameAuthor}</p>
-                                                        <p class="mini-date">${c.date}</p>
-                                                        <p class="mini-text">${c.text}</p>
-                                                    </div>
-                                                </div>
-                                            </c:forEach>
-
-                                        </c:otherwise>
-                                    </c:choose>
-
-
                                 </div>
 
                                 <div class="workflow-box">
@@ -560,14 +534,7 @@
                                     </div>
                                 </div>
 
-                                <form action="${pageContext.request.contextPath}/CommentServlet?action=create" method="post" style="display:flex; gap:8px;">
-                                    <input type="hidden" name="idTicket" value="${t.id}"/>
-                                    <input type="text" name="text" placeholder="Escribe un comentario técnico..."
-                                           style="flex:1; padding:10px 12px; border-radius: var(--radius-lg); background: var(--input-bg); border:1px solid var(--input-border); font-size:13px; outline:none;"/>
-                                    <button title="Enviar comentario" type="submit" style="color: var(--primary);">
-                                        <span class="material-symbols-outlined">send</span>
-                                    </button>
-                                </form>
+                               
                             </div>
                         </c:forEach>
 
