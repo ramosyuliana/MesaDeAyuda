@@ -24,6 +24,7 @@ co\edu\sena\mesaayuda\service\s\RoleServiceImpl.class
 co\edu\sena\mesaayuda\web\OtpServlet.class
 co\edu\sena\mesaayuda\model\Role.class
 co\edu\sena\mesaayuda\repository\CommentRepositoryJdbc.class
+co\edu\sena\mesaayuda\web\ChatServlet.class
 co\edu\sena\mesaayuda\service\s\UserAuthService.class
 co\edu\sena\mesaayuda\service\s\CommentService.class
 co\edu\sena\mesaayuda\web\TicketChatEndpoint.class

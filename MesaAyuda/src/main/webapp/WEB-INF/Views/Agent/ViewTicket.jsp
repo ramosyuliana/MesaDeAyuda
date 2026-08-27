@@ -345,108 +345,75 @@
                     <div class="meta-item"><span class="label">Agente</span><span class="value">${ticket.agentName}</span></div>
                     <div class="meta-item"><span class="label">Vence</span><span class="value">${ticket.expirationDate}</span></div>
                 </div>
+
+
             </div>
-           
 
-         
+
             <div class="glass-card">
-                <p class="comments-title">Chat en vivo</p>
+                <p class="comments-title">Comentarios (${fn:length(ticket.comments)})</p>
 
-                <div id="chatMessages" style="max-height: 300px; overflow-y: auto; margin-bottom: 12px;">
-                    <c:forEach var="m" items="${chatHistory}">
+
+                <c:choose>
+                    <c:when test="${empty ticket.comments}">
                         <div class="comment-item">
-                            <div class="comment-avatar">${fn:substring(m.authorName, 0, 1)}</div>
-                            <div class="comment-body">
-                                <p class="author">${m.authorName}</p>
-                                <p class="date">${m.date}</p>
-                                <p class="text">${m.text}</p>
-                            </div>
+                            <p class="empty-comments">Aún no hay comentarios en este ticket.</p>
                         </div>
-                    </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="c" items="${ticket.comments}">
+                            <div class="comment-item">
+                                <div class="comment-avatar"><span class="material-symbols-outlined">person</span></div>
+                                <div class="comment-body">
+                                    <p class="author">${c.nameAuthor}</p>
+                                    <p class="date">${c.date}</p>
+                                    <p class="text">${c.text}</p>
+                                </div>
+                            </div>
+                        </c:forEach>
+
+                    </c:otherwise>
+                </c:choose>
+
+            </div>
+
+            <form class="comment-form" action="${pageContext.request.contextPath}/CommentServlet?action=create" method="post">
+                <input type="hidden" name="idTicket" value="${ticket.id}"/>
+                <input type="text" name="text" placeholder="Escribe un comentario..." required/>
+                <button title="Enviar comentario" type="submit">
+                    <span class="material-symbols-outlined">send</span>
+                </button>
+            </form>
+            <div class="glass-card" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+                <div>
+                    <p class="comments-title" style="margin-bottom:4px;">Chat en vivo</p>
+                    <p style="font-size:13px; color:var(--on-surface-variant);">Conversa en tiempo real con el agente asignado a este ticket.</p>
                 </div>
-                <div class="comment-form">
-                    <input type="text" id="chatInput" placeholder="Escribe un mensaje..."/>
-                    <button id="chatSendBtn" title="Enviar" type="button">
-                        <span class="material-symbols-outlined">send</span>
-                    </button>
-                </div>
-            </div>   
-
-        </main>
-        <script>
-            (function () {
-                const idTicket = ${ticket.id};
-                const idUser = ${sessionScope.user.id};
-
-                const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-                const socket = new WebSocket(protocol + "//" + window.location.host + "${pageContext.request.contextPath}/chat/" + idTicket);
-
-                const chatBox = document.getElementById("chatMessages");
-                const input = document.getElementById("chatInput");
-                const sendBtn = document.getElementById("chatSendBtn");
-
-                socket.onopen = () => console.log("Conectado al chat del ticket " + idTicket);
-                socket.onerror = (err) => console.error("Error WebSocket:", err);
-
-                socket.onmessage = function (event) {
-                    const msg = JSON.parse(event.data);
-                    appendMessage(msg.authorName, msg.date, msg.text);
-                };
-
-                function appendMessage(author, date, text) {
-                    const div = document.createElement("div");
-                    div.className = "comment-item";
-                    div.innerHTML = `
-                    <div class="comment-avatar"></div>
-                    <div class="comment-body">
-                        <p class="author">"author"</p>
-                        <p class="date">"date"</p>
-                        <p class="text">"text"</p>
-                    </div>`;
-                    div.querySelector(".comment-avatar").textContent = author.charAt(0);
-                    div.querySelector(".author").textContent = author;
-                    div.querySelector(".date").textContent = date;
-                    div.querySelector(".text").textContent = text;
-                    chatBox.appendChild(div);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
-
-                function sendMessage() {
-                    const text = input.value.trim();
-                    if (text === "")
-                        return;
-                    socket.send(JSON.stringify({idAuthor: idUser, text: text}));
-                    input.value = "";
-                }
-
-                sendBtn.addEventListener("click", sendMessage);
-                input.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter")
-                        sendMessage();
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/ChatServlet?action=view&idTicket=${ticket.id}" target="_blank">
+                    <span class="material-symbols-outlined" style="font-size:16px;">chat</span> Abrir chat
+                </a>
+            </div>
+            <%
+                String error = (String) request.getAttribute("error");
+                String success = (String) request.getAttribute("success");
+                if (error != null && !error.isEmpty()) {
+            %>
+            <script>
+                window.addEventListener('DOMContentLoaded', () => {
+                    sweetAlert.error("¡Error!", "<%= error%>");
                 });
-            })();
-        </script>
-        <%
-            String error = (String) request.getAttribute("error");
-            String success = (String) request.getAttribute("success");
-            if (error != null && !error.isEmpty()) {
-        %>
-        <script>
-            window.addEventListener('DOMContentLoaded', () => {
-                sweetAlert.error("¡Error!", "<%= error%>");
-            });
-        </script>
-        <%
-        } else if (success != null && !success.isEmpty()) {
-        %>
-        <script>
-            window.addEventListener('DOMContentLoaded', () => {
-                sweetAlert.success("Éxito", "<%= success%>");
-            });
-        </script>
-        <%
-            }
-        %>
+            </script>
+            <%
+            } else if (success != null && !success.isEmpty()) {
+            %>
+            <script>
+                window.addEventListener('DOMContentLoaded', () => {
+                    sweetAlert.success("Éxito", "<%= success%>");
+                });
+            </script>
+            <%
+                }
+            %>
     </body>
 </html>
 

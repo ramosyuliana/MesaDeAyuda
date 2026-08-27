@@ -132,8 +132,7 @@ public class TicketServlet extends HttpServlet {
 
                 List<CommentDTO> listComments = commentService.MtListComment(ticket.getId());
                 ticket.setComments(listComments);
-                List<ChatRealTimeDTO> chatHistory = chatService.MtListByTicket(idTicket);
-                request.setAttribute("chatHistory", chatHistory);
+                
 
                 request.setAttribute("ticket", ticket);
                 HttpSession session = request.getSession(false);
